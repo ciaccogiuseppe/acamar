@@ -49,10 +49,10 @@ namespace acamar.Source.Engine.World
 
             }
 
-            public override void Draw()
+            public override void Draw(SpriteBatch batch)
             {
-                scrollerTag.Draw();
-                base.Draw();
+                scrollerTag.Draw(batch);
+                base.Draw(batch);
             }
 
             public void MoveUp()
@@ -137,11 +137,11 @@ namespace acamar.Source.Engine.World
             private int max;
             private int current;
 
-            public override void Draw()
+            public override void Draw(SpriteBatch batch)
             {
-                sliderTag.Draw();
-                sliderBar.Draw();
-                base.Draw();
+                sliderTag.Draw(batch);
+                sliderBar.Draw(batch);
+                base.Draw(batch);
             }
 
             public void MoveLeft()
@@ -173,11 +173,11 @@ namespace acamar.Source.Engine.World
                 entities = new List<MenuEntity>();
             }
 
-            public void Draw()
+            public void Draw(SpriteBatch batch)
             {
                 foreach (Entity ent in entities)
                 {
-                    ent.Draw();
+                    ent.Draw(batch);
                 }
             }
 
@@ -220,11 +220,11 @@ namespace acamar.Source.Engine.World
         private Entity background;
         private Entity title;
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
-            background.Draw();
-            title.Draw();
-            menuPages[currentPage].Draw();
+            background.Draw(batch);
+            title.Draw(batch);
+            menuPages[currentPage].Draw(batch);
         }
 
         public void GoToPage(int pageNumber)

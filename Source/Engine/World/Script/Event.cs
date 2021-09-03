@@ -4,7 +4,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script
 {
-    class Event
+    public class Event
     {
         private List<EventCondition> triggerCondition = new List<EventCondition>();
         private List<EventAction> triggerAction = new List<EventAction>();

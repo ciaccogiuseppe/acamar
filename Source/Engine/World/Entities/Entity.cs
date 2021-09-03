@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace acamar.Source.Engine.World
 {
-    class Entity
+    public class Entity
     {
         //public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color)
         //public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
@@ -79,14 +79,19 @@ namespace acamar.Source.Engine.World
             }
         }
 
-        public virtual void Draw()
+        public virtual void Draw(SpriteBatch batch)
         {
-            Globals._spriteBatch.Draw(texture, destRec, sourceRec, Color.White);
+            batch.Draw(texture, destRec, sourceRec, Color.White);
         }
 
         protected virtual void Animate()
         {
-             //= ANIMLEN[sprid][currentAnimation]
+            //= ANIMLEN[sprid][currentAnimation]
+            sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
+        }
+
+        public virtual void Animation()
+        {
             sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
         }
 
@@ -102,7 +107,7 @@ namespace acamar.Source.Engine.World
             destRec.Height = rect.Height;
         }
 
-        public void SetPosition(int posx, int posy)
+        public virtual void SetPosition(int posx, int posy)
         {
             this.posx = posx;
             this.posy = posy;

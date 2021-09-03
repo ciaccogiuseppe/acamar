@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
@@ -39,9 +40,9 @@ namespace acamar.Source.Engine.World
             this.firstMap = Int32.Parse(firstMap[0].InnerText);
         }
 
-        internal void Draw()
+        internal void Draw(SpriteBatch batch)
         {
-            currentMap.Draw();
+            currentMap.Draw(batch);
         }
 
         private void LoadMaps(int id)
@@ -70,6 +71,11 @@ namespace acamar.Source.Engine.World
         public void SetMap(int id)
         {
             currentMap = maps[id];
+        }
+
+        public Map GetCurrentMap()
+        {
+            return currentMap;
         }
 
         public void ChangeLevel(int id)

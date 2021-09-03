@@ -1,5 +1,6 @@
 ﻿using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,7 +36,7 @@ namespace acamar.Source.Engine
         public static void Activate()
         {
             active = true;
-            Globals.CURRENTSTATE = Globals.STATE.PAUSE;
+            Globals.CURRENTSTATE = Globals.STATE.TRANSITION;
             status = TRANSTATUS.PRE;
             preTransition.ResetArray();
             preTransition.ResetCount();
@@ -63,6 +64,7 @@ namespace acamar.Source.Engine
             }
             if(preTransition.IsEnded() && status == TRANSTATUS.PRE)
             {
+                Globals.player.UpdatePosition();
                 status = TRANSTATUS.POST;
             }
             if(postTransition.IsEnded() && status == TRANSTATUS.POST)
@@ -74,17 +76,17 @@ namespace acamar.Source.Engine
 
         }
 
-        public static void Draw()
+        public static void Draw(SpriteBatch mapBatch, SpriteBatch tranBatch)
         {
             switch (status)
             {
                 case TRANSTATUS.PRE:
-                    prevMap.Draw();
-                    preTransition.Draw();
+                    prevMap.Draw(mapBatch);
+                    preTransition.Draw(tranBatch);
                     break;
                 case TRANSTATUS.POST:
-                    nextMap.Draw();
-                    postTransition.Draw();
+                    nextMap.Draw(mapBatch);
+                    postTransition.Draw(tranBatch);
                     break;
                 case TRANSTATUS.END:
                     break;

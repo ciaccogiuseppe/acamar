@@ -46,11 +46,11 @@ namespace acamar.Source.Engine.World
 
 
 
-            Player player = new Player(1, 7, 200, 200, 0);
-            entities.Add(player);
+            
+            entities.Add(Globals.player);
 
             Event evn = new Event();
-            evn.AddCondition(new PositionCondition(player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            evn.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
             evn.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
 
             List<int> flgs = new List<int>();
@@ -61,7 +61,7 @@ namespace acamar.Source.Engine.World
 
             Event evn2 = new Event();
             evn2.AddCondition(new FlagCondition(flgs, true));
-            evn2.AddCondition(new PositionCondition(player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            evn2.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
             //evn2.AddAction(new MessageAction("evento{attivato$flag{impostata$^", entities[0]));
             //evn2.AddAction(new TeleportAction(10, 20, player));
             evn2.AddAction(new MoveAction(150, 300, (Character)entities[0]));
@@ -70,7 +70,22 @@ namespace acamar.Source.Engine.World
             entities[0].AddEvent(evn2);
             entities[0].AddEvent(evn);
 
+
+
+            Event evn3 = new Event();
+            evn3.AddCondition(new PositionCondition(Globals.player, 108, 108, 17, PositionCondition.POSTYPE.POSNEAR));
+            evn3.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
+            evn3.AddAction(new TeleportAction(selfLevel, 1, 10, 10, Globals.player));
+
+            entities[1].AddEvent(evn3);
+
+
             //message = new Message("testo{di{prova{testo{di{prova$testo{tsto{estoset$testo{di{prova{testo{di{prova$aaaaaaaaaaaaaaaaa#paragrafo#paragrafo^");
+        }
+
+        public void SetPlayer(Player player)
+        {
+            entities.Add(player);
         }
         
         public void Update()
@@ -91,8 +106,8 @@ namespace acamar.Source.Engine.World
                         //MessageHandler.currentMessage = new Message("collision$^");
                         //MessageHandler.Activate();
 
-                        ////TransitionHandler.preTransition = TransitionHandler.UTODPRE;
-                        ////TransitionHandler.postTransition = TransitionHandler.UTODPOST;
+                        ////TransitionHandler.preTransition = TransitionHandler.LTORPRE;
+                        ////TransitionHandler.postTransition = TransitionHandler.LTORPOST;
                         ////TransitionHandler.Activate();
                         ////TransitionHandler.prevMap = this;
                         ////TransitionHandler.nextMap = this;
@@ -106,12 +121,12 @@ namespace acamar.Source.Engine.World
             //message.Update();
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
             //DrawBackground();
             foreach (Entity ent in entities)
             {
-                ent.Draw();
+                ent.Draw(batch);
             }
 
             //message.Draw();

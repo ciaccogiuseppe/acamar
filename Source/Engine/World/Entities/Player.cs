@@ -5,8 +5,11 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Entities
 {
-    class Player : Character
+    public class Player : Character
     {
+        private int nextPosx;
+        private int nextPosy;
+
         public Player(int entid, int sprid, int posx, int posy, int dir) :
             base(entid, sprid, posx, posy, dir)
         {
@@ -24,18 +27,22 @@ namespace acamar.Source.Engine.World.Entities
             {
                 case STATE.WALKDOWN:
                     destRec.Y--;
+                    Globals.CAMY++;
                     Stop();
                     break;
                 case STATE.WALKLEFT:
                     destRec.X++;
+                    Globals.CAMX--;
                     Stop();
                     break;
                 case STATE.WALKRIGHT:
                     destRec.X--;
+                    Globals.CAMX++;
                     Stop();
                     break;
                 case STATE.WALKUP:
                     destRec.Y++;
+                    Globals.CAMY--;
                     Stop();
                     break;
             }
@@ -88,18 +95,22 @@ namespace acamar.Source.Engine.World.Entities
                 {
                     case STATE.WALKDOWN:
                         destRec.Y++;
+                        Globals.CAMY--;
                         posy++;
                         break;
                     case STATE.WALKUP:
                         destRec.Y--;
+                        Globals.CAMY++;
                         posy--;
                         break;
                     case STATE.WALKLEFT:
                         destRec.X--;
+                        Globals.CAMX++;
                         posx--;
                         break;
                     case STATE.WALKRIGHT:
                         destRec.X++;
+                        Globals.CAMX--;
                         posx++;
                         break;
                 }
@@ -109,7 +120,30 @@ namespace acamar.Source.Engine.World.Entities
 
 
         }
+
+        public override void SetPosition(int posx, int posy)
+        {
+            if(TransitionHandler.IsActive())
+            {
+                nextPosx = posx;
+                nextPosy = posy;
+            }
+            else
+            {
+                base.SetPosition(posx, posy);
+                Globals.CAMX = Globals.SIZEX / 2 - posx;
+                Globals.CAMY = Globals.SIZEY / 2 - posy;
+            }
+        }
+
+        public void UpdatePosition()
+        {
+            base.SetPosition(nextPosx, nextPosy);
+            Globals.CAMX = Globals.SIZEX / 2 - posx;
+            Globals.CAMY = Globals.SIZEY / 2 - posy;
+        }
     }
 
+    
     
 }

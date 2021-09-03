@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace acamar.Source.Engine.World.Entities
 {
-    class Character : Interactable
+    public class Character : Interactable
     {
         protected enum STATE
         {
@@ -293,9 +294,9 @@ namespace acamar.Source.Engine.World.Entities
             
         }
 
-        public override void Draw()
+        public override void Draw(SpriteBatch batch)
         {
-            base.Draw();
+            base.Draw(batch);
         }
 
         public override void ReverseMove()

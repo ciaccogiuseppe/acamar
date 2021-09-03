@@ -159,31 +159,31 @@ namespace acamar.Source.Engine.World.Entities
             
         }
 
-        public void DrawLine(int line, string s)
+        public void DrawLine(int line, string s, SpriteBatch batch)
         {
             int pos = firstChar;
             foreach(char c in s.ToCharArray())
             {
-                Globals._spriteBatch.Draw(font, new Rectangle(pos, line == 1 ? firstLine : secondLine, charWidth, charHeight), charToRect[c-'a'], Color.White); //change new Rectangle with predefined rectangles foreach char pos
+                batch.Draw(font, new Rectangle(pos, line == 1 ? firstLine : secondLine, charWidth, charHeight), charToRect[c-'a'], Color.White); //change new Rectangle with predefined rectangles foreach char pos
                 pos += charWidth;
             }
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
             if (!ended)
             {
-                textBox.Draw();
+                textBox.Draw(batch);
                 if (newLine)
                 {
-                    DrawLine(1, preLine);
-                    DrawLine(2, curLine);
+                    DrawLine(1, preLine, batch);
+                    DrawLine(2, curLine, batch);
                     //draw preLine on line 1
                     //draw curLine on line 2
                 }
                 else
                 {
-                    DrawLine(1, curLine);
+                    DrawLine(1, curLine, batch);
                     //draw curLine on line 1
                 }
             }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script
 {
-    abstract class EventCondition
+    public abstract class EventCondition
     {
         public abstract bool IsVerified();
     }

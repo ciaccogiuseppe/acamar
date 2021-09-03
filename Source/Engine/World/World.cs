@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine.World.Entities;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,9 +40,9 @@ namespace acamar.Source.Engine.World
             currentLevel.SetMap(id);
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
-            currentLevel.Draw();
+            currentLevel.Draw(batch);
             //player.Draw();
         }
 
@@ -50,5 +51,6 @@ namespace acamar.Source.Engine.World
             currentLevel.Update();
             //player.Update();
         }
+
     }
 }

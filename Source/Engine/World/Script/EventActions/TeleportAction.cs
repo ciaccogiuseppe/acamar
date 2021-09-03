@@ -66,7 +66,14 @@ namespace acamar.Source.Engine.World.Script.EventActions
                     world.SetLevel(levelID);
                     break;
                 case TELETYPE.TELEMAP:
+                    Map preMap = level.GetCurrentMap();
                     level.SetMap(mapID);
+                    Map postMap = level.GetCurrentMap();
+                    TransitionHandler.prevMap = preMap;
+                    TransitionHandler.nextMap = postMap;
+                    TransitionHandler.preTransition = TransitionHandler.LTORPRE;
+                    TransitionHandler.postTransition = TransitionHandler.LTORPOST;
+                    TransitionHandler.Activate();
                     break;
                 default:
                     break;

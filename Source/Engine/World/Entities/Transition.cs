@@ -134,6 +134,8 @@ namespace acamar.Source.Engine.World.Entities
                     {
                         entArray[i, j].Update();
                         entArray[i, j].Update();
+                        entArray[i, j].Animation();
+                        entArray[i, j].Animation();
                     }
                     tranArray[i, j]+=2;
                 }
@@ -145,13 +147,13 @@ namespace acamar.Source.Engine.World.Entities
             }
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch batch)
         {
             for (int i = 0; i < h; i++)
             {
                 for (int j = 0; j < w; j++)
                 {
-                    entArray[i, j].Draw();
+                    entArray[i, j].Draw(batch);
                 }
             }
         }

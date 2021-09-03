@@ -18,10 +18,14 @@ namespace acamar
         {
             MAINMENU,
             RUNNING,
-            PAUSE
+            PAUSE,
+            TRANSITION
         }
 
         public static SpriteBatch _spriteBatch;
+
+        public static SpriteBatch _overBatch;
+
         public static ContentManager Content;
         public static STATE CURRENTSTATE = STATE.MAINMENU;
 
@@ -31,6 +35,12 @@ namespace acamar
         public static int SIZEY = 400;
 
         public static World world;
+
+        public static int CAMX = 0;
+        public static int CAMY = 0;
+
+        public static Player player;
+
     }
     public class Main : Game
     {
@@ -68,8 +78,9 @@ namespace acamar
 
 
             Globals.world.SetLevel(0);
-
             
+            
+
         }
 
         protected override void LoadContent()
@@ -77,7 +88,10 @@ namespace acamar
             Globals.Content = this.Content;
             Globals._spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Globals._overBatch = new SpriteBatch(GraphicsDevice);
+
             // TODO: use this.Content to load your game content here
+            Globals.player = new Player(1, 7, 200, 200, 0);
         }
 
         protected override void Update(GameTime gameTime)
@@ -97,6 +111,10 @@ namespace acamar
             {
                 //Globals.world.Update();
                 //inGameMenu.Update();
+            }
+            else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
+            {
+
             }
 
 
@@ -124,33 +142,42 @@ namespace acamar
 
             //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(1.0f));
+            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(1.0f) * Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0));
+            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(1.0f));
+
 
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
             {
-                mainMenu.Draw();
+                mainMenu.Draw(Globals._overBatch);
             }
             else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
             {
-                Globals.world.Draw();
+                Globals.world.Draw(Globals._spriteBatch);
             }
             else if (Globals.CURRENTSTATE == Globals.STATE.PAUSE)
             {
-                Globals.world.Draw();
+                Globals.world.Draw(Globals._spriteBatch);
                 //inGameMenu.Draw();
             }
 
-            if(MessageHandler.IsActive())
+            
+
+            
+
+            if (MessageHandler.IsActive())
             {
-                MessageHandler.Draw();
+                MessageHandler.Draw(Globals._overBatch);
             }
 
             if(TransitionHandler.IsActive())
             {
-                TransitionHandler.Draw();
+                TransitionHandler.Draw(Globals._spriteBatch, Globals._overBatch);
             }
 
             Globals._spriteBatch.End();
+            Globals._overBatch.End();
+
+            //Globals._spriteBatch.End();
 
             base.Draw(gameTime);
         }

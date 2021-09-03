@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine.World.Entities;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -36,11 +37,11 @@ namespace acamar.Source.Engine
             }
         }
 
-        public static void Draw()
+        public static void Draw(SpriteBatch batch)
         {
             if(active)
             {
-                currentMessage.Draw();
+                currentMessage.Draw(batch);
             }
         }
     }

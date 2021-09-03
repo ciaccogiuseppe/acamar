@@ -5,7 +5,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Entities
 {
-    class Interactable : Entity
+    public class Interactable : Entity
     {
         public Interactable(int entid, int sprid, int posx, int posy, int dir) :
             base(entid, sprid, posx, posy, dir)
