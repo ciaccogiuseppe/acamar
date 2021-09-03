@@ -111,21 +111,17 @@ namespace acamar
             {
                 //Globals.world.Update();
                 //inGameMenu.Update();
+                if (MessageHandler.IsActive())
+                {
+                    MessageHandler.Update();
+                }
             }
             else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
             {
-
-            }
-
-
-            if (MessageHandler.IsActive())
-            {
-                MessageHandler.Update();
-            }
-
-            if (TransitionHandler.IsActive())
-            {
-                TransitionHandler.Update();
+                if (TransitionHandler.IsActive())
+                {
+                    TransitionHandler.Update();
+                }
             }
 
 

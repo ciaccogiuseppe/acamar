@@ -8,6 +8,7 @@ namespace acamar.Source.Engine.World.Script
     {
         private List<EventCondition> triggerCondition = new List<EventCondition>();
         private List<EventAction> triggerAction = new List<EventAction>();
+        private bool active = false;
 
         public void AddCondition(EventCondition cond)
         {
@@ -32,8 +33,37 @@ namespace acamar.Source.Engine.World.Script
             }
             if (verified)
             {
-                foreach (EventAction act in triggerAction)
+                active = true;
+                //foreach (EventAction act in triggerAction)
+                triggerAction[0].Trigger();
+                    //act.Trigger();
+            }
+        }
+
+        internal bool IsActive()
+        {
+            return active;
+        }
+
+        public void Continue()
+        {
+            active = false;
+            foreach (EventAction act in triggerAction)
+            {
+                if(!act.IsEnded())
+                {
+                    active = true;
                     act.Trigger();
+                    break;
+                }
+            }
+        }
+
+        public void Reset()
+        {
+            foreach (EventAction act in triggerAction)
+            {
+                act.Reset();
             }
         }
     }

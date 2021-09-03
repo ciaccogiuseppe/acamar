@@ -10,6 +10,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         private int destX;
         private int destY;
         private Character target;
+        private bool ended;
 
         public MoveAction(int destX, int destY, Character target)
         {
@@ -22,7 +23,18 @@ namespace acamar.Source.Engine.World.Script.EventActions
         {
             if (destX == target.GetPosX()) target.MoveToY(destY);
             else if (destY == target.GetPosY()) target.MoveToX(destX);
+            //ended = true;
+        }
+        
+        public override bool IsEnded()
+        {
+            if (target.GetPosX() == destX && target.GetPosY() == destY) ended = true;
+            return ended;
         }
 
+        public override void Reset()
+        {
+            ended = false;
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         private List<int> flags;
         private FLAGTYPE type;
+        private bool ended = false;
         public FlagAction(List<int> flags, int type)
         {
             this.flags = flags;
@@ -34,6 +35,17 @@ namespace acamar.Source.Engine.World.Script.EventActions
                         Flag.UnsetFlag(f);
                     break;
             }
+            ended = true;
+        }
+
+        public override bool IsEnded()
+        {
+            return ended;
+        }
+
+        public override void Reset()
+        {
+            ended = false;
         }
     }
 }

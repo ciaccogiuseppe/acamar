@@ -207,6 +207,8 @@ namespace acamar.Source.Engine.World.Entities
         public override void Update()
         {
             base.Update();
+            if (Globals.CURRENTSTATE != Globals.STATE.RUNNING) return;
+            
             //StateMachine();
             if (IsMoving())
             {

@@ -15,6 +15,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
         private int posX;
         private int posY;
 
+        private bool started = false;
+
         private TELETYPE type;
 
         private enum TELETYPE
@@ -60,6 +62,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         public override void Trigger()
         {
+            started = true;
             switch(type)
             {
                 case TELETYPE.TELELVL:
@@ -80,6 +83,16 @@ namespace acamar.Source.Engine.World.Script.EventActions
             }
             target.SetPosition(posX, posY);
         }
-        
+
+        public override bool IsEnded()
+        {
+            if (started && !TransitionHandler.IsActive()) return true;
+            else return false;
+        }
+
+        public override void Reset()
+        {
+            started = false;
+        }
     }
 }

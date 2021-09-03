@@ -29,7 +29,7 @@ namespace acamar.Source.Engine.World
 
 
         protected List<Event> events = new List<Event>();
-
+        protected List<Event> activeEvents = new List<Event>();
         protected bool active = true; //to activate/deactivate entity
 
         public Entity(int entid, int sprid, int posx, int posy, int dir)
@@ -73,9 +73,23 @@ namespace acamar.Source.Engine.World
         {
             //throw new NotImplementedException();
             //Animate();
+            foreach (Event evn in activeEvents)
+            {
+                evn.Continue();
+                if(!evn.IsActive())
+                {
+                    activeEvents.Remove(evn);
+                    evn.Reset();
+                    break;
+                }
+            }
             foreach (Event evn in events)
             {
                 evn.Trigger();
+                if(evn.IsActive() && !activeEvents.Contains(evn))
+                {
+                    activeEvents.Add(evn);
+                }
             }
         }
 
@@ -200,6 +214,22 @@ namespace acamar.Source.Engine.World
         public int GetCenterY()
         {
             return destRec.Center.Y;
+        }
+
+
+        public bool IsActive()
+        {
+            return active;
+        }
+
+        public void Activate()
+        {
+            active = true;
+        }
+
+        public void Deactivate()
+        {
+            active = false;
         }
     }
 }

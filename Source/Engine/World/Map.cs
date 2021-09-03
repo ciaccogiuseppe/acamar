@@ -64,7 +64,10 @@ namespace acamar.Source.Engine.World
             evn2.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
             //evn2.AddAction(new MessageAction("evento{attivato$flag{impostata$^", entities[0]));
             //evn2.AddAction(new TeleportAction(10, 20, player));
+            evn2.AddAction(new MessageAction("movimento$^", entities[0]));
             evn2.AddAction(new MoveAction(150, 300, (Character)entities[0]));
+            evn2.AddAction(new MoveAction(300, 300, (Character)entities[0]));
+            evn2.AddAction(new MoveAction(300, 150, (Character)entities[0]));
             evn2.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
 
             entities[0].AddEvent(evn2);
@@ -75,6 +78,7 @@ namespace acamar.Source.Engine.World
             Event evn3 = new Event();
             evn3.AddCondition(new PositionCondition(Globals.player, 108, 108, 17, PositionCondition.POSTYPE.POSNEAR));
             evn3.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
+            evn3.AddAction(new MessageAction("teletrasporto$^", entities[0]));
             evn3.AddAction(new TeleportAction(selfLevel, 1, 10, 10, Globals.player));
 
             entities[1].AddEvent(evn3);
