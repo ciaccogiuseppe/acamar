@@ -169,6 +169,30 @@
 /processorParam:TextureFormat=Color
 /build:2D/DTOUPRE.spr.png
 
+#begin 2D/FADEPOST.spr.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:2D/FADEPOST.spr.png
+
+#begin 2D/FADEPRE.spr.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:2D/FADEPRE.spr.png
+
 #begin 2D/font.spr.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -45,7 +45,9 @@ namespace acamar.Source.Engine.World
             string[] lines = File.ReadAllLines(filename);
             SetLevel(int.Parse(lines[0]));
             currentLevel.SetMap(int.Parse(lines[1]));
-
+            Flag.SetFlags(lines[2]);
+            Globals.player.SetPosition(int.Parse(lines[3].Split(' ')[0]), int.Parse(lines[3].Split(' ')[1]));
+            Globals.player.SetDir(int.Parse(lines[3].Split(' ')[2]));
             
 
             //save player stats and flags

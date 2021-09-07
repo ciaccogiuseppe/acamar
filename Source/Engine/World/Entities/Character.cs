@@ -102,16 +102,38 @@ namespace acamar.Source.Engine.World.Entities
             }
         }
     
-        private void FaceCharacter(Character character)
+        public void FaceCharacter(Character character)
         {
-            if (posx < character.GetPosX())
-                CURRENTSTATE = STATE.IDLELEFT;
-            else if (posx > character.GetPosX())
-                CURRENTSTATE = STATE.IDLERIGHT;
-            else if (posy < character.GetPosY() && character.GetPosY() - posy < Math.Abs(character.GetPosX() - posx))
-                CURRENTSTATE = STATE.IDLEUP;
-            else if (posy > character.GetPosY() && posy - character.GetPosY() < Math.Abs(character.GetPosX() - posx))
-                CURRENTSTATE = STATE.IDLEDOWN;
+            Rectangle A = GetCollisionBox();
+            Rectangle B = character.GetCollisionBox();
+            int distX = A.Right <= B.Left ? 
+                B.Left - A.Right:
+                A.Left - B.Right;
+
+            int distY = A.Bottom <= B.Top ?
+                B.Top - A.Bottom :
+                A.Top - B.Bottom;
+
+            if (distX > distY)
+            {
+                if (GetCollisionBox().Right <= character.GetCollisionBox().Left)
+                    CURRENTSTATE = STATE.IDLERIGHT;
+                if (GetCollisionBox().Left >= character.GetCollisionBox().Right)
+                    CURRENTSTATE = STATE.IDLELEFT;
+            }
+            else
+            {
+                if (GetCollisionBox().Top >= character.GetCollisionBox().Bottom)
+                    CURRENTSTATE = STATE.IDLEUP;
+                if (GetCollisionBox().Bottom <= character.GetCollisionBox().Top)
+                    CURRENTSTATE = STATE.IDLEDOWN;
+            }
+
+            Animate();
+            //if (posy < character.GetPosY() && character.GetPosY() - posy < Math.Abs(character.GetPosX() - posx))
+            //    CURRENTSTATE = STATE.IDLEUP;
+            //if (posy > character.GetPosY() && posy - character.GetPosY() < Math.Abs(character.GetPosX() - posx))
+            //    CURRENTSTATE = STATE.IDLEDOWN;
         }
 
         private void Talk(Character character)
@@ -295,6 +317,22 @@ namespace acamar.Source.Engine.World.Entities
             {
                 sourceRec.X = 0;
                 animCount = ANIMDURATION;
+
+                switch (CURRENTSTATE)
+                {
+                    case STATE.IDLEDOWN:
+                        SetAnimation(1);
+                        break;
+                    case STATE.IDLELEFT:
+                        SetAnimation(2);
+                        break;
+                    case STATE.IDLERIGHT:
+                        SetAnimation(3);
+                        break;
+                    case STATE.IDLEUP:
+                        SetAnimation(0);
+                        break;
+                }
             }
             
         }
@@ -335,12 +373,15 @@ namespace acamar.Source.Engine.World.Entities
         ///
         public virtual bool IsFacing(Entity target)
         {
-            if ((CURRENTSTATE == STATE.IDLEDOWN || CURRENTSTATE == STATE.WALKDOWN) && posy < target.GetPosY()) return true;
-            if ((CURRENTSTATE == STATE.IDLEUP || CURRENTSTATE == STATE.WALKUP) && posy > target.GetPosY()) return true;
-            if ((CURRENTSTATE == STATE.IDLELEFT || CURRENTSTATE == STATE.WALKLEFT) && posx > target.GetPosX()) return true;
-            if ((CURRENTSTATE == STATE.IDLERIGHT || CURRENTSTATE == STATE.WALKRIGHT) && posx < target.GetPosX()) return true;
+            if ((CURRENTSTATE == STATE.IDLEDOWN || CURRENTSTATE == STATE.WALKDOWN) && GetCollisionBox().Bottom <= target.GetCollisionBox().Top) return true;
+            if ((CURRENTSTATE == STATE.IDLEUP || CURRENTSTATE == STATE.WALKUP) && GetCollisionBox().Top >= target.GetCollisionBox().Bottom) return true;
+            if ((CURRENTSTATE == STATE.IDLELEFT || CURRENTSTATE == STATE.WALKLEFT) && GetCollisionBox().Left >= target.GetCollisionBox().Right) return true;
+            if ((CURRENTSTATE == STATE.IDLERIGHT || CURRENTSTATE == STATE.WALKRIGHT) && GetCollisionBox().Right <= target.GetCollisionBox().Left) return true;
 
             return false;
         }
+
+
+        
     }
 }

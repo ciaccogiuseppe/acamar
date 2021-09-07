@@ -23,6 +23,8 @@ namespace acamar.Source.Engine
         public static Transition UTODPOST = new Transition(Transition.TRANDIR.UTOD, Transition.TRANTYPE.POST);
         public static Transition DTOUPRE = new Transition(Transition.TRANDIR.DTOU, Transition.TRANTYPE.PRE);
         public static Transition DTOUPOST = new Transition(Transition.TRANDIR.DTOU, Transition.TRANTYPE.POST);
+        public static Transition FADEPRE = new Transition(Transition.TRANDIR.FADE, Transition.TRANTYPE.PRE);
+        public static Transition FADEPOST = new Transition(Transition.TRANDIR.FADE, Transition.TRANTYPE.POST);
 
         private static bool active = false;
         private static TRANSTATUS status;

@@ -50,7 +50,9 @@ namespace acamar.Source.Engine.World
             entities.Add(Globals.player);
 
             Event evn = new Event();
-            evn.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            //evn.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            
+            evn.AddCondition(new PositionCondition(Globals.player, (Character)entities[0], PositionCondition.POSTYPE.POSTOUCHFACING));
             evn.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
 
             List<int> flgs = new List<int>();
@@ -64,7 +66,10 @@ namespace acamar.Source.Engine.World
             List<int> flgs2 = new List<int>();
             flgs2.Add(13);
             evn2.AddCondition(new FlagCondition(flgs2, false));
-            evn2.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            //evn2.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
+            evn2.AddCondition(new PositionCondition(Globals.player, (Character)entities[0], PositionCondition.POSTYPE.POSTOUCHFACING));
+
+
             //evn2.AddAction(new MessageAction("evento{attivato$flag{impostata$^", entities[0]));
             //evn2.AddAction(new TeleportAction(10, 20, player));
             evn2.AddAction(new FlagAction(flgs2, 1));
@@ -76,12 +81,21 @@ namespace acamar.Source.Engine.World
             evn2.AddAction(new BlockAction(Globals.player, BlockAction.BLOCKTYPE.UNLOCK));
             evn2.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
 
+
+            //Event evn4 = new Event();
+            //evn4.AddCondition(new NoCondition());
+            //evn4.AddAction(new FaceAction((Character)entities[0], Globals.player));
+            //entities[0].AddEvent(evn4);
+
+
             entities[0].AddEvent(evn2);
             entities[0].AddEvent(evn);
+            
 
 
 
             Event evn3 = new Event();
+            evn3.AddAction(new FaceAction((Character)entities[1], Globals.player));
             evn3.AddCondition(new PositionCondition(Globals.player, 108, 108, 17, PositionCondition.POSTYPE.POSNEAR));
             evn3.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
             evn3.AddAction(new MessageAction("teletrasporto$^", entities[0]));

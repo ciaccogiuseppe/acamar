@@ -11,7 +11,8 @@ namespace acamar.Source.Engine.World.Script.EventConditions
         public enum POSTYPE
         {
             POSNEAR,
-            POSTOUCH
+            POSTOUCH,
+            POSTOUCHFACING
         }
 
         private POSTYPE type;
@@ -19,15 +20,24 @@ namespace acamar.Source.Engine.World.Script.EventConditions
         private int posY;
         private int radius;
 
-        Character conditionTarget;
+        private Character target;
 
-        public PositionCondition(Character conditionTarget, int posX, int posY, int radius, POSTYPE type)
+        private Character source;
+
+        public PositionCondition(Character target, int posX, int posY, int radius, POSTYPE type)
         {
-            this.conditionTarget = conditionTarget;
+            this.target = target;
             this.posX = posX;
             this.posY = posY;
             this.radius = radius;
 
+            this.type = type;
+        }
+
+        public PositionCondition(Character target, Character source, POSTYPE type)
+        {
+            this.target = target;
+            this.source = source;
             this.type = type;
         }
 
@@ -37,13 +47,41 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             {
                 case POSTYPE.POSNEAR:
                     if (
-                        (posX - conditionTarget.GetCenterX()) * (posX - conditionTarget.GetCenterX()) +
-                        (posY - conditionTarget.GetCenterY()) * (posY - conditionTarget.GetCenterY())
+                        (posX - target.GetCenterX()) * (posX - target.GetCenterX()) +
+                        (posY - target.GetCenterY()) * (posY - target.GetCenterY())
                         <= radius * radius) //change to GetCenterX, GetCenterY
+                        return true;
+                    break;
+                case POSTYPE.POSTOUCH:
+                    if (Touching(target.GetCollisionBox(), source.GetCollisionBox()))
+                        return true;
+                    break;
+                case POSTYPE.POSTOUCHFACING:
+                    if (Touching(target.GetCollisionBox(), source.GetCollisionBox()) && target.IsFacing(source))
                         return true;
                     break;
                 
             }
+            return false;
+        }
+
+
+        private bool Touching(Rectangle A, Rectangle B)
+        {
+            Rectangle aux = A;
+            if (A.Intersects(B) || A.Contains(B) || B.Contains(A)) return false;
+            A.X++;
+            if (A.Intersects(B)) return true;
+            A.X -= 2;
+            if (A.Intersects(B)) return true;
+            A.X++;
+
+            A.Y++;
+            if (A.Intersects(B)) return true;
+            A.Y -= 2;
+            if (A.Intersects(B)) return true;
+            A.Y++;
+
             return false;
         }
     }

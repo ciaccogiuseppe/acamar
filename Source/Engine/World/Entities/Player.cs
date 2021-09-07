@@ -54,6 +54,10 @@ namespace acamar.Source.Engine.World.Entities
             {
                 ReverseMove();
             }
+            if(locked)
+            {
+                MoveLeft();
+            }
         }
 
         public void Interact(Interactable target)

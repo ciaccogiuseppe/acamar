@@ -242,5 +242,16 @@ namespace acamar.Source.Engine.World
         {
             locked = false;
         }
+
+        public Rectangle GetCollisionBox()
+        {
+            return destRec;
+        }
+
+        public void SetDir(int dir)
+        {
+            this.dir = dir;
+        }
     }
+
 }

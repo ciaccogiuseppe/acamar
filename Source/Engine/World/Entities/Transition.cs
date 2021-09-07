@@ -28,7 +28,8 @@ namespace acamar.Source.Engine.World.Entities
             LTOR, //→
             RTOL, //←
             UTOD, //↓
-            DTOU  //↑
+            DTOU, //↑
+            FADE  //fade
         }
 
         public enum TRANTYPE
@@ -69,6 +70,12 @@ namespace acamar.Source.Engine.World.Entities
                         tranSprite = Globals.Content.Load<Texture2D>("2D\\DTOUPRE.spr");
                     else if (type == TRANTYPE.POST)
                         tranSprite = Globals.Content.Load<Texture2D>("2D\\DTOUPOST.spr");
+                    break;
+                case TRANDIR.FADE:
+                    if (type == TRANTYPE.PRE)
+                        tranSprite = Globals.Content.Load<Texture2D>("2D\\FADEPRE.spr");
+                    else if (type == TRANTYPE.POST)
+                        tranSprite = Globals.Content.Load<Texture2D>("2D\\FADEPOST.spr");
                     break;
             }
 
@@ -111,6 +118,7 @@ namespace acamar.Source.Engine.World.Entities
                     else if (dir == TRANDIR.RTOL) tranArray[i, j] = -(w - 1 - j) * animationLength;
                     else if (dir == TRANDIR.UTOD) tranArray[i, j] = -i * animationLength;
                     else if (dir == TRANDIR.DTOU) tranArray[i, j] = -(h - 1 - i) * animationLength;
+                    else if (dir == TRANDIR.FADE) tranArray[i, j] = 0;
                     entArray[i, j].ResetAnimation();
                 }
             }
@@ -120,12 +128,15 @@ namespace acamar.Source.Engine.World.Entities
         {
             ended = false;
             if (dir == TRANDIR.LTOR || dir == TRANDIR.RTOL) globalCount = w * animationLength;
-            else globalCount = h * animationLength;
+            else if (dir == TRANDIR.UTOD || dir == TRANDIR.DTOU) globalCount = h * animationLength;
+            else if (dir == TRANDIR.FADE) globalCount = animationLength;
         }
 
         public void Update()
         {
-            globalCount-=2;
+            globalCount--;
+            if (dir == TRANDIR.DTOU || dir == TRANDIR.UTOD || dir == TRANDIR.LTOR || dir == TRANDIR.RTOL)
+                globalCount--;
             for (int i = 0; i < h; i++)
             {
                 for (int j = 0; j < w; j++)
@@ -133,11 +144,18 @@ namespace acamar.Source.Engine.World.Entities
                     if (tranArray[i, j] >= 0 && tranArray[i, j] < animationLength - 1)
                     {
                         entArray[i, j].Update();
-                        entArray[i, j].Update();
+                        if(dir == TRANDIR.DTOU || dir == TRANDIR.UTOD || dir == TRANDIR.LTOR || dir == TRANDIR.RTOL)
+                            entArray[i, j].Update();
+
+
                         entArray[i, j].Animation();
-                        entArray[i, j].Animation();
+
+                        if (dir == TRANDIR.DTOU || dir == TRANDIR.UTOD || dir == TRANDIR.LTOR || dir == TRANDIR.RTOL)
+                            entArray[i, j].Animation();
                     }
-                    tranArray[i, j]+=2;
+                    tranArray[i, j]++;
+                    if (dir == TRANDIR.DTOU || dir == TRANDIR.UTOD || dir == TRANDIR.LTOR || dir == TRANDIR.RTOL)
+                        tranArray[i, j]++;
                 }
             }
 

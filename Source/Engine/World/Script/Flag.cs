@@ -41,5 +41,14 @@ namespace acamar.Source.Engine.World.Script
             }
             return outputString;
         }
+
+        public static void SetFlags(string flagsString)
+        {
+            string[] f = flagsString.Split();
+            for(int i = 0; i < FLAGNO; i++)
+            {
+                flags[i] = int.Parse(f[i]);
+            }
+        }
     }
 }

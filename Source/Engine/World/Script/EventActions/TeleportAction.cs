@@ -75,8 +75,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
                     Map postMap = level.GetCurrentMap();
                     TransitionHandler.prevMap = preMap;
                     TransitionHandler.nextMap = postMap;
-                    TransitionHandler.preTransition = TransitionHandler.LTORPRE;
-                    TransitionHandler.postTransition = TransitionHandler.LTORPOST;
+                    TransitionHandler.preTransition = TransitionHandler.FADEPRE;
+                    TransitionHandler.postTransition = TransitionHandler.FADEPOST;
                     TransitionHandler.Activate();
                     break;
                 default:
