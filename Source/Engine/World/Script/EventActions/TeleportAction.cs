@@ -16,6 +16,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         private int posY;
 
         private bool started = false;
+        private bool ended = false;
 
         private TELETYPE type;
 
@@ -86,8 +87,11 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         public override bool IsEnded()
         {
-            if (started && !TransitionHandler.IsActive()) return true;
-            else return false;
+            if (started && !TransitionHandler.IsActive())
+            {
+                ended = true;
+            }
+            return ended;
         }
 
         public override void Reset()

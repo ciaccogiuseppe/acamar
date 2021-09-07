@@ -66,58 +66,60 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Update()
         {
-            if(Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (!locked)
             {
-                MoveLeft();
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                MoveRight();
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                MoveUp();
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                MoveDown();
-            }
-            else
-            {
-                Stop();
-            }
-
-
-
-            if (IsMoving())
-            {
-                switch (CURRENTSTATE)
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
                 {
-                    case STATE.WALKDOWN:
-                        destRec.Y++;
-                        Globals.CAMY--;
-                        posy++;
-                        break;
-                    case STATE.WALKUP:
-                        destRec.Y--;
-                        Globals.CAMY++;
-                        posy--;
-                        break;
-                    case STATE.WALKLEFT:
-                        destRec.X--;
-                        Globals.CAMX++;
-                        posx--;
-                        break;
-                    case STATE.WALKRIGHT:
-                        destRec.X++;
-                        Globals.CAMX--;
-                        posx++;
-                        break;
+                    MoveLeft();
                 }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                {
+                    MoveRight();
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                {
+                    MoveUp();
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                    MoveDown();
+                }
+                else
+                {
+                    Stop();
+                }
+
+
+
+                if (IsMoving())
+                {
+                    switch (CURRENTSTATE)
+                    {
+                        case STATE.WALKDOWN:
+                            destRec.Y++;
+                            Globals.CAMY--;
+                            posy++;
+                            break;
+                        case STATE.WALKUP:
+                            destRec.Y--;
+                            Globals.CAMY++;
+                            posy--;
+                            break;
+                        case STATE.WALKLEFT:
+                            destRec.X--;
+                            Globals.CAMX++;
+                            posx--;
+                            break;
+                        case STATE.WALKRIGHT:
+                            destRec.X++;
+                            Globals.CAMX--;
+                            posx++;
+                            break;
+                    }
+                }
+
+                Animate();
             }
-
-            Animate();
-
 
         }
 
@@ -141,6 +143,11 @@ namespace acamar.Source.Engine.World.Entities
             base.SetPosition(nextPosx, nextPosy);
             Globals.CAMX = Globals.SIZEX / 2 - posx;
             Globals.CAMY = Globals.SIZEY / 2 - posy;
+        }
+
+        public override string ToString()
+        {
+            return posx + " " + posy + " " + dir;
         }
     }
 

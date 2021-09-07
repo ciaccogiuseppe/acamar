@@ -31,5 +31,15 @@ namespace acamar.Source.Engine.World.Script
                 UnsetFlag(i);
             }
         }
+
+        public static string FlagsToString()
+        {
+            string outputString = "";
+            foreach (int i in flags)
+            {
+                outputString += i + " ";
+            }
+            return outputString;
+        }
     }
 }

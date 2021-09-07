@@ -206,70 +206,73 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Update()
         {
-            base.Update();
-            if (Globals.CURRENTSTATE != Globals.STATE.RUNNING) return;
-            
-            //StateMachine();
-            if (IsMoving())
-            {
-                switch(CURRENTSTATE)
+            if (!locked)
+            { 
+                base.Update();
+                if (Globals.CURRENTSTATE != Globals.STATE.RUNNING) return;
+
+                //StateMachine();
+                if (IsMoving())
                 {
-                    case STATE.WALKDOWN:
-                        //if(posy<400-sourceRec.Height)
-                        if(posy < destPosY)
-                        {
-                            destRec.Y++;
-                            posy++;
-                        }
-                        else
-                        {
-                            Stop();
-                            walkingCount = WALKDURATION;
-                        }
-                        break;
-                    case STATE.WALKUP:
-                        //if(posy>0)
-                        if(posy > destPosY)
-                        {
-                            destRec.Y--;
-                            posy--;
-                        }
-                        else
-                        {
-                            Stop();
-                            walkingCount = WALKDURATION;
-                        }
-                        break;
-                    case STATE.WALKLEFT:
-                        //if(posx>0)
-                        if(posx > destPosX)
-                        {
-                            destRec.X--;
-                            posx--;
-                        }
-                        else
-                        {
-                            Stop();
-                            walkingCount = WALKDURATION;
-                        }
-                        break;
-                    case STATE.WALKRIGHT:
-                        //if(posx<400-sourceRec.Width)
-                        if(posx < destPosX)
-                        {
-                            destRec.X++;
-                            posx++;
-                        }
-                        else
-                        {
-                            Stop();
-                            walkingCount = WALKDURATION;
-                        }
-                        break;
+                    switch (CURRENTSTATE)
+                    {
+                        case STATE.WALKDOWN:
+                            //if(posy<400-sourceRec.Height)
+                            if (posy < destPosY)
+                            {
+                                destRec.Y++;
+                                posy++;
+                            }
+                            else
+                            {
+                                Stop();
+                                walkingCount = WALKDURATION;
+                            }
+                            break;
+                        case STATE.WALKUP:
+                            //if(posy>0)
+                            if (posy > destPosY)
+                            {
+                                destRec.Y--;
+                                posy--;
+                            }
+                            else
+                            {
+                                Stop();
+                                walkingCount = WALKDURATION;
+                            }
+                            break;
+                        case STATE.WALKLEFT:
+                            //if(posx>0)
+                            if (posx > destPosX)
+                            {
+                                destRec.X--;
+                                posx--;
+                            }
+                            else
+                            {
+                                Stop();
+                                walkingCount = WALKDURATION;
+                            }
+                            break;
+                        case STATE.WALKRIGHT:
+                            //if(posx<400-sourceRec.Width)
+                            if (posx < destPosX)
+                            {
+                                destRec.X++;
+                                posx++;
+                            }
+                            else
+                            {
+                                Stop();
+                                walkingCount = WALKDURATION;
+                            }
+                            break;
+                    }
                 }
+
+                Animate();
             }
-            
-            Animate();
         }
 
         protected override void Animate()

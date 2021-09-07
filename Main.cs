@@ -128,6 +128,8 @@ namespace acamar
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+
+            MyKeyboard.Reset();
         }
 
         protected override void Draw(GameTime gameTime)

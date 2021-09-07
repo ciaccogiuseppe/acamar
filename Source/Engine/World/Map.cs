@@ -61,13 +61,19 @@ namespace acamar.Source.Engine.World
 
             Event evn2 = new Event();
             evn2.AddCondition(new FlagCondition(flgs, true));
+            List<int> flgs2 = new List<int>();
+            flgs2.Add(13);
+            evn2.AddCondition(new FlagCondition(flgs2, false));
             evn2.AddCondition(new PositionCondition(Globals.player, 158, 258, 17, PositionCondition.POSTYPE.POSNEAR));
             //evn2.AddAction(new MessageAction("evento{attivato$flag{impostata$^", entities[0]));
             //evn2.AddAction(new TeleportAction(10, 20, player));
+            evn2.AddAction(new FlagAction(flgs2, 1));
             evn2.AddAction(new MessageAction("movimento$^", entities[0]));
+            evn2.AddAction(new BlockAction(Globals.player, BlockAction.BLOCKTYPE.LOCK));
             evn2.AddAction(new MoveAction(150, 300, (Character)entities[0]));
             evn2.AddAction(new MoveAction(300, 300, (Character)entities[0]));
             evn2.AddAction(new MoveAction(300, 150, (Character)entities[0]));
+            evn2.AddAction(new BlockAction(Globals.player, BlockAction.BLOCKTYPE.UNLOCK));
             evn2.AddCondition(new ButtonCondition(Keys.Z, ButtonCondition.KEYSTATE.ISPRESSED));
 
             entities[0].AddEvent(evn2);
@@ -82,7 +88,7 @@ namespace acamar.Source.Engine.World
             evn3.AddAction(new TeleportAction(selfLevel, 1, 10, 10, Globals.player));
 
             entities[1].AddEvent(evn3);
-
+            
 
             //message = new Message("testo{di{prova{testo{di{prova$testo{tsto{estoset$testo{di{prova{testo{di{prova$aaaaaaaaaaaaaaaaa#paragrafo#paragrafo^");
         }
@@ -153,6 +159,11 @@ namespace acamar.Source.Engine.World
                     }
                 }
             }
+        }
+
+        public int GetId()
+        {
+            return mapID;
         }
 
         private void DrawBackground()

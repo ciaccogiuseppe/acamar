@@ -10,7 +10,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         private Message message;
         private Entity talker;
         private bool started = false;
-        //private bool ended = false;
+        private bool ended = false;
         public MessageAction(string message, Entity talker) //character needed to take portrait
         {
             this.message = new Message(message);
@@ -19,21 +19,30 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         public override void Trigger()
         {
-            started = true;
-            //ended = false;
-            MessageHandler.currentMessage = message;
-            MessageHandler.Activate();
+            if (!ended)
+            {
+                //Globals.world.Save(1); //DEBUG
+
+                started = true;
+                //ended = false;
+                MessageHandler.currentMessage = message;
+                MessageHandler.Activate();
+            }
         }
 
         public override bool IsEnded()
         {
-            if (started && !MessageHandler.IsActive()) return true;
-            else return false;
+            if (started && !MessageHandler.IsActive())
+            {
+                ended = true;
+            }
+            return ended;
         }
 
         public override void Reset()
         {
             started = false;
+            ended = false;
         }
     }
 }

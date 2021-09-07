@@ -92,7 +92,8 @@ namespace acamar.Source.Engine.World
 
             public override void Update()
             {
-                if(Keyboard.GetState().IsKeyDown(Keys.Enter) && type == 1 && selected)
+                //if(Keyboard.GetState().IsKeyDown(Keys.Enter) && type == 1 && selected)
+                if(MyKeyboard.IsPressedNotCont(Keys.Z) && type == 1 && selected)
                 {
                     Globals.CURRENTSTATE = Globals.STATE.RUNNING;
                 }
@@ -183,17 +184,36 @@ namespace acamar.Source.Engine.World
 
             public void Update()
             {
-                count = (count > 0)?((count + 1) % 15):0;
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && count == 0)
+                //count = (count > 0)?((count + 1) % 15):0;
+                //if (Keyboard.GetState().IsKeyDown(Keys.Down) && count == 0)
+                //{
+                //    count++;
+                //    entities[currentEntry].Deselect();
+                //    currentEntry = (currentEntry + 1) % entriesNumber;
+                //    entities[currentEntry].Select();
+                //}
+                //else if (Keyboard.GetState().IsKeyDown(Keys.Up) && count == 0)
+                //{
+                //    count++;
+                //    entities[currentEntry].Deselect();
+                //    if (currentEntry > 0)
+                //        currentEntry = (currentEntry - 1);
+                //    else
+                //        currentEntry = entriesNumber - 1;
+                //    entities[currentEntry].Select();
+                //}
+
+
+                //---------------------------------------------------------
+                if(MyKeyboard.IsPressedNotCont(Keys.Down))
                 {
-                    count++;
                     entities[currentEntry].Deselect();
                     currentEntry = (currentEntry + 1) % entriesNumber;
                     entities[currentEntry].Select();
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Up) && count == 0)
+
+                else if (MyKeyboard.IsPressedNotCont(Keys.Up))
                 {
-                    count++;
                     entities[currentEntry].Deselect();
                     if (currentEntry > 0)
                         currentEntry = (currentEntry - 1);
@@ -201,7 +221,8 @@ namespace acamar.Source.Engine.World
                         currentEntry = entriesNumber - 1;
                     entities[currentEntry].Select();
                 }
-                    
+                //-----------------------------------------------------------z
+
                 foreach (MenuEntity ent in entities)
                 {
                     ent.Update();

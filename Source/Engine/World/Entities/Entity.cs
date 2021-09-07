@@ -23,6 +23,7 @@ namespace acamar.Source.Engine.World
         protected int animationLength = 2;
         protected bool animationLoop = false;
         protected bool moving = false;
+        protected bool locked = false;
         protected Texture2D texture;
         protected Rectangle destRec;
         protected Rectangle sourceRec;
@@ -230,6 +231,16 @@ namespace acamar.Source.Engine.World
         public void Deactivate()
         {
             active = false;
+        }
+
+        public void Lock()
+        {
+            locked = true;
+        }
+
+        public void Unlock()
+        {
+            locked = false;
         }
     }
 }

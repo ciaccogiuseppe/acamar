@@ -88,5 +88,9 @@ namespace acamar.Source.Engine.World
             currentMap.Update();
         }
 
+        public int GetId()
+        {
+            return levelID;
+        }
     }
 }

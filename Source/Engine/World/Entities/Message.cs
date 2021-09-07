@@ -121,7 +121,8 @@ namespace acamar.Source.Engine.World.Entities
 
                     else
                     {
-                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        //if (Keyboard.GetState().IsKeyDown(Keys.Z))
+                        if (MyKeyboard.IsPressedNotCont(Keys.Z))
                         {
                             prompted = true;
                             prompt = true;

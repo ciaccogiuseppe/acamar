@@ -28,11 +28,13 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             switch(state)
             {
                 case KEYSTATE.ISPRESSED:
-                    if (Keyboard.GetState().IsKeyDown(key))
+                    //if (Keyboard.GetState().IsKeyDown(key))
+                    if (MyKeyboard.IsPressedNotCont(key))
                         verified = true;
                     break;
                 case KEYSTATE.ISRELEASED:
-                    if (!Keyboard.GetState().IsKeyDown(key))
+                    //if (!Keyboard.GetState().IsKeyDown(key))
+                    if (!MyKeyboard.IsPressedNotCont(key))
                         verified = true;
                     break;
             }

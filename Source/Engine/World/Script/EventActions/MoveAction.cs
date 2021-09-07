@@ -10,7 +10,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         private int destX;
         private int destY;
         private Character target;
-        private bool ended;
+        private bool ended = false;
 
         public MoveAction(int destX, int destY, Character target)
         {
