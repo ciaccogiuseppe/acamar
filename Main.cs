@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine;
+using acamar.Source.Engine.Constants;
 using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
 using Microsoft.Xna.Framework;
@@ -8,10 +9,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace acamar
 {
-    public static class Constants
-    {
-        public const int TILESIZE = 32;
-    }
     public class Globals
     {
         public enum STATE
@@ -69,6 +66,8 @@ namespace acamar
 
             base.Initialize();
 
+            FontConstants.Initialize();
+
             _graphics.PreferredBackBufferWidth = Globals.SIZEX;
             _graphics.PreferredBackBufferHeight = Globals.SIZEY;
             _graphics.ApplyChanges();
@@ -78,9 +77,9 @@ namespace acamar
 
 
             Globals.world.SetLevel(0);
-            
-            
 
+
+            
         }
 
         protected override void LoadContent()

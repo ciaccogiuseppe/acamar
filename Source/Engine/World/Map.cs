@@ -1,4 +1,5 @@
-﻿using acamar.Source.Engine.World.Entities;
+﻿using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.World.Entities;
 using acamar.Source.Engine.World.Script;
 using acamar.Source.Engine.World.Script.EventActions;
 using acamar.Source.Engine.World.Script.EventConditions;
@@ -27,6 +28,9 @@ namespace acamar.Source.Engine.World
         private Rectangle[] tileSource;
         private List<Entity> entities = new List<Entity>();
 
+        private const int LOCFLAGNO = 32;
+        private int[] localFlags = new int[LOCFLAGNO];
+
 
         private Message message;
 
@@ -37,8 +41,8 @@ namespace acamar.Source.Engine.World
             tileID = tile;
             width = w;
             height = h;
-            mapArray = new int[h / Constants.TILESIZE, w / Constants.TILESIZE];
-            tileDest = new Rectangle[h / Constants.TILESIZE, w / Constants.TILESIZE];
+            mapArray = new int[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
+            tileDest = new Rectangle[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
             //load map data from file
             LoadBackground(mapID);
             TileIDArray(5);
@@ -102,8 +106,8 @@ namespace acamar.Source.Engine.World
             evn3.AddAction(new TeleportAction(selfLevel, 1, 10, 10, Globals.player));
 
             entities[1].AddEvent(evn3);
-            
 
+            entities.Add(new OverlayText("Level " + selfLevel.GetId() + " Map " + mapID, 10, 10, FontConstants.FONT0));
             //message = new Message("testo{di{prova{testo{di{prova$testo{tsto{estoset$testo{di{prova{testo{di{prova$aaaaaaaaaaaaaaaaa#paragrafo#paragrafo^");
         }
 
@@ -169,7 +173,11 @@ namespace acamar.Source.Engine.World
                     if (tileArray[i * size + j] < tileNumber)
                     {
                         tileSource[tileArray[i * size + j]] = 
-                            new Rectangle(j * Constants.TILESIZE, i * Constants.TILESIZE, Constants.TILESIZE, Constants.TILESIZE);
+                            new Rectangle(
+                                j * GlobalConstants.TILESIZE,
+                                i * GlobalConstants.TILESIZE,
+                                GlobalConstants.TILESIZE,
+                                GlobalConstants.TILESIZE);
                     }
                 }
             }
@@ -182,9 +190,9 @@ namespace acamar.Source.Engine.World
 
         private void DrawBackground()
         {
-            for(int i = 0; i < height/Constants.TILESIZE; i++)
+            for(int i = 0; i < height/ GlobalConstants.TILESIZE; i++)
             {
-                for(int j = 0; j < width/Constants.TILESIZE; j++)
+                for(int j = 0; j < width/ GlobalConstants.TILESIZE; j++)
                 {
                     Globals._spriteBatch.Draw(tileTexture,  tileDest[i, j], tileSource[mapArray[i, j]], Color.White);
                 }
@@ -246,14 +254,18 @@ namespace acamar.Source.Engine.World
             {
                 //int x = int.Parse(bits[0]);
 
-                for (int i = 0; i < height / Constants.TILESIZE; i++)
+                for (int i = 0; i < height / GlobalConstants.TILESIZE; i++)
                 {
                     string text = reader.ReadLine();
                     string[] bits = text.Split(' ');
-                    for (int j = 0; j < width / Constants.TILESIZE; j++)
+                    for (int j = 0; j < width / GlobalConstants.TILESIZE; j++)
                     {
                         mapArray[i, j] = int.Parse(bits[j]);
-                        tileDest[i, j] = new Rectangle(j * Constants.TILESIZE, i * Constants.TILESIZE, Constants.TILESIZE, Constants.TILESIZE);
+                        tileDest[i, j] = new Rectangle(
+                            j * GlobalConstants.TILESIZE,
+                            i * GlobalConstants.TILESIZE,
+                            GlobalConstants.TILESIZE,
+                            GlobalConstants.TILESIZE);
                     }
                 }
             }

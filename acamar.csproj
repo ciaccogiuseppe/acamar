@@ -32,7 +32,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Source\Engine\Graphics\" />
     <Folder Include="Source\Engine\Audio\" />
+    <Folder Include="Source\Engine\World\Entities\Characters\" />
   </ItemGroup>
 </Project>

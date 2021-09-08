@@ -24,6 +24,7 @@ namespace acamar.Source.Engine.World
         protected bool animationLoop = false;
         protected bool moving = false;
         protected bool locked = false;
+        protected int layer = 0;
         protected Texture2D texture;
         protected Rectangle destRec;
         protected Rectangle sourceRec;
@@ -32,6 +33,11 @@ namespace acamar.Source.Engine.World
         protected List<Event> events = new List<Event>();
         protected List<Event> activeEvents = new List<Event>();
         protected bool active = true; //to activate/deactivate entity
+
+        public Entity()
+        {
+
+        }
 
         public Entity(int entid, int sprid, int posx, int posy, int dir)
         {
@@ -96,7 +102,7 @@ namespace acamar.Source.Engine.World
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(texture, destRec, sourceRec, Color.White);
+            batch.Draw(texture, destRec, sourceRec, Color.White, 0.0f, new Vector2(0,0), SpriteEffects.None,  layer);
         }
 
         protected virtual void Animate()
