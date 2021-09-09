@@ -23,13 +23,22 @@ namespace acamar.Source.Engine.Graphics
             GenerateDictionary();
         }
 
-        public void Draw(string text, int posx, int posy, SpriteBatch batch)
+        public void Draw(string text, int posx, int posy, SpriteBatch batch, float opacity)
         {
             int pos = posx;
+            int lin = posy;
             foreach (char c in text.ToCharArray())
             {
-                Globals._overBatch.Draw(font, new Rectangle(pos, posy, charWidth, charHeight), charToRect.GetValueOrDefault(c), Color.White);
-                pos += charWidth;
+                if (c == '_')
+                {
+                    lin += charHeight;
+                    pos = posx;
+                }
+                else
+                {
+                    Globals._overBatch.Draw(font, new Rectangle(pos, lin, charWidth, charHeight), charToRect.GetValueOrDefault(c), Color.White*opacity);
+                    pos += charWidth;
+                }
             }
         }
 

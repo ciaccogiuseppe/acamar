@@ -261,9 +261,11 @@ namespace acamar.Source.Engine.World
         public void Initialize()
         {
             background = new MenuEntity(0, 0, 0, 0, 0);
+            background.SetSourceRectangle(new Rectangle(0, 0, 400, 400));
             menuPages = new List<MenuPage>();
 
             title = new Entity(0, 2, 50, 20, 0);
+            //title.SetSourceRectangle(new Rectangle(0, 0, 300, 100));
 
             //PAGE 0
             menuPages.Add(new MenuPage());

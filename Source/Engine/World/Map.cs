@@ -27,10 +27,11 @@ namespace acamar.Source.Engine.World
         private Texture2D tileTexture;
         private Rectangle[] tileSource;
         private List<Entity> entities = new List<Entity>();
+        private Dictionary<string, Entity> entDict = new Dictionary<string, Entity>();
 
         private const int LOCFLAGNO = 32;
         private int[] localFlags = new int[LOCFLAGNO];
-
+        //private bool locked = false;
 
         private Message message;
 
@@ -44,8 +45,20 @@ namespace acamar.Source.Engine.World
             mapArray = new int[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
             tileDest = new Rectangle[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
             //load map data from file
+
+            
+
+            
             LoadBackground(mapID);
             TileIDArray(5);
+
+            
+
+            entDict.Add("PLAYER", Globals.player);
+
+            LoadMap(mapID);
+
+            /*
             LoadEntities(mapID);
 
 
@@ -80,6 +93,7 @@ namespace acamar.Source.Engine.World
             evn2.AddAction(new MessageAction("movimento$^", entities[0]));
             evn2.AddAction(new BlockAction(Globals.player, BlockAction.BLOCKTYPE.LOCK));
             evn2.AddAction(new MoveAction(150, 300, (Character)entities[0]));
+            evn2.AddAction(new SleepAction(240));
             evn2.AddAction(new MoveAction(300, 300, (Character)entities[0]));
             evn2.AddAction(new MoveAction(300, 150, (Character)entities[0]));
             evn2.AddAction(new BlockAction(Globals.player, BlockAction.BLOCKTYPE.UNLOCK));
@@ -109,6 +123,10 @@ namespace acamar.Source.Engine.World
 
             entities.Add(new OverlayText("Level " + selfLevel.GetId() + " Map " + mapID, 10, 10, FontConstants.FONT0));
             //message = new Message("testo{di{prova{testo{di{prova$testo{tsto{estoset$testo{di{prova{testo{di{prova$aaaaaaaaaaaaaaaaa#paragrafo#paragrafo^");
+        
+        
+            */
+
         }
 
         public void SetPlayer(Player player)
@@ -118,16 +136,16 @@ namespace acamar.Source.Engine.World
         
         public void Update()
         {
-            foreach(Entity ent in entities)
+            foreach (Entity ent in entities)
             {
                 ent.Update();
             }
 
             for (int i = 0; i < entities.Count; i++)
             {
-                for(int j = i+1; j < entities.Count; j++)
+                for (int j = i + 1; j < entities.Count; j++)
                 {
-                    if(entities[i].Collide(entities[j]))
+                    if (entities[i].Collide(entities[j]))
                     {
                         entities[i].HandleCollision(entities[j]);
 
@@ -287,5 +305,225 @@ namespace acamar.Source.Engine.World
         {
             selfLevel.ChangeLevel(id);
         }
+
+        private void LoadMap(int id)
+        {
+            string filename = "Content\\map" + id + ".mp";
+            string[] lines = File.ReadAllLines(filename);
+
+            tileID = int.Parse(lines[1].Split(' ')[1]);
+
+            bool loadingEnt = false;
+            bool loadingEvn = false;
+            string entName;
+            int entPosx = 0;
+            int entPosy = 0;
+            int entSprID;
+            Event evn = null;
+            EntityConstants.ENTTYPE entType;
+            Entity curEnt = null;
+
+            foreach (string line in lines)
+            {
+                if(line == "TNE")
+                {
+                    loadingEnt = false;
+                }
+
+                if (loadingEnt)
+                {
+                    if (!loadingEvn)
+                    {
+                        switch (line.Split('\t')[1]) //Entity initialization
+                        {
+                            case "NAME":
+                                entName = line.Split('\t')[2];
+                                break;
+                            case "POSX":
+                                entPosx = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "POSY":
+                                entPosy = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "SPRD":
+                                entSprID = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "INAC":
+                                curEnt.Deactivate();
+                                break;
+                            case "TYPE":
+                                switch (line.Split('\t')[2].Split(' ')[0])
+                                {
+                                    case "OVERTEXT":
+                                        entType = EntityConstants.ENTTYPE.OVERTEXT;
+                                        curEnt = new OverlayText(
+                                            line.Split('<')[1],
+                                            entPosx,
+                                            entPosy,
+                                            FontConstants.FontDictionary.GetValueOrDefault(line.Split(' ')[1]));
+                                        entities.Add(curEnt);
+                                        break;
+                                }
+                                break;
+                            case "EVN":
+                                evn = new Event();
+                                loadingEvn = true;
+                                break;
+                        }
+                    }
+
+                    else
+                    {
+                        if (line.Split('\t')[1] == "NVE")
+                        {
+                            loadingEvn = false;
+                            curEnt.AddEvent(evn);
+                        }
+                        if (loadingEvn)
+                        {
+                            switch (line.Split('\t')[2])
+                            {
+                                case "COND":
+                                    string lin = line.Split('\t')[3];
+                                    switch (lin.Split(' ')[0])
+                                    {
+                                        case "NOCOND":
+                                            evn.AddCondition(new NoCondition());
+                                            break;
+                                        case "LOCFLGISSET":
+                                            evn.AddCondition(new LocalFlagCondition(int.Parse(lin.Split(' ')[1]), true, this));
+                                            break;
+                                        case "LOCFLGNOTSET":
+                                            evn.AddCondition(new LocalFlagCondition(int.Parse(lin.Split(' ')[1]), false, this));
+                                            break;
+                                        case "BUTPRES":
+                                            Keys k = Keys.Space;
+                                            if (lin.Split(' ')[1] == "A") k = Keys.Z;
+                                            evn.AddCondition(new ButtonCondition(
+                                                k,
+                                                int.Parse(lin.Split(' ')[2]) == 1 ? ButtonCondition.KEYSTATE.ISPRESSED : ButtonCondition.KEYSTATE.ISRELEASED));
+                                            break;
+                                    }
+                                    break;
+                                case "ACTN":
+                                    string lin2 = line.Split('\t')[3];
+                                    switch (lin2.Split(' ')[0])
+                                    {
+                                        case "LOCFLGSET":
+                                            evn.AddAction(new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this));
+                                            break;
+                                        case "ACTIVATE":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE));
+                                            }
+                                            break;
+                                        case "DEACTIVATE":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE));
+                                            }
+                                            break;
+                                        case "SLEEP":
+                                            evn.AddAction(new SleepAction(int.Parse(lin2.Split(' ')[1])));
+                                            break;
+                                        case "FADEIN":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN));
+                                            }
+                                            break;
+                                        case "FADEOUT":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT));
+                                            }
+                                            break;
+                                        case "TELEPORT":
+                                            int level = int.Parse(lin2.Split(' ')[1]);
+                                            int map = int.Parse(lin2.Split(' ')[2]);
+                                            int posx = int.Parse(lin2.Split(' ')[3]);
+                                            int posy = int.Parse(lin2.Split(' ')[4]);
+                                            string target = lin2.Split(' ')[5];
+
+                                            if (level == selfLevel.GetId() && map == mapID)
+                                                evn.AddAction(new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target)));
+                                            else if (level == selfLevel.GetId() && map != mapID)
+                                                evn.AddAction(new TeleportAction(
+                                                    selfLevel,
+                                                    map,
+                                                    posx,
+                                                    posy,
+                                                    (Character)entDict.GetValueOrDefault(target)));
+                                            else
+                                                evn.AddAction(new TeleportAction(
+                                                    Globals.world,
+                                                    level,
+                                                    map,
+                                                    posx,
+                                                    posy,
+                                                    (Character)entDict.GetValueOrDefault(target)));
+                                            break;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                if (line.Split(' ')[0] == "ENT")
+                {
+                    loadingEnt = true;
+                }
+
+                
+            }
+
+            //SetLevel(int.Parse(lines[0]));
+            //currentLevel.SetMap(int.Parse(lines[1]));
+            //Flag.SetFlags(lines[2]);
+            //Globals.player.SetPosition(int.Parse(lines[3].Split(' ')[0]), int.Parse(lines[3].Split(' ')[1]));
+            //Globals.player.SetDir(int.Parse(lines[3].Split(' ')[2]));
+        }
+
+        public void SetFlag(int id)
+        {
+            localFlags[id] = 1;
+        }
+
+        public void UnsetFlag(int id)
+        {
+            localFlags[id] = 0;
+        }
+
+        public bool CheckFlag(int flagId)
+        {
+            return localFlags[flagId] == 0 ? false : true;
+        }
+
+        public void ResetFlags()
+        {
+            for (int i = 0; i < LOCFLAGNO; i++)
+            {
+                UnsetFlag(i);
+            }
+        }
+
     }
 }

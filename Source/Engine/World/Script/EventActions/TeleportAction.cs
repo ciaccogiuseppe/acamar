@@ -27,10 +27,11 @@ namespace acamar.Source.Engine.World.Script.EventActions
             TELEPOS
         }
 
-        public TeleportAction(World world, int levelID, int posX, int posY, Character target)
+        public TeleportAction(World world, int levelID, int mapID, int posX, int posY, Character target)
         {
             this.world = world;
             this.levelID = levelID;
+            this.mapID = mapID;
 
             this.posX = posX;
             this.posY = posY;
@@ -68,6 +69,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
             {
                 case TELETYPE.TELELVL:
                     world.SetLevel(levelID);
+                    world.SetMap(mapID);
                     break;
                 case TELETYPE.TELEMAP:
                     Map preMap = level.GetCurrentMap();

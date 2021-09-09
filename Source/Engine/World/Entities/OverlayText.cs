@@ -22,7 +22,8 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Draw(SpriteBatch batch)
         {
-            currentFont.Draw(text, posx, posy, batch);
+            if(active)
+                currentFont.Draw(text, posx, posy, batch, opacity);
         }
     }
 }

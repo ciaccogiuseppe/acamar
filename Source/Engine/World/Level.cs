@@ -71,6 +71,7 @@ namespace acamar.Source.Engine.World
         public void SetMap(int id)
         {
             currentMap = maps[id];
+            currentMap.ResetFlags();
         }
 
         public Map GetCurrentMap()

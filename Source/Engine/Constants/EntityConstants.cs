@@ -4,7 +4,11 @@ using System.Text;
 
 namespace acamar.Source.Engine.Constants
 {
-    class LevelConstants //enum con nomi livelli
+    public static class EntityConstants
     {
+        public enum ENTTYPE
+        {
+            OVERTEXT
+        }
     }
 }

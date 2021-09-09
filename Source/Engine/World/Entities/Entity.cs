@@ -29,10 +29,16 @@ namespace acamar.Source.Engine.World
         protected Rectangle destRec;
         protected Rectangle sourceRec;
 
+        protected float opacity = 1.0f;
+        protected float fadeStep = 0.1f;
+        protected bool fading;
+
 
         protected List<Event> events = new List<Event>();
         protected List<Event> activeEvents = new List<Event>();
         protected bool active = true; //to activate/deactivate entity
+        protected bool animActive = false; //activate/deactive animation
+        protected bool loopAnim = false; //loop/nonloop animation
 
         public Entity()
         {
@@ -79,7 +85,11 @@ namespace acamar.Source.Engine.World
         public virtual void Update()
         {
             //throw new NotImplementedException();
-            //Animate();
+            
+            
+            Animate();
+
+
             foreach (Event evn in activeEvents)
             {
                 evn.Continue();
@@ -102,13 +112,23 @@ namespace acamar.Source.Engine.World
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(texture, destRec, sourceRec, Color.White, 0.0f, new Vector2(0,0), SpriteEffects.None,  layer);
+            if(active)
+                batch.Draw(texture, destRec, sourceRec, Color.White*opacity, 0.0f, new Vector2(0,0), SpriteEffects.None,  layer);
         }
 
         protected virtual void Animate()
         {
             //= ANIMLEN[sprid][currentAnimation]
-            sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
+            if(fading)
+                opacity += fadeStep;
+            if(fading && (opacity < 0 || opacity > 1))
+            {
+                fading = false;
+                opacity = (opacity < 0) ? 0 : 1;
+            }
+
+            if(animActive)
+                sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
         }
 
         public virtual void Animation()
@@ -257,6 +277,25 @@ namespace acamar.Source.Engine.World
         public void SetDir(int dir)
         {
             this.dir = dir;
+        }
+
+        public void FadeIn()
+        {
+            fading = true;
+            opacity = 0;
+            fadeStep = 0.01f;
+        }
+
+        public void FadeOut()
+        {
+            fading = true;
+            opacity = 1;
+            fadeStep = -0.01f;
+        }
+
+        public void ActivateAnimation()
+        {
+            animActive = true;
         }
     }
 
