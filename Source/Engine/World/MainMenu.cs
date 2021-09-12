@@ -104,7 +104,7 @@ namespace acamar.Source.Engine.World
                 if (selected == false)
                 {
                     base.Select();
-                    Animate();
+                    Animation();
                 }
             }
 
@@ -113,7 +113,7 @@ namespace acamar.Source.Engine.World
                 if (selected == true)
                 {
                     base.Deselect();
-                    Animate();
+                    Animation();
                 }
             }
 

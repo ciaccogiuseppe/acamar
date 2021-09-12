@@ -13,7 +13,7 @@ namespace acamar.Source.Engine.World.Entities
         public Player(int entid, int sprid, int posx, int posy, int dir) :
             base(entid, sprid, posx, posy, dir)
         {
-
+            animActive = true;
         }
 
         public override void StateMachine()
@@ -50,13 +50,10 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void HandleCollision(Entity target)
         {
+            if (!target.IsCollidable() || !collidable) return;
             if (IsMoving())
             {
                 ReverseMove();
-            }
-            if(locked)
-            {
-                MoveLeft();
             }
         }
 
@@ -70,6 +67,14 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Update()
         {
+            if (fading)
+                opacity += fadeStep;
+            if (fading && (opacity < 0 || opacity > 1))
+            {
+                fading = false;
+                opacity = (opacity < 0) ? 0 : 1;
+            }
+
             if (!locked)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Left))

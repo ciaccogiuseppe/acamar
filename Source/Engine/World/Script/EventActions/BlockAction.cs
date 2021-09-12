@@ -24,14 +24,17 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         public override void Trigger()
         {
-            switch(type)
+            if (!ended)
             {
-                case BLOCKTYPE.LOCK:
-                    target.Lock();
-                    break;
-                case BLOCKTYPE.UNLOCK:
-                    target.Unlock();
-                    break;
+                switch (type)
+                {
+                    case BLOCKTYPE.LOCK:
+                        target.Lock();
+                        break;
+                    case BLOCKTYPE.UNLOCK:
+                        target.Unlock();
+                        break;
+                }
             }
             ended = true;
         }

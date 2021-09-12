@@ -40,6 +40,8 @@ namespace acamar.Source.Engine.World
         protected bool animActive = false; //activate/deactive animation
         protected bool loopAnim = false; //loop/nonloop animation
 
+        protected bool collidable = true;
+
         public Entity()
         {
 
@@ -193,6 +195,7 @@ namespace acamar.Source.Engine.World
 
         public virtual void HandleCollision(Entity target)
         {
+            if (!target.collidable || !collidable) return;
             if (IsMoving() /*&& IsStoppable*/)
             {
                 ReverseMove();
@@ -296,6 +299,11 @@ namespace acamar.Source.Engine.World
         public void ActivateAnimation()
         {
             animActive = true;
+        }
+
+        public bool IsCollidable()
+        {
+            return collidable;
         }
     }
 

@@ -315,7 +315,7 @@ namespace acamar.Source.Engine.World
 
             bool loadingEnt = false;
             bool loadingEvn = false;
-            string entName;
+            string entName="";
             int entPosx = 0;
             int entPosy = 0;
             int entSprID;
@@ -362,8 +362,20 @@ namespace acamar.Source.Engine.World
                                             entPosy,
                                             FontConstants.FontDictionary.GetValueOrDefault(line.Split(' ')[1]));
                                         entities.Add(curEnt);
+                                        entDict.Add(entName, curEnt);
+                                        break;
+                                    case "PLAYER":
+                                        Globals.player.SetPosition(entPosx, entPosy);
+                                        curEnt = Globals.player;
+                                        entities.Add(curEnt);
+                                        break;
+                                    case "EVENT":
+                                        entType = EntityConstants.ENTTYPE.EVENT;
+                                        curEnt = new Entity();
+                                        entities.Add(curEnt);
                                         break;
                                 }
+                                curEnt.Activate();
                                 break;
                             case "EVN":
                                 evn = new Event();
@@ -435,6 +447,9 @@ namespace acamar.Source.Engine.World
                                         case "SLEEP":
                                             evn.AddAction(new SleepAction(int.Parse(lin2.Split(' ')[1])));
                                             break;
+                                        case "MESSAGE":
+                                            evn.AddAction(new MessageAction(lin2.Split('<')[1], curEnt));
+                                            break;
                                         case "FADEIN":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
@@ -453,6 +468,26 @@ namespace acamar.Source.Engine.World
                                             else
                                             {
                                                 evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT));
+                                            }
+                                            break;
+                                        case "LOCK":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK));
+                                            }
+                                            break;
+                                        case "UNLOCK":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK));
                                             }
                                             break;
                                         case "TELEPORT":

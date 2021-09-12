@@ -18,6 +18,7 @@ namespace acamar.Source.Engine.World.Entities
             this.posx = posx;
             this.posy = posy;
             currentFont = font;
+            collidable = false;
         }
 
         public override void Draw(SpriteBatch batch)

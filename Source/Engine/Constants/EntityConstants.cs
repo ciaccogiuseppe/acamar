@@ -8,7 +8,8 @@ namespace acamar.Source.Engine.Constants
     {
         public enum ENTTYPE
         {
-            OVERTEXT
+            OVERTEXT,
+            EVENT
         }
     }
 }
