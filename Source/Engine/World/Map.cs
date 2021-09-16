@@ -42,15 +42,15 @@ namespace acamar.Source.Engine.World
             tileID = tile;
             width = w;
             height = h;
-            mapArray = new int[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
-            tileDest = new Rectangle[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
+            //mapArray = new int[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
+            //tileDest = new Rectangle[h / GlobalConstants.TILESIZE, w / GlobalConstants.TILESIZE];
             //load map data from file
 
             
 
             
             LoadBackground(mapID);
-            TileIDArray(5);
+            TileIDArray(10);
 
             
 
@@ -169,7 +169,7 @@ namespace acamar.Source.Engine.World
 
         public void Draw(SpriteBatch batch)
         {
-            //DrawBackground();
+            DrawBackground();
             foreach (Entity ent in entities)
             {
                 ent.Draw(batch);
@@ -266,11 +266,17 @@ namespace acamar.Source.Engine.World
 
         private void LoadBackground(int id)
         {
-            string filename = "Content\\" + id + ".bg";
+            string filename = "Content\\map" + id + ".tm";
 
             using (TextReader reader = File.OpenText(filename))
             {
                 //int x = int.Parse(bits[0]);
+                tileID = int.Parse(reader.ReadLine());
+                width  = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
+                height = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
+
+                mapArray = new int[height / GlobalConstants.TILESIZE, width / GlobalConstants.TILESIZE];
+                tileDest = new Rectangle[height / GlobalConstants.TILESIZE, width / GlobalConstants.TILESIZE];
 
                 for (int i = 0; i < height / GlobalConstants.TILESIZE; i++)
                 {
@@ -319,6 +325,14 @@ namespace acamar.Source.Engine.World
             int entPosx = 0;
             int entPosy = 0;
             int entSprID;
+            int entHeight = 0;
+            int entWidth = 0;
+
+            int entCPosx = 0;
+            int entCPosy = 0;
+            int entCWidth = 0;
+            int entCHeight = 0;
+
             Event evn = null;
             EntityConstants.ENTTYPE entType;
             Entity curEnt = null;
@@ -345,8 +359,26 @@ namespace acamar.Source.Engine.World
                             case "POSY":
                                 entPosy = int.Parse(line.Split('\t')[2]);
                                 break;
+                            case "CPOSX":
+                                entCPosx = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "CPOSY":
+                                entCPosy = int.Parse(line.Split('\t')[2]);
+                                break;
                             case "SPRD":
                                 entSprID = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "HEIGHT":
+                                entHeight = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "WIDTH":
+                                entWidth = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "CHEIGHT":
+                                entCHeight = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "CWIDTH":
+                                entCWidth = int.Parse(line.Split('\t')[2]);
                                 break;
                             case "INAC":
                                 curEnt.Deactivate();
@@ -354,6 +386,15 @@ namespace acamar.Source.Engine.World
                             case "TYPE":
                                 switch (line.Split('\t')[2].Split(' ')[0])
                                 {
+                                    case "SIMPLEENT":
+                                        entType = EntityConstants.ENTTYPE.CHARACTER;
+                                        curEnt = new Entity();
+                                        curEnt.Deactivate();
+                                        curEnt.SetPosition(entPosx, entPosy);
+                                        curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
+                                        entities.Add(curEnt);
+                                        entDict.Add(entName, curEnt);
+                                        break;
                                     case "OVERTEXT":
                                         entType = EntityConstants.ENTTYPE.OVERTEXT;
                                         curEnt = new OverlayText(
@@ -363,19 +404,24 @@ namespace acamar.Source.Engine.World
                                             FontConstants.FontDictionary.GetValueOrDefault(line.Split(' ')[1]));
                                         entities.Add(curEnt);
                                         entDict.Add(entName, curEnt);
+                                        curEnt.Activate();
                                         break;
                                     case "PLAYER":
                                         Globals.player.SetPosition(entPosx, entPosy);
                                         curEnt = Globals.player;
+                                        curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
                                         entities.Add(curEnt);
+
+                                        curEnt.Activate();
                                         break;
                                     case "EVENT":
                                         entType = EntityConstants.ENTTYPE.EVENT;
                                         curEnt = new Entity();
                                         entities.Add(curEnt);
+                                        curEnt.Activate();
                                         break;
                                 }
-                                curEnt.Activate();
+                                
                                 break;
                             case "EVN":
                                 evn = new Event();
@@ -414,6 +460,20 @@ namespace acamar.Source.Engine.World
                                             evn.AddCondition(new ButtonCondition(
                                                 k,
                                                 int.Parse(lin.Split(' ')[2]) == 1 ? ButtonCondition.KEYSTATE.ISPRESSED : ButtonCondition.KEYSTATE.ISRELEASED));
+                                            break;
+                                        case "POSTOUCHFACING":
+                                            string target = lin.Split(' ')[2];
+                                            string source = lin.Split(' ')[3];
+                                            if (source == "SELF")
+                                                evn.AddCondition(new PositionCondition(
+                                                    (Character)entDict.GetValueOrDefault(target),
+                                                    curEnt,
+                                                    PositionCondition.POSTYPE.POSTOUCHFACING));
+                                            else
+                                                evn.AddCondition(new PositionCondition(
+                                                    (Character)entDict.GetValueOrDefault(target),
+                                                    entDict.GetValueOrDefault(source),
+                                                    PositionCondition.POSTYPE.POSTOUCHFACING));
                                             break;
                                     }
                                     break;

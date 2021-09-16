@@ -31,6 +31,8 @@ namespace acamar
         public static int SIZEX = 400;
         public static int SIZEY = 400;
 
+        public static float SCALE = (float)SIZEX / 400.0f;
+
         public static World world;
 
         public static int CAMX = 0;
@@ -133,14 +135,15 @@ namespace acamar
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.AntiqueWhite);
+            //GraphicsDevice.Clear(Color.AntiqueWhite);
+            GraphicsDevice.Clear(new Color(64,64,64));
 
             //spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null,  Matrix.CreateScale(0.5f));
 
-            //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend); SamplerState.PointClamp
 
-            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(1.0f) * Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0));
-            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(1.0f));
+            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Globals.SCALE) * Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0));
+            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Globals.SCALE));
 
 
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)

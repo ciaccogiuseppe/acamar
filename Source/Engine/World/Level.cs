@@ -79,6 +79,13 @@ namespace acamar.Source.Engine.World
             return currentMap;
         }
 
+
+        //DEBUG
+        internal void Reset()
+        {
+            currentMap = new Map(currentMap.GetId(), 0, 0, 0, this);
+        }
+
         public void ChangeLevel(int id)
         {
             selfWorld.SetLevel(id);

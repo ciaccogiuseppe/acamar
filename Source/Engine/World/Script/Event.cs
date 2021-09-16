@@ -35,7 +35,8 @@ namespace acamar.Source.Engine.World.Script
             {
                 active = true;
                 //foreach (EventAction act in triggerAction)
-                triggerAction[0].Trigger();
+                if(!triggerAction[0].IsEnded())
+                    triggerAction[0].Trigger();
                     //act.Trigger();
             }
         }

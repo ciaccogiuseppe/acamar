@@ -27,22 +27,22 @@ namespace acamar.Source.Engine.World.Entities
             {
                 case STATE.WALKDOWN:
                     destRec.Y--;
-                    Globals.CAMY++;
+                    Globals.CAMY += (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKLEFT:
                     destRec.X++;
-                    Globals.CAMX--;
+                    Globals.CAMX -= (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKRIGHT:
                     destRec.X--;
-                    Globals.CAMX++;
+                    Globals.CAMX += (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKUP:
                     destRec.Y++;
-                    Globals.CAMY--;
+                    Globals.CAMY -= (int)Globals.SCALE;
                     Stop();
                     break;
             }
@@ -98,7 +98,13 @@ namespace acamar.Source.Engine.World.Entities
                     Stop();
                 }
 
+                //DEBUG 
+                if(Keyboard.GetState().IsKeyDown(Keys.R))
+                {
+                    Globals.world.Reset();
+                }
 
+                //DEBUG
 
                 if (IsMoving())
                 {
@@ -106,22 +112,22 @@ namespace acamar.Source.Engine.World.Entities
                     {
                         case STATE.WALKDOWN:
                             destRec.Y++;
-                            Globals.CAMY--;
+                            Globals.CAMY-=(int)Globals.SCALE;
                             posy++;
                             break;
                         case STATE.WALKUP:
                             destRec.Y--;
-                            Globals.CAMY++;
+                            Globals.CAMY+=(int)Globals.SCALE;
                             posy--;
                             break;
                         case STATE.WALKLEFT:
                             destRec.X--;
-                            Globals.CAMX++;
+                            Globals.CAMX+=(int)Globals.SCALE;
                             posx--;
                             break;
                         case STATE.WALKRIGHT:
                             destRec.X++;
-                            Globals.CAMX--;
+                            Globals.CAMX-=(int)Globals.SCALE;
                             posx++;
                             break;
                     }
@@ -130,6 +136,8 @@ namespace acamar.Source.Engine.World.Entities
                 Animate();
             }
 
+            collRec.X = destRec.X + cPosx;
+            collRec.Y = destRec.Y + cPosy;
         }
 
         public override void SetPosition(int posx, int posy)
@@ -142,16 +150,16 @@ namespace acamar.Source.Engine.World.Entities
             else
             {
                 base.SetPosition(posx, posy);
-                Globals.CAMX = Globals.SIZEX / 2 - posx;
-                Globals.CAMY = Globals.SIZEY / 2 - posy;
+                Globals.CAMX = Globals.SIZEX / 2 - posx * (int)Globals.SCALE;
+                Globals.CAMY = Globals.SIZEY / 2 - posy * (int)Globals.SCALE;
             }
         }
 
         public void UpdatePosition()
         {
             base.SetPosition(nextPosx, nextPosy);
-            Globals.CAMX = Globals.SIZEX / 2 - posx;
-            Globals.CAMY = Globals.SIZEY / 2 - posy;
+            Globals.CAMX = Globals.SIZEX / 2 - posx * (int)Globals.SCALE;
+            Globals.CAMY = Globals.SIZEY / 2 - posy * (int)Globals.SCALE;
         }
 
         public override string ToString()

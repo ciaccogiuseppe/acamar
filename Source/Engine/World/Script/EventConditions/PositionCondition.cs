@@ -22,7 +22,7 @@ namespace acamar.Source.Engine.World.Script.EventConditions
 
         private Character target;
 
-        private Character source;
+        private Entity source;
 
         public PositionCondition(Character target, int posX, int posY, int radius, POSTYPE type)
         {
@@ -34,7 +34,7 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.type = type;
         }
 
-        public PositionCondition(Character target, Character source, POSTYPE type)
+        public PositionCondition(Character target, Entity source, POSTYPE type)
         {
             this.target = target;
             this.source = source;

@@ -28,6 +28,7 @@ namespace acamar.Source.Engine.World
         protected Texture2D texture;
         protected Rectangle destRec;
         protected Rectangle sourceRec;
+        protected Rectangle collRec;
 
         protected float opacity = 1.0f;
         protected float fadeStep = 0.1f;
@@ -41,10 +42,12 @@ namespace acamar.Source.Engine.World
         protected bool loopAnim = false; //loop/nonloop animation
 
         protected bool collidable = true;
+        protected int cPosx;
+        protected int cPosy;
 
         public Entity()
         {
-
+            texture = Globals.Content.Load<Texture2D>("2D\\0.spr");
         }
 
         public Entity(int entid, int sprid, int posx, int posy, int dir)
@@ -86,8 +89,6 @@ namespace acamar.Source.Engine.World
 
         public virtual void Update()
         {
-            //throw new NotImplementedException();
-            
             
             Animate();
 
@@ -156,6 +157,9 @@ namespace acamar.Source.Engine.World
             this.posy = posy;
             destRec.X = posx;
             destRec.Y = posy;
+
+            collRec.X = posx + cPosx;
+            collRec.Y = posy + cPosy;
         }
 
         public int GetPosX()
@@ -170,8 +174,9 @@ namespace acamar.Source.Engine.World
 
         public bool Collide(Entity target)
         {
-            if (target.destRec.Intersects(this.destRec))
+            if (target.collRec.Intersects(this.collRec))
             {
+
                 return true;
             }
 
@@ -274,7 +279,7 @@ namespace acamar.Source.Engine.World
 
         public Rectangle GetCollisionBox()
         {
-            return destRec;
+            return collRec;
         }
 
         public void SetDir(int dir)
@@ -304,6 +309,15 @@ namespace acamar.Source.Engine.World
         public bool IsCollidable()
         {
             return collidable;
+        }
+
+        public void SetCollisionRectangle(int posx, int posy, int width, int height)
+        {
+            cPosx = posx;
+            cPosy = posy;
+            //this.width = width;
+            //this.height = height;
+            collRec = new Rectangle(this.posx + posx, this.posy + posy, width, height);
         }
     }
 

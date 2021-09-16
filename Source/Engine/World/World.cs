@@ -76,5 +76,11 @@ namespace acamar.Source.Engine.World
             //player.Update();
         }
 
+
+        //DEBUG
+        internal void Reset()
+        {
+            currentLevel.Reset();
+        }
     }
 }
