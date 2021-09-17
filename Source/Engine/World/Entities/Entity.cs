@@ -119,6 +119,14 @@ namespace acamar.Source.Engine.World
                 batch.Draw(texture, destRec, sourceRec, Color.White*opacity, 0.0f, new Vector2(0,0), SpriteEffects.None,  layer);
         }
 
+        public void SetSprite(int sprid)
+        {
+            this.sprid = sprid;
+            string SpritePATH = "2D\\" + sprid + ".spr";
+
+            texture = Globals.Content.Load<Texture2D>(SpritePATH);
+        }
+
         protected virtual void Animate()
         {
             //= ANIMLEN[sprid][currentAnimation]

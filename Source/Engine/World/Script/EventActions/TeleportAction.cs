@@ -99,6 +99,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         public override void Reset()
         {
             started = false;
+            ended = false;
         }
     }
 }

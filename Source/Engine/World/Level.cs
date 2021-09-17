@@ -23,7 +23,10 @@ namespace acamar.Source.Engine.World
             this.levelID = id;
             this.selfWorld = self;
             LoadLevel(id);
-            LoadMaps(levelID);
+
+
+            //LoadMaps(levelID);
+            LoadMaps();
         }
 
         private void LoadLevel(int id)
@@ -38,6 +41,15 @@ namespace acamar.Source.Engine.World
 
             this.lastMap = Int32.Parse(lastMap[0].InnerText);
             this.firstMap = Int32.Parse(firstMap[0].InnerText);
+        }
+
+        private void LoadMaps()
+        {
+            for(int m = firstMap; m <= lastMap; m++)
+            {
+                maps.Add(new Map(m, this));
+            }
+            currentMap = maps[0];
         }
 
         internal void Draw(SpriteBatch batch)
@@ -70,7 +82,7 @@ namespace acamar.Source.Engine.World
 
         public void SetMap(int id)
         {
-            currentMap = maps[id];
+            currentMap = maps[id-firstMap];
             currentMap.ResetFlags();
         }
 
@@ -83,7 +95,9 @@ namespace acamar.Source.Engine.World
         //DEBUG
         internal void Reset()
         {
-            currentMap = new Map(currentMap.GetId(), 0, 0, 0, this);
+            //currentMap = new Map(currentMap.GetId(), 0, 0, 0, this);
+            currentMap = new Map(currentMap.GetId(), this);
+            maps[currentMap.GetId() - firstMap] = currentMap;
         }
 
         public void ChangeLevel(int id)

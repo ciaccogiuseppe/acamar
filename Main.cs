@@ -39,6 +39,7 @@ namespace acamar
         public static int CAMY = 0;
 
         public static Player player;
+        public static MainMenu mainMenu;
 
     }
     public class Main : Game
@@ -49,7 +50,7 @@ namespace acamar
         //private SpriteBatch _spriteBatch;
         
         //private World world;
-        private MainMenu mainMenu;
+        //private MainMenu mainMenu;
         private InGameMenu inGameMenu;
 
         public Main()
@@ -75,7 +76,7 @@ namespace acamar
             _graphics.ApplyChanges();
 
             Globals.world = new World();
-            mainMenu = new MainMenu();
+            Globals.mainMenu = new MainMenu();
 
 
             Globals.world.SetLevel(0);
@@ -102,7 +103,7 @@ namespace acamar
             
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
             {
-                mainMenu.Update();
+                Globals.mainMenu.Update();
             }
             else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
             {
@@ -148,7 +149,7 @@ namespace acamar
 
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
             {
-                mainMenu.Draw(Globals._overBatch);
+                Globals.mainMenu.Draw(Globals._overBatch);
             }
             else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
             {

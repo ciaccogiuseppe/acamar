@@ -21,6 +21,7 @@ namespace acamar.Source.Engine.World
         private int tileID;
         private int width;
         private int height;
+        private int tileNO;
         private int[,] mapArray;
         private Rectangle[,] tileDest;
         private int[] tileArray;
@@ -34,6 +35,21 @@ namespace acamar.Source.Engine.World
         //private bool locked = false;
 
         private Message message;
+
+        public Map(int id, Level self)
+        {
+            selfLevel = self;
+            mapID = id;
+
+            LoadBackground(mapID);
+            TileIDArray(tileNO);
+
+
+
+            entDict.Add("PLAYER", Globals.player);
+
+            LoadMap(mapID);
+        }
 
         public Map(int id, int tile, int w, int h, Level self)
         {
@@ -272,6 +288,7 @@ namespace acamar.Source.Engine.World
             {
                 //int x = int.Parse(bits[0]);
                 tileID = int.Parse(reader.ReadLine());
+                tileNO = int.Parse(reader.ReadLine());
                 width  = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
                 height = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
 
@@ -461,9 +478,23 @@ namespace acamar.Source.Engine.World
                                                 k,
                                                 int.Parse(lin.Split(' ')[2]) == 1 ? ButtonCondition.KEYSTATE.ISPRESSED : ButtonCondition.KEYSTATE.ISRELEASED));
                                             break;
+                                        case "POSTOUCH":
+                                            string targetT = lin.Split(' ')[1];
+                                            string sourceT = lin.Split(' ')[2];
+                                            if (sourceT == "SELF")
+                                                evn.AddCondition(new PositionCondition(
+                                                    (Character)entDict.GetValueOrDefault(targetT),
+                                                    curEnt,
+                                                    PositionCondition.POSTYPE.POSTOUCH));
+                                            else
+                                                evn.AddCondition(new PositionCondition(
+                                                    (Character)entDict.GetValueOrDefault(targetT),
+                                                    entDict.GetValueOrDefault(sourceT),
+                                                    PositionCondition.POSTYPE.POSTOUCH));
+                                            break;
                                         case "POSTOUCHFACING":
-                                            string target = lin.Split(' ')[2];
-                                            string source = lin.Split(' ')[3];
+                                            string target = lin.Split(' ')[1];
+                                            string source = lin.Split(' ')[2];
                                             if (source == "SELF")
                                                 evn.AddCondition(new PositionCondition(
                                                     (Character)entDict.GetValueOrDefault(target),
