@@ -24,6 +24,7 @@ namespace acamar.Source.Engine.World
         protected bool animationLoop = false;
         protected bool moving = false;
         protected bool locked = false;
+        protected bool enabled = true;
         protected int layer = 0;
         protected Texture2D texture;
         protected Rectangle destRec;
@@ -285,6 +286,11 @@ namespace acamar.Source.Engine.World
             locked = false;
         }
 
+        public void SetLayer(int layer)
+        {
+            this.layer = layer;
+        }
+
         public Rectangle GetCollisionBox()
         {
             return collRec;
@@ -326,6 +332,21 @@ namespace acamar.Source.Engine.World
             //this.width = width;
             //this.height = height;
             collRec = new Rectangle(this.posx + posx, this.posy + posy, width, height);
+        }
+
+        public void Enable()
+        {
+            enabled = true;
+        }
+
+        public void Disable()
+        {
+            enabled = false;
+        }
+
+        public bool IsEnabled()
+        {
+            return enabled;
         }
     }
 

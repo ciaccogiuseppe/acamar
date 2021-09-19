@@ -22,6 +22,14 @@ namespace acamar.Source.Engine.World.Script.EventActions
             else this.type = FLAGTYPE.UNSETFLAG;
         }
 
+        public FlagAction(int flag, int type)
+        {
+            flags = new List<int>();
+            this.flags.Add(flag);
+            if (type == 1) this.type = FLAGTYPE.SETFLAG;
+            else this.type = FLAGTYPE.UNSETFLAG;
+        }
+
         public override void Trigger()
         {
             switch(type)

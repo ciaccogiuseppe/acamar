@@ -11,7 +11,8 @@ namespace acamar.Source.Engine.Constants
             OVERTEXT,
             EVENT,
             SIMPLEENT,
-            CHARACTER
+            CHARACTER,
+            ITEM
         }
     }
 }

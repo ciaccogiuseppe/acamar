@@ -21,6 +21,14 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             else this.type = FLAGTYPE.FLAGISUNSET;
         }
 
+        public FlagCondition(int flagID, bool type)
+        {
+            flagIDs = new List<int>();
+            this.flagIDs.Add(flagID);
+            if (type == true) this.type = FLAGTYPE.FLAGISSET;
+            else this.type = FLAGTYPE.FLAGISUNSET;
+        }
+
         public override bool IsVerified()
         {
             bool verified = true;

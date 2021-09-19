@@ -61,6 +61,18 @@
 /processorParam:TextureFormat=Color
 /build:2D/1.tl.png
 
+#begin 2D/10.spr.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:2D/10.spr.png
+
 #begin 2D/2.spr.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -312,4 +324,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Font/font0.spr.png
+
+#begin Font/font1.spr.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Font/font1.spr.png
 

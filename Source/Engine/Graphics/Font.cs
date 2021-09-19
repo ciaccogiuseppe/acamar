@@ -52,6 +52,17 @@ namespace acamar.Source.Engine.Graphics
             for (char c = '0'; c < '9' + 1; c++)
                 charToRect.Add(c, new Rectangle((c - '0') * charWidth, 2 * charHeight, charWidth, charHeight));
             charToRect.Add(' ', new Rectangle(('Z'-'A'+1)*charWidth, 0, charWidth, charHeight));
+            charToRect.Add('è', new Rectangle(10 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('é', new Rectangle(11 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('à', new Rectangle(12 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('ù', new Rectangle(13 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('ì', new Rectangle(14 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('ò', new Rectangle(15 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('.', new Rectangle(16 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add(',', new Rectangle(17 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('!', new Rectangle(18 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('?', new Rectangle(19 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('\'', new Rectangle(20 * charWidth, 2 * charHeight, charWidth, charHeight));
         }
     }
 }

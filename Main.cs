@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace acamar
 {
@@ -41,14 +42,16 @@ namespace acamar
         public static Player player;
         public static MainMenu mainMenu;
 
+        public static TimeSpan runningTime;
+        public static DateTime lastTime;
+
     }
     public class Main : Game
     {
         
         private GraphicsDeviceManager _graphics;
-
         //private SpriteBatch _spriteBatch;
-        
+
         //private World world;
         //private MainMenu mainMenu;
         private InGameMenu inGameMenu;
@@ -100,38 +103,44 @@ namespace acamar
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
-            if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
+            if (/*this.IsActive*/ true)
             {
-                Globals.mainMenu.Update();
-            }
-            else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
-            {
-                Globals.world.Update();
-            }
-            else if (Globals.CURRENTSTATE == Globals.STATE.PAUSE)
-            {
-                //Globals.world.Update();
-                //inGameMenu.Update();
-                if (MessageHandler.IsActive())
+                if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
                 {
-                    MessageHandler.Update();
+                    Globals.mainMenu.Update();
                 }
-            }
-            else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
-            {
-                if (TransitionHandler.IsActive())
+                else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
                 {
-                    TransitionHandler.Update();
+                    Globals.runningTime += DateTime.Now - Globals.lastTime;
+                    Globals.world.Update();
                 }
+                else if (Globals.CURRENTSTATE == Globals.STATE.PAUSE)
+                {
+                    Globals.runningTime += DateTime.Now - Globals.lastTime;
+                    //Globals.world.Update();
+                    //inGameMenu.Update();
+                    if (MessageHandler.IsActive())
+                    {
+                        MessageHandler.Update();
+                    }
+                }
+                else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
+                {
+                    Globals.runningTime += DateTime.Now - Globals.lastTime;
+                    if (TransitionHandler.IsActive())
+                    {
+                        TransitionHandler.Update();
+                    }
+                }
+
+
+                // TODO: Add your update logic here
+
+                base.Update(gameTime);
+
+                MyKeyboard.Reset();
             }
-
-
-            // TODO: Add your update logic here
-
-            base.Update(gameTime);
-
-            MyKeyboard.Reset();
+            Globals.lastTime = DateTime.Now;
         }
 
         protected override void Draw(GameTime gameTime)

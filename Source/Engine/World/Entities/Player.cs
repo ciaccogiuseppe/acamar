@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.World.Inventory;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +11,8 @@ namespace acamar.Source.Engine.World.Entities
     {
         private int nextPosx;
         private int nextPosy;
+        private List<InventoryItem> inventory = new List<InventoryItem>();
+        private List<ItemConstants.ITEMS> itemsInInventory = new List<ItemConstants.ITEMS>();
 
         public Player(int entid, int sprid, int posx, int posy, int dir) :
             base(entid, sprid, posx, posy, dir)
@@ -165,6 +169,59 @@ namespace acamar.Source.Engine.World.Entities
         public override string ToString()
         {
             return posx + " " + posy + " " + dir;
+        }
+
+        public bool HasItem(string name)
+        {
+            ItemConstants.ITEMS type = ItemConstants.itemDict.GetValueOrDefault(name);
+            return itemsInInventory.Contains(type);
+        }
+
+        public void RemoveItem(string name)
+        {
+            ItemConstants.ITEMS type = ItemConstants.itemDict.GetValueOrDefault(name);
+            if (itemsInInventory.Contains(type))
+            {
+                foreach (InventoryItem item in inventory)
+                {
+                    if (item.GetItemType() == type)
+                    {
+                        int count = item.GetCount();
+                        if(count > 1)
+                        {
+                            item.Remove();
+                        }
+                        else if (count == 1)
+                        {
+                            item.Remove();
+                            inventory.Remove(item);
+                            itemsInInventory.Remove(type);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void GiveItem(string name)
+        {
+            ItemConstants.ITEMS type = ItemConstants.itemDict.GetValueOrDefault(name);
+            if(itemsInInventory.Contains(type))
+            {
+                foreach(InventoryItem item in inventory)
+                {
+                    if(item.GetItemType() == type)
+                    {
+                        item.Add();
+                    }
+                }
+            }
+            else
+            {
+                InventoryItem item = new InventoryItem(type);
+                inventory.Add(item);
+                item.Add();
+                itemsInInventory.Add(type);
+            }
         }
     }
 

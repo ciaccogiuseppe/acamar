@@ -26,16 +26,17 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Update()
         {
-            foreach (Event evn in activeEvents)
-            {
-                evn.Continue();
-                if (!evn.IsActive())
-                {
-                    activeEvents.Remove(evn);
-                    evn.Reset();
-                    break;
-                }
-            }
+            base.Update();
+            //foreach (Event evn in activeEvents)
+            //{
+            //    evn.Continue();
+            //    if (!evn.IsActive())
+            //    {
+            //        activeEvents.Remove(evn);
+            //        evn.Reset();
+            //        break;
+            //    }
+            //}
         }
     }
 }

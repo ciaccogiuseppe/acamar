@@ -30,6 +30,8 @@ namespace acamar.Source.Engine.World
         private List<Entity> entities = new List<Entity>();
         private Dictionary<string, Entity> entDict = new Dictionary<string, Entity>();
 
+        private OverlayText timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
+
         private const int LOCFLAGNO = 32;
         private int[] localFlags = new int[LOCFLAGNO];
         //private bool locked = false;
@@ -152,6 +154,10 @@ namespace acamar.Source.Engine.World
         
         public void Update()
         {
+            //DEBUG
+            timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
+
+
             foreach (Entity ent in entities)
             {
                 ent.Update();
@@ -161,7 +167,7 @@ namespace acamar.Source.Engine.World
             {
                 for (int j = i + 1; j < entities.Count; j++)
                 {
-                    if (entities[i].Collide(entities[j]))
+                    if (entities[i].Collide(entities[j]) && entities[i].IsEnabled() && entities[j].IsEnabled())
                     {
                         entities[i].HandleCollision(entities[j]);
 
@@ -191,7 +197,9 @@ namespace acamar.Source.Engine.World
                 ent.Draw(batch);
             }
 
+            timer.Draw(Globals._overBatch);
             //message.Draw();
+            //DEBUG
         }
 
         private void TileIDArray(int tileNumber)
@@ -338,10 +346,11 @@ namespace acamar.Source.Engine.World
 
             bool loadingEnt = false;
             bool loadingEvn = false;
-            string entName="";
+
+            string entName = "";
             int entPosx = 0;
             int entPosy = 0;
-            int entSprID;
+            int entSprID = 0;
             int entHeight = 0;
             int entWidth = 0;
 
@@ -350,15 +359,39 @@ namespace acamar.Source.Engine.World
             int entCWidth = 0;
             int entCHeight = 0;
 
+            int entSPosx = 0;
+            int entSPosy = 0;
+            int entSWidth = 0;
+            int entSHeight = 0;
+
+            bool preEvn = false;
+
+            int entLayer = 0;
+
             Event evn = null;
             EntityConstants.ENTTYPE entType;
             Entity curEnt = null;
 
             foreach (string line in lines)
             {
-                if(line == "TNE")
+                
+
+                if (line == "TNE")
                 {
                     loadingEnt = false;
+                    
+                    entName = "";
+                    entPosx = 0;
+                    entPosy = 0;
+                    entSprID = 0;
+                    entHeight = 0;
+                    entWidth = 0;
+
+                    entCPosx = 0;
+                    entCPosy = 0;
+                    entCWidth = 0;
+                    entCHeight = 0;
+                    entLayer = 0;
                 }
 
                 if (loadingEnt)
@@ -382,6 +415,12 @@ namespace acamar.Source.Engine.World
                             case "CPOSY":
                                 entCPosy = int.Parse(line.Split('\t')[2]);
                                 break;
+                            case "SPOSX":
+                                entSPosx = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "SPOSY":
+                                entSPosy = int.Parse(line.Split('\t')[2]);
+                                break;
                             case "SPRD":
                                 entSprID = int.Parse(line.Split('\t')[2]);
                                 break;
@@ -397,16 +436,37 @@ namespace acamar.Source.Engine.World
                             case "CWIDTH":
                                 entCWidth = int.Parse(line.Split('\t')[2]);
                                 break;
+                            case "SHEIGHT":
+                                entSHeight = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "SWIDTH":
+                                entSWidth = int.Parse(line.Split('\t')[2]);
+                                break;
+                            case "LAYER":
+                                entLayer = int.Parse(line.Split('\t')[2]);
+                                break;
                             case "INAC":
                                 curEnt.Deactivate();
                                 break;
                             case "TYPE":
                                 switch (line.Split('\t')[2].Split(' ')[0])
                                 {
+                                    case "ITEM":
+                                        entType = EntityConstants.ENTTYPE.ITEM;
+                                        curEnt = new Item();
+                                        curEnt.SetPosition(entPosx, entPosy);
+                                        curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
+                                        curEnt.SetLayer(entLayer);
+                                        curEnt.SetSprite(entSprID);
+                                        curEnt.SetSourceRectangle(new Rectangle(entSPosx, entSPosy, entSWidth, entSHeight));
+                                        entities.Add(curEnt);
+                                        entDict.Add(entName, curEnt);
+                                        curEnt.Activate();
+                                        break;
                                     case "SIMPLEENT":
                                         entType = EntityConstants.ENTTYPE.CHARACTER;
                                         curEnt = new Entity();
-                                        curEnt.Deactivate();
+                                        //curEnt.Deactivate();
                                         curEnt.SetPosition(entPosx, entPosy);
                                         curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
                                         entities.Add(curEnt);
@@ -442,6 +502,7 @@ namespace acamar.Source.Engine.World
                                 break;
                             case "EVN":
                                 evn = new Event();
+                                preEvn = false;
                                 loadingEvn = true;
                                 break;
                         }
@@ -453,11 +514,16 @@ namespace acamar.Source.Engine.World
                         {
                             loadingEvn = false;
                             curEnt.AddEvent(evn);
+                            if(preEvn)
+                                evn.Trigger();
                         }
                         if (loadingEvn)
                         {
                             switch (line.Split('\t')[2])
                             {
+                                case "PREEVN":
+                                    preEvn = true;
+                                    break;
                                 case "COND":
                                     string lin = line.Split('\t')[3];
                                     switch (lin.Split(' ')[0])
@@ -471,12 +537,24 @@ namespace acamar.Source.Engine.World
                                         case "LOCFLGNOTSET":
                                             evn.AddCondition(new LocalFlagCondition(int.Parse(lin.Split(' ')[1]), false, this));
                                             break;
+                                        case "FLGISSET":
+                                            evn.AddCondition(new FlagCondition(int.Parse(lin.Split(' ')[1]), true));
+                                            break;
+                                        case "FLGNOTSET":
+                                            evn.AddCondition(new FlagCondition(int.Parse(lin.Split(' ')[1]), false));
+                                            break;
                                         case "BUTPRES":
                                             Keys k = Keys.Space;
                                             if (lin.Split(' ')[1] == "A") k = Keys.Z;
                                             evn.AddCondition(new ButtonCondition(
                                                 k,
                                                 int.Parse(lin.Split(' ')[2]) == 1 ? ButtonCondition.KEYSTATE.ISPRESSED : ButtonCondition.KEYSTATE.ISRELEASED));
+                                            break;
+                                        case "HASITEM":
+                                            evn.AddCondition(new ItemCondition(Globals.player, lin.Split(' ')[1], ItemCondition.TYPE.HASITEM));
+                                            break;
+                                        case "HASNOTITEM":
+                                            evn.AddCondition(new ItemCondition(Globals.player, lin.Split(' ')[1], ItemCondition.TYPE.HASNOTITEM));
                                             break;
                                         case "POSTOUCH":
                                             string targetT = lin.Split(' ')[1];
@@ -514,6 +592,9 @@ namespace acamar.Source.Engine.World
                                     {
                                         case "LOCFLGSET":
                                             evn.AddAction(new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this));
+                                            break;
+                                        case "FLGSET":
+                                            evn.AddAction(new FlagAction(int.Parse(lin2.Split(' ')[1]), 1));
                                             break;
                                         case "ACTIVATE":
                                             if (lin2.Split(' ')[1] == "SELF")
@@ -579,6 +660,36 @@ namespace acamar.Source.Engine.World
                                             else
                                             {
                                                 evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK));
+                                            }
+                                            break;
+                                        case "GIVEITEM":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new GiveItemAction(Globals.player, entName));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new GiveItemAction(Globals.player, lin2.Split(' ')[1]));
+                                            }
+                                            break;
+                                        case "DISABLE":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.DISABLE));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.DISABLE));
+                                            }
+                                            break;
+                                        case "ENABLE":
+                                            if (lin2.Split(' ')[1] == "SELF")
+                                            {
+                                                evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.ENABLE));
+                                            }
+                                            else
+                                            {
+                                                evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.ENABLE));
                                             }
                                             break;
                                         case "TELEPORT":
@@ -649,6 +760,9 @@ namespace acamar.Source.Engine.World
             {
                 UnsetFlag(i);
             }
+
+            //DEBUG
+            timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
         }
 
     }

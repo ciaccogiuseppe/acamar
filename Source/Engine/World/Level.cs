@@ -84,6 +84,7 @@ namespace acamar.Source.Engine.World
         {
             currentMap = maps[id-firstMap];
             currentMap.ResetFlags();
+            //currentMap.Update();
         }
 
         public Map GetCurrentMap()
@@ -98,6 +99,7 @@ namespace acamar.Source.Engine.World
             //currentMap = new Map(currentMap.GetId(), 0, 0, 0, this);
             currentMap = new Map(currentMap.GetId(), this);
             maps[currentMap.GetId() - firstMap] = currentMap;
+            //currentMap.Update();
         }
 
         public void ChangeLevel(int id)
