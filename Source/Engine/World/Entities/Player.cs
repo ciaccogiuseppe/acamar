@@ -217,11 +217,22 @@ namespace acamar.Source.Engine.World.Entities
             }
             else
             {
-                InventoryItem item = new InventoryItem(type);
+                InventoryItem item = new InventoryItem(type, ItemConstants.itemNames.GetValueOrDefault(name));
                 inventory.Add(item);
                 item.Add();
                 itemsInInventory.Add(type);
             }
+        }
+
+        public List<string> GetInventory()
+        {
+            List<string> res = new List<string>();
+
+            foreach(InventoryItem item in inventory)
+            {
+                res.Add(item.GetName() + " : " + item.GetCount());
+            }
+            return res;
         }
     }
 

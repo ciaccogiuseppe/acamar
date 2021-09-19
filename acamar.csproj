@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Source\Engine\Audio\" />
+    <Folder Include="Source\Engine\InGameMenu\" />
     <Folder Include="Source\Engine\World\Entities\Characters\" />
     <Folder Include="Source\Engine\World\Entities\Items\" />
   </ItemGroup>

@@ -13,10 +13,12 @@ namespace acamar.Source.Engine.World.Inventory
         private ItemConstants.ITEMS type;
         private Picture itemPicture;
         private int count = 0;
+        private string name;
 
-        public InventoryItem(ItemConstants.ITEMS type)
+        public InventoryItem(ItemConstants.ITEMS type, string name)
         {
             this.type = type;
+            this.name = name;
         }
 
         public ItemConstants.ITEMS GetItemType()
@@ -37,6 +39,11 @@ namespace acamar.Source.Engine.World.Inventory
         public void Remove()
         {
             count--;
+        }
+
+        public string GetName()
+        {
+            return name;
         }
     }
 }

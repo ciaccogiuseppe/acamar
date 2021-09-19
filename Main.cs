@@ -17,7 +17,8 @@ namespace acamar
             MAINMENU,
             RUNNING,
             PAUSE,
-            TRANSITION
+            TRANSITION,
+            INGAMEMENU
         }
 
         public static SpriteBatch _spriteBatch;
@@ -80,6 +81,7 @@ namespace acamar
 
             Globals.world = new World();
             Globals.mainMenu = new MainMenu();
+            inGameMenu = new InGameMenu();
 
 
             Globals.world.SetLevel(0);
@@ -101,8 +103,9 @@ namespace acamar
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            /*if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();*/
+            
             if (/*this.IsActive*/ true)
             {
                 if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
@@ -111,6 +114,10 @@ namespace acamar
                 }
                 else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
                 {
+                    if (MyKeyboard.IsPressedNotCont(Keys.Escape))
+                        Globals.CURRENTSTATE = Globals.STATE.INGAMEMENU;
+
+
                     Globals.runningTime += DateTime.Now - Globals.lastTime;
                     Globals.world.Update();
                 }
@@ -131,6 +138,10 @@ namespace acamar
                     {
                         TransitionHandler.Update();
                     }
+                }
+                else if (Globals.CURRENTSTATE == Globals.STATE.INGAMEMENU)
+                {
+                    inGameMenu.Update();
                 }
 
 
@@ -168,6 +179,11 @@ namespace acamar
             {
                 Globals.world.Draw(Globals._spriteBatch);
                 //inGameMenu.Draw();
+            }
+            else if (Globals.CURRENTSTATE == Globals.STATE.INGAMEMENU)
+            {
+                Globals.world.Draw(Globals._spriteBatch);
+                inGameMenu.Draw(Globals._overBatch);
             }
 
             

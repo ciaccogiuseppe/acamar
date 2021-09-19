@@ -14,5 +14,11 @@ namespace acamar.Source.Engine.Constants
             {
                 {"KEY", ITEMS.KEY}
             };
+
+        //TODO: load names from file
+        public static Dictionary<string, string> itemNames = new Dictionary<string, string>()
+        {
+            {"KEY", "Small Key" }
+        };
     }
 }
