@@ -23,6 +23,11 @@ namespace acamar.Source.Engine
             return false;
         }
 
+        public static List<Keys> GetPressedKeys()
+        {
+            return pressedKeys;
+        }
+
         public static void Reset()
         {
             List<Keys> toRemove = new List<Keys>();

@@ -31,22 +31,22 @@ namespace acamar.Source.Engine.World.Entities
             {
                 case STATE.WALKDOWN:
                     destRec.Y--;
-                    Globals.CAMY += (int)Globals.SCALE;
+                    Globals.CAMY += 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKLEFT:
                     destRec.X++;
-                    Globals.CAMX -= (int)Globals.SCALE;
+                    Globals.CAMX -= 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKRIGHT:
                     destRec.X--;
-                    Globals.CAMX += (int)Globals.SCALE;
+                    Globals.CAMX += 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKUP:
                     destRec.Y++;
-                    Globals.CAMY -= (int)Globals.SCALE;
+                    Globals.CAMY -= 1;// (int)Globals.SCALE;
                     Stop();
                     break;
             }
@@ -81,19 +81,19 @@ namespace acamar.Source.Engine.World.Entities
 
             if (!locked)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                if (Keyboard.GetState().IsKeyDown(Globals.MOVELEFT))
                 {
                     MoveLeft();
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                else if (Keyboard.GetState().IsKeyDown(Globals.MOVERIGHT))
                 {
                     MoveRight();
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                else if (Keyboard.GetState().IsKeyDown(Globals.MOVEUP))
                 {
                     MoveUp();
                 }
-                else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                else if (Keyboard.GetState().IsKeyDown(Globals.MOVEDOWN))
                 {
                     MoveDown();
                 }
@@ -116,22 +116,22 @@ namespace acamar.Source.Engine.World.Entities
                     {
                         case STATE.WALKDOWN:
                             destRec.Y++;
-                            Globals.CAMY-=(int)Globals.SCALE;
+                            Globals.CAMY-= 1;// (int)Globals.SCALE;
                             posy++;
                             break;
                         case STATE.WALKUP:
                             destRec.Y--;
-                            Globals.CAMY+=(int)Globals.SCALE;
+                            Globals.CAMY+= 1;// (int)Globals.SCALE;
                             posy--;
                             break;
                         case STATE.WALKLEFT:
                             destRec.X--;
-                            Globals.CAMX+=(int)Globals.SCALE;
+                            Globals.CAMX+= 1;// (int)Globals.SCALE;
                             posx--;
                             break;
                         case STATE.WALKRIGHT:
                             destRec.X++;
-                            Globals.CAMX-=(int)Globals.SCALE;
+                            Globals.CAMX -= 1;// (int)Globals.SCALE;
                             posx++;
                             break;
                     }
@@ -154,16 +154,16 @@ namespace acamar.Source.Engine.World.Entities
             else
             {
                 base.SetPosition(posx, posy);
-                Globals.CAMX = Globals.SIZEX / 2 - posx * (int)Globals.SCALE;
-                Globals.CAMY = Globals.SIZEY / 2 - posy * (int)Globals.SCALE;
+                Globals.CAMX = Globals.GSIZEX / 2 - posx;// * (int)Globals.SCALE;
+                Globals.CAMY = Globals.GSIZEY / 2 - posy;// * (int)Globals.SCALE;
             }
         }
 
         public void UpdatePosition()
         {
             base.SetPosition(nextPosx, nextPosy);
-            Globals.CAMX = Globals.SIZEX / 2 - posx * (int)Globals.SCALE;
-            Globals.CAMY = Globals.SIZEY / 2 - posy * (int)Globals.SCALE;
+            Globals.CAMX = Globals.GSIZEX / 2 - posx;// * (int)Globals.SCALE;
+            Globals.CAMY = Globals.GSIZEY / 2 - posy;// * (int)Globals.SCALE;
         }
 
         public override string ToString()

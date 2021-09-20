@@ -70,6 +70,7 @@ namespace acamar.Source.Engine.World
             //player.Draw();
         }
 
+
         internal void Update()
         {
             currentLevel.Update();

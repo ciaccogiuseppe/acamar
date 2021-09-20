@@ -82,7 +82,7 @@ namespace acamar.Source.Engine.World
 
         public void SetMap(int id)
         {
-            currentMap = maps[id-firstMap];
+            currentMap = maps[id/*+firstMap*/];
             currentMap.ResetFlags();
             //currentMap.Update();
         }

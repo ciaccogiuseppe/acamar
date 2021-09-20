@@ -1,5 +1,6 @@
 ﻿using acamar.Source.Engine;
 using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.Settings;
 using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
 using Microsoft.Xna.Framework;
@@ -10,51 +11,16 @@ using System;
 
 namespace acamar
 {
-    public class Globals
-    {
-        public enum STATE
-        {
-            MAINMENU,
-            RUNNING,
-            PAUSE,
-            TRANSITION,
-            INGAMEMENU
-        }
-
-        public static SpriteBatch _spriteBatch;
-
-        public static SpriteBatch _overBatch;
-
-        public static ContentManager Content;
-        public static STATE CURRENTSTATE = STATE.MAINMENU;
-
-        public static int clockCount = 30;
-
-        public static int SIZEX = 400;
-        public static int SIZEY = 400;
-
-        public static float SCALE = (float)SIZEX / 400.0f;
-
-        public static World world;
-
-        public static int CAMX = 0;
-        public static int CAMY = 0;
-
-        public static Player player;
-        public static MainMenu mainMenu;
-
-        public static TimeSpan runningTime;
-        public static DateTime lastTime;
-
-    }
+    
     public class Main : Game
     {
         
         private GraphicsDeviceManager _graphics;
-        //private SpriteBatch _spriteBatch;
 
-        //private World world;
-        //private MainMenu mainMenu;
+        private Texture2D leftRightBorder;
+        private Texture2D upDownBorder;
+
+
         private InGameMenu inGameMenu;
 
         public Main()
@@ -86,8 +52,17 @@ namespace acamar
 
             Globals.world.SetLevel(0);
 
+            Color borderColor = new Color(32, 32, 32);
 
-            
+            leftRightBorder = new Texture2D(_graphics.GraphicsDevice, 400, 400);
+            Color[] data = new Color[400 * 400];
+            for (int i = 0; i < data.Length; ++i) data[i] = borderColor;
+            leftRightBorder.SetData(data);
+
+            upDownBorder = new Texture2D(_graphics.GraphicsDevice, 800, 400);
+            Color[] data2 = new Color[800 * 400];
+            for (int i = 0; i < data2.Length; ++i) data2[i] = borderColor;
+            upDownBorder.SetData(data2);
         }
 
         protected override void LoadContent()
@@ -105,7 +80,7 @@ namespace acamar
         {
             /*if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();*/
-            
+
             if (/*this.IsActive*/ true)
             {
                 if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
@@ -143,6 +118,10 @@ namespace acamar
                 {
                     inGameMenu.Update();
                 }
+                else if (Globals.CURRENTSTATE == Globals.STATE.EXIT)
+                {
+                    Exit();
+                }
 
 
                 // TODO: Add your update logic here
@@ -151,6 +130,20 @@ namespace acamar
 
                 MyKeyboard.Reset();
             }
+
+
+            if(GlobalSettings.CHANGEDRES)
+            {
+                _graphics.PreferredBackBufferWidth = Globals.SIZEX;
+                _graphics.PreferredBackBufferHeight = Globals.SIZEY;
+                _graphics.ApplyChanges();
+                GlobalSettings.CHANGEDRES = false;
+                Window.Position = new Point((
+                    GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (_graphics.PreferredBackBufferWidth / 2),
+                    (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (_graphics.PreferredBackBufferHeight / 2));
+            }
+
+
             Globals.lastTime = DateTime.Now;
         }
 
@@ -163,9 +156,8 @@ namespace acamar
 
             //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend); SamplerState.PointClamp
 
-            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Globals.SCALE) * Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0));
-            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateScale(Globals.SCALE));
-
+            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
+            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE));
 
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
             {
@@ -186,9 +178,12 @@ namespace acamar
                 inGameMenu.Draw(Globals._overBatch);
             }
 
-            
+            Globals._overBatch.Draw(leftRightBorder, new Vector2(-400, 0), Color.White);
+            Globals._overBatch.Draw(leftRightBorder, new Vector2(400, 0), Color.White);
+            Globals._overBatch.Draw(upDownBorder, new Vector2(-200, -400), Color.White);
+            Globals._overBatch.Draw(upDownBorder, new Vector2(-200, 400), Color.White);
 
-            
+
 
             if (MessageHandler.IsActive())
             {
