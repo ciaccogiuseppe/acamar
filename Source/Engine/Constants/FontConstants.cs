@@ -11,6 +11,9 @@ namespace acamar.Source.Engine.Constants
         public static Font FONT0;
         public static Font FONT1;
         public static Font FONT2;
+        public static Font FONT3;
+        public static Font FONT4;
+        public static Font FONT5;
         public static void Initialize()
         {
             FONT0 = new Font(0, 12, 16);
@@ -19,6 +22,14 @@ namespace acamar.Source.Engine.Constants
             FontDictionary.Add("FONT1", FONT1);
             FONT2 = new Font(2, 12, 16);
             FontDictionary.Add("FONT2", FONT2);
+
+            FONT3 = new Font(3, 11, 18);
+            FONT4 = new Font(4, 11, 18);
+            FONT5 = new Font(5, 11, 18);
+
+            FontDictionary.Add("FONT3", FONT3);
+            FontDictionary.Add("FONT4", FONT4);
+            FontDictionary.Add("FONT5", FONT5);
         }
     }
 }

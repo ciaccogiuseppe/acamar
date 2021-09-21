@@ -114,7 +114,7 @@ namespace acamar.Source.Engine.World
                             Keys k = Globals.MENUKEY;
                             foreach (Keys key in Keys.GetValues(typeof(Keys)))
                             {
-                                if (MyKeyboard.IsPressedNotCont(key)) k = key;
+                                if (MyKeyboard.IsPressedNotCont(key) && key != Keys.None) k = key;
                                     
                             }
                             if (k == Globals.MENUKEY) break;
