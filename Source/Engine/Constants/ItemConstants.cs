@@ -4,7 +4,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.Constants
 {
-    class ItemConstants
+    public class ItemConstants
     {
         public enum ITEMS
         {
@@ -13,6 +13,11 @@ namespace acamar.Source.Engine.Constants
         public static Dictionary<string, ITEMS> itemDict = new Dictionary<string, ITEMS>()
             {
                 {"KEY", ITEMS.KEY}
+            };
+
+        public static Dictionary<ITEMS, string> names = new Dictionary<ITEMS, string>()
+            {
+                {ITEMS.KEY, "KEY"}
             };
 
         //TODO: load names from file

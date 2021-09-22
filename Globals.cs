@@ -1,4 +1,5 @@
-﻿using acamar.Source.Engine.World;
+﻿using acamar.Source.Engine;
+using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +15,9 @@ namespace acamar
         public enum STATE
         {
             MAINMENU,
+            MAINMENUPROMPT,
             RUNNING,
+            RUNNINGPROMPT,
             PAUSE,
             TRANSITION,
             INGAMEMENU,
@@ -60,5 +63,17 @@ namespace acamar
         public static Keys MOVEDOWN = Keys.Down;
 
         public static List<Keys> ASSIGNEDKEYS = new List<Keys> {MENUKEY, MOVEUP, MOVELEFT, MOVERIGHT, MOVEDOWN};
+
+
+        public static int CURRENTSAVESLOT = 1;
+
+        public static SaveSlot EMPTYSLOT = new SaveSlot(0);
+        public static SaveSlot SLOT1 = new SaveSlot(1);
+        public static SaveSlot SLOT2 = new SaveSlot(2);
+        public static SaveSlot SLOT3 = new SaveSlot(3);
+
+        public static SaveSlot[] SAVESLOTS = new SaveSlot[4] { EMPTYSLOT, SLOT1, SLOT2, SLOT3 };
+
+        public static int PROMPTRESULT = 0;
     }
 }

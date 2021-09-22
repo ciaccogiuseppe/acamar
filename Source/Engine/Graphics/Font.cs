@@ -64,6 +64,7 @@ namespace acamar.Source.Engine.Graphics
             charToRect.Add('?', new Rectangle(19 * charWidth, 2 * charHeight, charWidth, charHeight));
             charToRect.Add('\'', new Rectangle(20 * charWidth, 2 * charHeight, charWidth, charHeight));
             charToRect.Add(':', new Rectangle(21 * charWidth, 2 * charHeight, charWidth, charHeight));
+            charToRect.Add('@', new Rectangle(0 * charWidth, 3 * charHeight, charWidth, charHeight));
         }
     }
 }

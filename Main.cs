@@ -106,6 +106,15 @@ namespace acamar
                         MessageHandler.Update();
                     }
                 }
+
+                else if (Globals.CURRENTSTATE == Globals.STATE.MAINMENUPROMPT || Globals.CURRENTSTATE == Globals.STATE.RUNNINGPROMPT)
+                {
+                    if (PromptHandler.IsActive())
+                    {
+                        PromptHandler.Update();
+                    }
+                }
+
                 else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
                 {
                     Globals.runningTime += DateTime.Now - Globals.lastTime;
@@ -159,11 +168,11 @@ namespace acamar
             Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
             Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE));
 
-            if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU)
+            if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU || Globals.CURRENTSTATE == Globals.STATE.MAINMENUPROMPT)
             {
                 Globals.mainMenu.Draw(Globals._overBatch);
             }
-            else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING)
+            else if (Globals.CURRENTSTATE == Globals.STATE.RUNNING || Globals.CURRENTSTATE == Globals.STATE.RUNNINGPROMPT)
             {
                 Globals.world.Draw(Globals._spriteBatch);
             }
@@ -193,6 +202,11 @@ namespace acamar
             if(TransitionHandler.IsActive())
             {
                 TransitionHandler.Draw(Globals._spriteBatch, Globals._overBatch);
+            }
+
+            if(PromptHandler.IsActive())
+            {
+                PromptHandler.Draw(Globals._overBatch);
             }
 
             Globals._spriteBatch.End();

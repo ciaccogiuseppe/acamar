@@ -39,6 +39,11 @@ namespace acamar.Source.Engine.World.Entities
 
         }
 
+        public void SetFont(Font font)
+        {
+            this.currentFont = font;
+        }
+
         public bool IsEnded()
         {
             return count == 0;

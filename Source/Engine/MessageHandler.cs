@@ -18,6 +18,12 @@ namespace acamar.Source.Engine
             currentMessage.Reset();
         }
 
+        //public static void PromptActivate()
+        //{
+        //    active = true;
+        //    currentMessage.Reset();
+        //}
+
         public static bool IsActive()
         {
             return active;

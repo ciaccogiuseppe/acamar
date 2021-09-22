@@ -8,12 +8,19 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Inventory
 {
-    class InventoryItem
+    public class InventoryItem
     {
         private ItemConstants.ITEMS type;
         private Picture itemPicture;
         private int count = 0;
         private string name;
+
+        public InventoryItem(ItemConstants.ITEMS type, string name, int count)
+        {
+            this.type = type;
+            this.name = name;
+            this.count = count;
+        }
 
         public InventoryItem(ItemConstants.ITEMS type, string name)
         {
@@ -44,6 +51,11 @@ namespace acamar.Source.Engine.World.Inventory
         public string GetName()
         {
             return name;
+        }
+
+        public string GetItemName()
+        {
+            return ItemConstants.names.GetValueOrDefault(type);
         }
     }
 }

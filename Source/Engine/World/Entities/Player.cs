@@ -31,21 +31,25 @@ namespace acamar.Source.Engine.World.Entities
             {
                 case STATE.WALKDOWN:
                     destRec.Y--;
+                    posy--;
                     Globals.CAMY += 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKLEFT:
                     destRec.X++;
+                    posx++;
                     Globals.CAMX -= 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKRIGHT:
                     destRec.X--;
+                    posx--;
                     Globals.CAMX += 1;// (int)Globals.SCALE;
                     Stop();
                     break;
                 case STATE.WALKUP:
                     destRec.Y++;
+                    posy++;
                     Globals.CAMY -= 1;// (int)Globals.SCALE;
                     Stop();
                     break;
@@ -233,6 +237,33 @@ namespace acamar.Source.Engine.World.Entities
                 res.Add(item.GetName() + " : " + item.GetCount());
             }
             return res;
+        }
+
+        public List<InventoryItem> GetInventoryItems()
+        {
+            return inventory;
+        }
+
+        public void Reset()
+        {
+            inventory.Clear();
+            itemsInInventory.Clear();
+        }
+
+        public int GetDir()
+        {
+            return dir;
+        }
+
+        public void SetInventory(List<InventoryItem> inventory)
+        {
+            this.inventory.Clear();
+            itemsInInventory.Clear();
+            foreach(InventoryItem item in inventory)
+            {
+                this.inventory.Add(item);
+                itemsInInventory.Add(item.GetItemType());
+            }
         }
     }
 

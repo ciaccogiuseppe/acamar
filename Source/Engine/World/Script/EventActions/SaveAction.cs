@@ -16,7 +16,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         public override void Trigger()
         {
-            Globals.world.Save(saveSlot);
+            //Globals.world.Save(saveSlot);
+            Globals.SAVESLOTS[Globals.CURRENTSAVESLOT].Save();
             ended = true;
         }
 

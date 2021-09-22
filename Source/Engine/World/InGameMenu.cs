@@ -175,7 +175,9 @@ namespace acamar.Source.Engine.World
                         toUpdate = true;
                         break;
                     case TYPE.EXIT:
-                        Globals.CURRENTSTATE = Globals.STATE.EXIT;
+                        selfMenu.SetCurrentPage(selfMenu.GetCurrentPage().GetNumber());
+                        Globals.mainMenu.SetCurrentPage(0);
+                        Globals.CURRENTSTATE = Globals.STATE.MAINMENU;
                         break;
                 }
                 
@@ -264,6 +266,11 @@ namespace acamar.Source.Engine.World
             public int GetParent()
             {
                 return parentPage;
+            }
+
+            public int GetNumber()
+            {
+                return number;
             }
 
             public void Update()

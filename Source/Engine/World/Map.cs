@@ -3,6 +3,7 @@ using acamar.Source.Engine.World.Entities;
 using acamar.Source.Engine.World.Script;
 using acamar.Source.Engine.World.Script.EventActions;
 using acamar.Source.Engine.World.Script.EventConditions;
+using acamar.Source.Engine.World.Script.Prompts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -198,6 +199,9 @@ namespace acamar.Source.Engine.World
             }
 
             timer.Draw(Globals._overBatch);
+
+            OverlayText position = new OverlayText(Globals.player.GetPosX() + " " + Globals.player.GetPosY(),10,20, FontConstants.FONT1);
+            position.Draw(Globals._overBatch);
             //message.Draw();
             //DEBUG
         }
@@ -590,6 +594,20 @@ namespace acamar.Source.Engine.World
                                     string lin2 = line.Split('\t')[3];
                                     switch (lin2.Split(' ')[0])
                                     {
+                                        case "PROMPT":
+                                            string promptMessage = lin2.Split('<')[1];
+                                            List<string> promptOptions = new List<string>();
+                                            for(int i = 2; i < lin2.Split('<').Length; i++)
+                                            {
+                                                promptOptions.Add(lin2.Split('<')[i]);
+                                            }
+                                            evn.AddAction(new PromptAction(new RunningPrompt(promptMessage, promptOptions)));
+                                            break;
+
+                                        case "SAVE":
+                                            evn.AddAction(new SaveAction(1));
+                                            break;
+
                                         case "LOCFLGSET":
                                             evn.AddAction(new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this));
                                             break;

@@ -2,6 +2,8 @@
 using acamar.Source.Engine.Graphics;
 using acamar.Source.Engine.MainMenu;
 using acamar.Source.Engine.Settings;
+using acamar.Source.Engine.World.Script;
+using acamar.Source.Engine.World.Script.Prompts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -98,6 +100,8 @@ namespace acamar.Source.Engine.World
                 CHANGELEVEL,
                 CHANGERESOLUTION,
                 KEYSET,
+                SAVESLOT,
+                NEWSLOT,
                 EXIT
             }
             protected string name;
@@ -106,8 +110,10 @@ namespace acamar.Source.Engine.World
             protected bool hasValue = false;
             protected bool selected = false;
             protected int nextPage = -1;
+            protected int saveSlot = 0;
             protected MainMenu selfMenu;
             protected bool toUpdate = false;
+            protected bool waiting = false;
 
             public MenuEntry(string name, TYPE type, MainMenu selfMenu)
             {
@@ -128,6 +134,30 @@ namespace acamar.Source.Engine.World
             {
                 hasValue = true;
                 this.value = value;
+
+                switch (type)
+                {
+                    case TYPE.SAVESLOT:
+                    case TYPE.NEWSLOT:
+                        int slot = int.Parse(value);
+                        saveSlot = slot;
+                        switch(slot)
+                        {
+                            case 1:
+                                Globals.SLOT1.Load();
+                                this.value = Globals.SLOT1.ToString();
+                                break;
+                            case 2:
+                                Globals.SLOT2.Load();
+                                this.value = Globals.SLOT2.ToString();
+                                break;
+                            case 3:
+                                Globals.SLOT3.Load();
+                                this.value = Globals.SLOT3.ToString();
+                                break;
+                        }
+                        break;
+                }
             }
 
             public override string ToString()
@@ -162,6 +192,73 @@ namespace acamar.Source.Engine.World
             {
                 switch (type)
                 {
+                    case TYPE.SAVESLOT:
+                    case TYPE.NEWSLOT:
+                        switch (saveSlot)
+                        {
+                            case 1:
+                                Globals.SLOT1.Load();
+                                value = Globals.SLOT1.ToString();
+                                if(waiting)
+                                {
+                                    waiting = false;
+                                    if (Globals.PROMPTRESULT == 0)
+                                    {
+                                        Globals.SLOT1.Delete();
+                                        Globals.CURRENTSAVESLOT = 1;
+                                        Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                        Flag.ResetFlags();
+                                        Globals.world.SetLevel(0);
+                                        Globals.world.SetMap(0);
+                                        Globals.world.Reset();
+                                        Globals.player.Reset();
+                                        Globals.runningTime = System.TimeSpan.Zero;
+                                    }
+
+                                }
+                                break;
+                            case 2:
+                                Globals.SLOT2.Load();
+                                value = Globals.SLOT2.ToString();
+                                if(waiting)
+                                {
+                                    waiting = false;
+                                    if (Globals.PROMPTRESULT == 0)
+                                    {
+                                        Globals.SLOT2.Delete();
+                                        Globals.CURRENTSAVESLOT = 2;
+                                        Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                        Flag.ResetFlags();
+                                        Globals.world.SetLevel(0);
+                                        Globals.world.SetMap(0);
+                                        Globals.world.Reset();
+                                        Globals.player.Reset();
+                                        Globals.runningTime = System.TimeSpan.Zero;
+                                    }
+                                }
+                                break;
+                            case 3:
+                                Globals.SLOT3.Load();
+                                value = Globals.SLOT3.ToString();
+                                if(waiting)
+                                {
+                                    waiting = false;
+                                    if (Globals.PROMPTRESULT == 0)
+                                    {
+                                        Globals.SLOT3.Delete();
+                                        Globals.CURRENTSAVESLOT = 3;
+                                        Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                        Flag.ResetFlags();
+                                        Globals.world.SetLevel(0);
+                                        Globals.world.SetMap(0);
+                                        Globals.world.Reset();
+                                        Globals.player.Reset();
+                                        Globals.runningTime = System.TimeSpan.Zero;
+                                    }
+                                }
+                                break;
+                        }
+                        break;
                     case TYPE.CHANGEPAGE:
                         break;
                     case TYPE.CHANGELEVEL:
@@ -231,6 +328,31 @@ namespace acamar.Source.Engine.World
                 }
             }
 
+            public void Reset()
+            {
+                switch(type)
+                {
+                    case TYPE.SAVESLOT:
+                    case TYPE.NEWSLOT:
+                        switch (saveSlot)
+                        {
+                            case 1:
+                                Globals.SLOT1.Load();
+                                value = Globals.SLOT1.ToString();
+                                break;
+                            case 2:
+                                Globals.SLOT2.Load();
+                                value = Globals.SLOT2.ToString();
+                                break;
+                            case 3:
+                                Globals.SLOT3.Load();
+                                value = Globals.SLOT3.ToString();
+                                break;
+                        }
+                        break;
+                }
+            }
+
             public void Act()
             {
                 switch (type)
@@ -251,9 +373,117 @@ namespace acamar.Source.Engine.World
                         break;
                     case TYPE.NEWGAME:
                         Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                        Flag.ResetFlags();
+                        Globals.world.SetLevel(0);
+                        Globals.world.SetMap(0);
+                        Globals.world.Reset();
+                        Globals.player.Reset();
+                        Globals.runningTime = System.TimeSpan.Zero;
                         break;
                     case TYPE.EXIT:
                         Globals.CURRENTSTATE = Globals.STATE.EXIT;
+                        break;
+                    case TYPE.NEWSLOT:
+                        switch (saveSlot)
+                        {
+                            case 1:
+                                Globals.SLOT1.Load();
+                                if(Globals.SLOT1.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 1;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                    Flag.ResetFlags();
+                                    Globals.world.SetLevel(0);
+                                    Globals.world.SetMap(0);
+                                    Globals.world.Reset();
+                                    Globals.player.Reset();
+                                    Globals.runningTime = System.TimeSpan.Zero;
+                                    ///MAKE CODE ^ ONCE AND NOT REPEATED FOR ONLY SLOT TODO
+                                }
+                                else
+                                {
+                                    //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
+                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.Activate();
+                                    waiting = true;
+                                }
+                                break;
+                            case 2:
+                                Globals.SLOT2.Load();
+                                if (Globals.SLOT2.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 2;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                    Flag.ResetFlags();
+                                    Globals.world.SetLevel(0);
+                                    Globals.world.SetMap(0);
+                                    Globals.world.Reset();
+                                    Globals.player.Reset();
+                                    Globals.runningTime = System.TimeSpan.Zero;
+                                }
+                                else
+                                {
+                                    //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
+                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.Activate();
+                                    waiting = true;
+                                }
+                                break;
+                            case 3:
+                                Globals.SLOT3.Load();
+                                if (Globals.SLOT3.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 3;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                    Flag.ResetFlags();
+                                    Globals.world.SetLevel(0);
+                                    Globals.world.SetMap(0);
+                                    Globals.world.Reset();
+                                    Globals.player.Reset();
+                                    Globals.runningTime = System.TimeSpan.Zero;
+                                }
+                                else
+                                {
+                                    //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
+                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.Activate();
+                                    waiting = true;
+                                }
+                                break;
+                        }
+                        break;
+                    case TYPE.SAVESLOT:
+                        switch(saveSlot)
+                        {
+                            case 1:
+                                Globals.SLOT1.Load();
+                                Globals.SLOT1.Apply();
+                                if (!Globals.SLOT1.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 1;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                }
+                                break;
+                            case 2:
+                                Globals.SLOT2.Load();
+                                Globals.SLOT2.Apply();
+                                if (!Globals.SLOT2.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 2;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                }
+                                break;
+                            case 3:
+                                Globals.SLOT3.Load();
+                                Globals.SLOT3.Apply();
+                                if (!Globals.SLOT3.IsEmpty())
+                                {
+                                    Globals.CURRENTSAVESLOT = 3;
+                                    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                                }
+                                break;
+                        }
+
                         break;
                 }
 
@@ -279,7 +509,7 @@ namespace acamar.Source.Engine.World
                 switch (number)
                 {
                     case 0:
-                        entries.Add(new MenuEntry("New Game", MenuEntry.TYPE.NEWGAME, selfMenu));
+                        entries.Add(new MenuEntry("New Game", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         entries.Add(new MenuEntry("Load Game", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         //entries.Add(new MenuEntry("  Level", MenuEntry.TYPE.CHANGELEVEL, selfMenu));
                         //entries.Add(new MenuEntry("   Map", MenuEntry.TYPE.CHANGEMAP, selfMenu));
@@ -288,7 +518,7 @@ namespace acamar.Source.Engine.World
                         //entries.Add(new MenuEntry("  Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         entries.Add(new MenuEntry("Exit", MenuEntry.TYPE.EXIT, selfMenu));
 
-
+                        entries[0].SetNextPage(2);
                         entries[1].SetNextPage(1);
                         //entries[2].SetValue("0");
                         //entries[3].SetValue("0");
@@ -297,16 +527,29 @@ namespace acamar.Source.Engine.World
                         entries[3].SetNextPage(-1);
                         break;
                     case 1:
-                        entries.Add(new MenuEntry("Entry 3", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Slot 1", MenuEntry.TYPE.SAVESLOT, selfMenu));
+                        entries.Add(new MenuEntry("Slot 2", MenuEntry.TYPE.SAVESLOT, selfMenu));
+                        entries.Add(new MenuEntry("Slot 3", MenuEntry.TYPE.SAVESLOT, selfMenu));
+
+                        entries[0].SetValue("1");
+                        entries[1].SetValue("2");
+                        entries[2].SetValue("3");
                         break;
                     case 2:
-                        List<string> inventory = Globals.player.GetInventory();
-                        foreach (string s in inventory)
-                        {
-                            entries.Add(new MenuEntry(s, MenuEntry.TYPE.NULL, selfMenu));
-                        }
-                        entries.Add(new MenuEntry("Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
-                        entries[entries.Count - 1].SetNextPage(parentPage);
+                        //List<string> inventory = Globals.player.GetInventory();
+                        //foreach (string s in inventory)
+                        //{
+                        //    entries.Add(new MenuEntry(s, MenuEntry.TYPE.NULL, selfMenu));
+                        //}
+                        //entries.Add(new MenuEntry("Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                        //entries[entries.Count - 1].SetNextPage(parentPage);
+                        entries.Add(new MenuEntry("Slot 1", MenuEntry.TYPE.NEWSLOT, selfMenu));
+                        entries.Add(new MenuEntry("Slot 2", MenuEntry.TYPE.NEWSLOT, selfMenu));
+                        entries.Add(new MenuEntry("Slot 3", MenuEntry.TYPE.NEWSLOT, selfMenu));
+
+                        entries[0].SetValue("1");
+                        entries[1].SetValue("2");
+                        entries[2].SetValue("3");
                         break;
                     case 3:
                         entries.Add(new MenuEntry("Resolution", MenuEntry.TYPE.CHANGERESOLUTION, selfMenu));
@@ -334,6 +577,10 @@ namespace acamar.Source.Engine.World
 
             public void Reset()
             {
+                foreach(MenuEntry entry in entries)
+                {
+                    entry.Reset();
+                }
                 entries[currentEntry].Deselect();
                 currentEntry = 0;
                 entries[currentEntry].Select();
@@ -346,18 +593,19 @@ namespace acamar.Source.Engine.World
 
             public void Update()
             {
-                if (number == 2) //inventory
-                {
-                    entries.Clear();
-                    List<string> inventory = Globals.player.GetInventory();
-                    foreach (string s in inventory)
-                    {
-                        entries.Add(new MenuEntry(s, MenuEntry.TYPE.NULL, selfMenu));
-                    }
-                    entries.Add(new MenuEntry("Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
-                    entries[entries.Count - 1].SetNextPage(parentPage);
-                    entries[currentEntry].Select();
-                }
+                //if (number == 2) //inventory
+                //{
+                //    entries.Clear();
+                //    List<string> inventory = Globals.player.GetInventory();
+                //    foreach (string s in inventory)
+                //    {
+                //        entries.Add(new MenuEntry(s, MenuEntry.TYPE.NULL, selfMenu));
+                //    }
+                //    entries.Add(new MenuEntry("Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                //    entries[entries.Count - 1].SetNextPage(parentPage);
+                //    entries[currentEntry].Select();
+                //}
+
 
                 entries[currentEntry].Update();
                 if (MyKeyboard.IsPressedNotCont(Keys.Down))
@@ -446,7 +694,7 @@ namespace acamar.Source.Engine.World
         {
             if (page == -1)
             {
-                Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                Globals.CURRENTSTATE = Globals.STATE.EXIT;
                 menuPages[currentPage].Reset();
                 currentPage = 0;
                 menuPages[currentPage].Reset();

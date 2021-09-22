@@ -83,5 +83,15 @@ namespace acamar.Source.Engine.World
         {
             currentLevel.Reset();
         }
+
+        public int GetCurrentLevel()
+        {
+            return currentLevel.GetId();
+        }
+
+        public int GetCurrentMap()
+        {
+            return currentLevel.GetCurrentMap().GetId();
+        }
     }
 }
