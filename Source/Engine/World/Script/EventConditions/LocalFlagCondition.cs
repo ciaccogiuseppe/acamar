@@ -4,17 +4,25 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script.EventConditions
 {
+    //TODO: Remove List of flags if not used
     class LocalFlagCondition : EventCondition
     {
+        //Flags to check
         private List<int> flagIDs;
+
+        //Type of condition (flag set/unset)
         private FLAGTYPE type;
+
+        //Map to operate on
         private Map map;
+
         private enum FLAGTYPE
         {
             FLAGISSET,
             FLAGISUNSET
         }
 
+        //TODO: REMOVE IF NOT USED
         public LocalFlagCondition(List<int> flagIDs, bool type, Map map)
         {
             this.flagIDs = flagIDs;
@@ -32,6 +40,8 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.map = map;
         }
 
+
+        //Check if condition is verified
         public override bool IsVerified()
         {
             bool verified = true;

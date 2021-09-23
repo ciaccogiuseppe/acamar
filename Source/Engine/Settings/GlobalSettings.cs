@@ -6,6 +6,21 @@ namespace acamar.Source.Engine.Settings
 {
     public class GlobalSettings
     {
+        //----------------------------------------------------------------------------------------//
+        //-------------------------------Window Resolution Settings-------------------------------//
+        //----------------------------------------------------------------------------------------//
+
+        //Current window Resolution
+        public static RESOLUTION CURRENTRESOLUTION = RESOLUTION.RES400x400;
+
+        //Flag used when changing resolution to update window position
+        public static bool CHANGEDRES = false;
+
+        //Flag used to enable/disable fullscreen
+        //TODO: implement fullscreen enable/disable
+        public static bool FULLSCREEN = false;
+
+        //Window Resolution Enum
         public enum RESOLUTION
         {
             RES400x400,
@@ -16,6 +31,7 @@ namespace acamar.Source.Engine.Settings
             COUNT
         }
 
+        //Dictionary: Window resolution enum to String representation (for Menus)
         public static Dictionary<RESOLUTION, string> resolutionDict = new Dictionary<RESOLUTION, string>()
             {
                 {RESOLUTION.RES400x400, "400 x 400"},
@@ -25,9 +41,8 @@ namespace acamar.Source.Engine.Settings
                 {RESOLUTION.RES800x800, "800 x 800"}
             };
 
-        public static RESOLUTION CURRENTRESOLUTION = RESOLUTION.RES400x400;
-        public static bool CHANGEDRES = false;
-
+        
+        //Change Resolution Method
         public static void SetResolution(RESOLUTION res)
         {
             CHANGEDRES = true;

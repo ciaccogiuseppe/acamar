@@ -6,40 +6,49 @@ namespace acamar.Source.Engine.World.Script.EventActions
 {
     class FadeAction : EventAction
     {
-        public enum FADETYPE
+        public enum TYPE
         {
             FADEIN,
             FADEOUT
         }
-        private bool ended = false;
-        private Entity target;
-        private FADETYPE type;
 
-        public FadeAction(Entity target, FADETYPE type)
+        //Entity to fadein/fadeout
+        private Entity target;
+
+        //Type of action (fadein/fadeout)
+        private TYPE type;
+
+        //Flag for action ended running
+        private bool ended = false;
+
+        public FadeAction(Entity target, TYPE type)
         {
             this.target = target;
             this.type = type;
         }
         
+        //Activate action
         public override void Trigger()
         {
             switch (type)
             {
-                case FADETYPE.FADEIN:
+                case TYPE.FADEIN:
                     target.FadeIn();
                     break;
-                case FADETYPE.FADEOUT:
+                case TYPE.FADEOUT:
                     target.FadeOut();
                     break;
             }
             ended = true;
         }
 
+        //Check if action is ended
         public override bool IsEnded()
         {
             return ended;
         }
 
+        //Reset action
         public override void Reset()
         {
             ended = false;

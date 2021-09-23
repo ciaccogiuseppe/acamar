@@ -7,8 +7,13 @@ namespace acamar.Source.Engine.World.Script.EventConditions
 {
     class ItemCondition : EventCondition
     {
+        //Player to operate on
         private Player player;
+
+        //Item to check
         private string item;
+
+        //Type of condition (has/hasnot item)
         private TYPE type;
 
         public enum TYPE
@@ -24,6 +29,7 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.type = type;
         }
 
+        //Check if condition is verified
         public override bool IsVerified()
         {
             bool verified = false;

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.MainMenu
 {
+    //TODO: REMOVE IF NOT USED
     class MenuEntity : Entity
     {
         protected bool selected = false;

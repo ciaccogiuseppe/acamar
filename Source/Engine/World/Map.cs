@@ -220,10 +220,10 @@ namespace acamar.Source.Engine.World
                     {
                         tileSource[tileArray[i * size + j]] = 
                             new Rectangle(
-                                j * GlobalConstants.TILESIZE,
-                                i * GlobalConstants.TILESIZE,
-                                GlobalConstants.TILESIZE,
-                                GlobalConstants.TILESIZE);
+                                j * Globals.TILESIZE,
+                                i * Globals.TILESIZE,
+                                Globals.TILESIZE,
+                                Globals.TILESIZE);
                     }
                 }
             }
@@ -236,9 +236,9 @@ namespace acamar.Source.Engine.World
 
         private void DrawBackground()
         {
-            for(int i = 0; i < height/ GlobalConstants.TILESIZE; i++)
+            for(int i = 0; i < height/ Globals.TILESIZE; i++)
             {
-                for(int j = 0; j < width/ GlobalConstants.TILESIZE; j++)
+                for(int j = 0; j < width/ Globals.TILESIZE; j++)
                 {
                     Globals._spriteBatch.Draw(tileTexture,  tileDest[i, j], tileSource[mapArray[i, j]], Color.White);
                 }
@@ -301,24 +301,24 @@ namespace acamar.Source.Engine.World
                 //int x = int.Parse(bits[0]);
                 tileID = int.Parse(reader.ReadLine());
                 tileNO = int.Parse(reader.ReadLine());
-                width  = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
-                height = int.Parse(reader.ReadLine()) * GlobalConstants.TILESIZE;
+                width  = int.Parse(reader.ReadLine()) * Globals.TILESIZE;
+                height = int.Parse(reader.ReadLine()) * Globals.TILESIZE;
 
-                mapArray = new int[height / GlobalConstants.TILESIZE, width / GlobalConstants.TILESIZE];
-                tileDest = new Rectangle[height / GlobalConstants.TILESIZE, width / GlobalConstants.TILESIZE];
+                mapArray = new int[height / Globals.TILESIZE, width / Globals.TILESIZE];
+                tileDest = new Rectangle[height / Globals.TILESIZE, width / Globals.TILESIZE];
 
-                for (int i = 0; i < height / GlobalConstants.TILESIZE; i++)
+                for (int i = 0; i < height / Globals.TILESIZE; i++)
                 {
                     string text = reader.ReadLine();
                     string[] bits = text.Split(' ');
-                    for (int j = 0; j < width / GlobalConstants.TILESIZE; j++)
+                    for (int j = 0; j < width / Globals.TILESIZE; j++)
                     {
                         mapArray[i, j] = int.Parse(bits[j]);
                         tileDest[i, j] = new Rectangle(
-                            j * GlobalConstants.TILESIZE,
-                            i * GlobalConstants.TILESIZE,
-                            GlobalConstants.TILESIZE,
-                            GlobalConstants.TILESIZE);
+                            j * Globals.TILESIZE,
+                            i * Globals.TILESIZE,
+                            Globals.TILESIZE,
+                            Globals.TILESIZE);
                     }
                 }
             }
@@ -628,7 +628,7 @@ namespace acamar.Source.Engine.World
                                             break;
 
                                         case "SAVE":
-                                            curAction = new SaveAction(1);
+                                            curAction = new SaveAction();
                                             //evn.AddAction(new SaveAction(1));
                                             break;
 
@@ -643,24 +643,24 @@ namespace acamar.Source.Engine.World
                                         case "ACTIVATE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE);
+                                                curAction = new ActivateAction(curEnt, ActivateAction.TYPE.ACTIVATE);
                                                 //evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE));
                                             }
                                             else
                                             {
-                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE);
+                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.TYPE.ACTIVATE);
                                                 //evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE));
                                             }
                                             break;
                                         case "DEACTIVATE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE);
+                                                curAction = new ActivateAction(curEnt, ActivateAction.TYPE.DEACTIVATE);
                                                 //evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE));
                                             }
                                             else
                                             {
-                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE);
+                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.TYPE.DEACTIVATE);
                                                 //evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE));
                                             }
                                             break;
@@ -675,48 +675,48 @@ namespace acamar.Source.Engine.World
                                         case "FADEIN":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN);
+                                                curAction = new FadeAction(curEnt, FadeAction.TYPE.FADEIN);
                                                 //evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN));
                                             }
                                             else
                                             {
-                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN);
+                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.TYPE.FADEIN);
                                                 //evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN));
                                             }
                                             break;
                                         case "FADEOUT":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT);
+                                                curAction = new FadeAction(curEnt, FadeAction.TYPE.FADEOUT);
                                                 //evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT));
                                             }
                                             else
                                             {
-                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT);
+                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.TYPE.FADEOUT);
                                                 //evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT));
                                             }
                                             break;
                                         case "LOCK":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK);
+                                                curAction = new BlockAction(curEnt, BlockAction.TYPE.LOCK);
                                                 //evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK));
                                             }
                                             else
                                             {
-                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK);
+                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.TYPE.LOCK);
                                                 //evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK));
                                             }
                                             break;
                                         case "UNLOCK":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                curAction = new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK);
+                                                curAction = new BlockAction(curEnt, BlockAction.TYPE.UNLOCK);
                                                 //evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK));
                                             }
                                             else
                                             {
-                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK);
+                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.TYPE.UNLOCK);
                                                 //evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK));
                                             }
                                             break;

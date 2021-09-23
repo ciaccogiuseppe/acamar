@@ -6,26 +6,28 @@ namespace acamar.Source.Engine.World.Script.EventActions
 {
     class SaveAction : EventAction
     {
-        private int saveSlot;
+        //Flag for action ended running
         private bool ended = false;
 
-        public SaveAction(int saveSlot)
+        public SaveAction()
         {
-            this.saveSlot = saveSlot;
+
         }
 
+        //Activate action
         public override void Trigger()
         {
-            //Globals.world.Save(saveSlot);
             Globals.SAVESLOTS[Globals.CURRENTSAVESLOT].Save();
             ended = true;
         }
 
+        //Check if action is ended
         public override bool IsEnded()
         {
             return ended;
         }
 
+        //Reset action
         public override void Reset()
         {
             ended = false;

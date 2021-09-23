@@ -13,7 +13,10 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             ISRELEASED
         }
 
+        //Key to operate on
         private Keys key;
+
+        //State of key (pressed/released)
         private KEYSTATE state;
 
         public ButtonCondition(Keys key, KEYSTATE state)
@@ -22,18 +25,17 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.state = state;
         }
 
+        //Check if condition is verified
         public override bool IsVerified()
         {
             bool verified = false;
             switch(state)
             {
                 case KEYSTATE.ISPRESSED:
-                    //if (Keyboard.GetState().IsKeyDown(key))
                     if (MyKeyboard.IsPressedNotCont(key))
                         verified = true;
                     break;
                 case KEYSTATE.ISRELEASED:
-                    //if (!Keyboard.GetState().IsKeyDown(key))
                     if (!MyKeyboard.IsPressedNotCont(key))
                         verified = true;
                     break;

@@ -65,6 +65,8 @@ namespace acamar
         public static List<Keys> ASSIGNEDKEYS = new List<Keys> {MENUKEY, MOVEUP, MOVELEFT, MOVERIGHT, MOVEDOWN};
 
 
+        public const int TILESIZE = 32;
+
         public static int CURRENTSAVESLOT = 1;
 
         public static SaveSlot EMPTYSLOT = new SaveSlot(0);

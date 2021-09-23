@@ -6,9 +6,16 @@ namespace acamar.Source.Engine.World.Script.EventActions
 {
     class SleepAction : EventAction
     {
-        private bool ended = false;
+        //Sleep duration in tics
         private int duration;
+
+        //Current tic
         private int tic;
+
+        //Flag for action ended running
+        private bool ended = false;
+
+        
 
         public SleepAction(int duration)
         {
@@ -16,11 +23,13 @@ namespace acamar.Source.Engine.World.Script.EventActions
             tic = 0;
         }
 
+        //Activate action
         public override void Trigger()
         {
             
         }
 
+        //Check if action is ended
         public override bool IsEnded()
         {
             if(tic < duration && Globals.CURRENTSTATE == Globals.STATE.RUNNING)
@@ -30,6 +39,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
             return ended;
         }
 
+        //Reset action
         public override void Reset()
         {
             ended = false;

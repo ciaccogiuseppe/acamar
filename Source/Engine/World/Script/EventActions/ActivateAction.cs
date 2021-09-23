@@ -4,42 +4,52 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script.EventActions
 {
+    //Activate action: visible/invisible
     class ActivateAction : EventAction
     {
-        public enum ACTIVTYPE
+        public enum TYPE
         {
             ACTIVATE,
             DEACTIVATE  
         }
 
+        //Entity to activate/deactivate
         private Entity target;
-        private ACTIVTYPE type;
+        
+        //Type of action to operate (activate/deactivate)
+        private TYPE type;
+
+        //Flag for action ended running
         private bool ended = false;
-        public ActivateAction(Entity target, ACTIVTYPE type)
+
+        public ActivateAction(Entity target, TYPE type)
         {
             this.target = target;
             this.type = type;
         }
 
+        //Activate action
         public override void Trigger()
         {
             switch(type)
             {
-                case ACTIVTYPE.ACTIVATE:
+                case TYPE.ACTIVATE:
                     target.Activate();
                     break;
-                case ACTIVTYPE.DEACTIVATE:
+                case TYPE.DEACTIVATE:
                     target.Deactivate();
                     break;
             }
             ended = true;
         }
 
+        //Check if action is ended
         public override bool IsEnded()
         {
             return ended;
         }
 
+        //Reset action
         public override void Reset()
         {
             ended = false;

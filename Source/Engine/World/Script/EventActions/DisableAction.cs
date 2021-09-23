@@ -4,17 +4,24 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script.EventActions
 {
+    //Enable/disable action: collision enable/disable
     class DisableAction : EventAction
     {
-        private bool ended = false;
-        private TYPE type;
-        Entity target;
-
         public enum TYPE
         {
             ENABLE,
             DISABLE
         }
+
+        //Entity to enable/disable
+        Entity target;
+
+        //Type of action to operate (enable/disable)
+        private TYPE type;
+
+        //Flag for action ended running
+        private bool ended = false;
+
 
         public DisableAction(Entity target, TYPE type)
         {
@@ -22,6 +29,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
             this.type = type;
         }
 
+        //Activate action
         public override void Trigger()
         {
             switch(type)
@@ -37,14 +45,18 @@ namespace acamar.Source.Engine.World.Script.EventActions
             ended = true;
         }
 
+        //Check if action is ended
+        public override bool IsEnded()
+        {
+            return ended;
+        }
+
+        //Reset action
         public override void Reset()
         {
             ended = false;
         }
 
-        public override bool IsEnded()
-        {
-            return ended;
-        }
+        
     }
 }

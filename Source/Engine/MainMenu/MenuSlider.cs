@@ -6,6 +6,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.MainMenu
 {
+    //TODO: REMOVE IF NOT USED
     class MenuSlider : MenuEntity
     {
         public MenuSlider() :

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace acamar.Source.Engine.MainMenu
 {
+    //TODO: REMOVE IF NOT USED
     class MenuScroller : MenuEntity
     {
         private Entity scrollerTag; //name of scroller:   ScrollerTag      Options↕

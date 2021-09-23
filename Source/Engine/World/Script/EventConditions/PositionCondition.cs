@@ -15,15 +15,21 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             POSTOUCHFACING
         }
 
+        //Condition type (near, touching, touching&facing)
         private POSTYPE type;
+
+        //Position and distance (for near check)
         private int posX;
         private int posY;
         private int radius;
 
+        //Character to check the condition on; condition subject
         private Character target;
 
+        //Entity from which the target can be near/touching/touching&facing; condition object
         private Entity source;
 
+        //Condition relative to fixed point
         public PositionCondition(Character target, int posX, int posY, int radius, POSTYPE type)
         {
             this.target = target;
@@ -34,6 +40,7 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.type = type;
         }
 
+        //Condition relative to entity
         public PositionCondition(Character target, Entity source, POSTYPE type)
         {
             this.target = target;
@@ -41,6 +48,8 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             this.type = type;
         }
 
+
+        //Check if condition is verified
         public override bool IsVerified()
         {
             switch(type)
@@ -65,7 +74,8 @@ namespace acamar.Source.Engine.World.Script.EventConditions
             return false;
         }
 
-
+        //Check if two rectangles are touching
+        //TODO: can move in a utility library
         private bool Touching(Rectangle A, Rectangle B)
         {
             Rectangle aux = A;

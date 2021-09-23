@@ -22,6 +22,11 @@ namespace acamar.Source.Engine.World.Inventory
             this.count = count;
         }
 
+        internal void Use()
+        {
+            throw new NotImplementedException();
+        }
+
         public InventoryItem(ItemConstants.ITEMS type, string name)
         {
             this.type = type;

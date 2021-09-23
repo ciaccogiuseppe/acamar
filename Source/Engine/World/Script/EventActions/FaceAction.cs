@@ -5,11 +5,19 @@ using System.Text;
 
 namespace acamar.Source.Engine.World.Script.EventActions
 {
+    //Face action: Target char faces Targeted char
     class FaceAction : EventAction
     {
-        private bool ended = false;
+        
+        //Facing character; changes dir towards targeted; action subject
         private Character target;
+
+        //Faced character; character followed by target one; action object
         private Character targeted;
+
+        //Flag for action ended running
+        private bool ended = false;
+
 
         public FaceAction(Character target, Character targeted)
         {
@@ -17,17 +25,20 @@ namespace acamar.Source.Engine.World.Script.EventActions
             this.targeted = targeted;
         }
 
+        //Activate action
         public override void Trigger()
         {
             target.FaceCharacter(targeted);
             ended = true;
         }
 
+        //Check if action is ended
         public override bool IsEnded()
         {
             return ended;
         }
 
+        //Reset action
         public override void Reset()
         {
             ended = false;
