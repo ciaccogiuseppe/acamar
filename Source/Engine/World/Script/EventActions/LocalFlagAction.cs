@@ -33,6 +33,26 @@ namespace acamar.Source.Engine.World.Script.EventActions
             this.map = map;
         }
 
+        public static LocalFlagAction Parse(string s, Map map)
+        {
+            string[] values = s.Split(' ');
+            int flag;
+            int type = -1;
+            switch (values[0])
+            {
+                case "LOCFLGSET":
+                    type = 1;
+                    break;
+
+                case "LOCFLGUNSET":
+                    type = 0;
+                    break;
+            }
+            flag = int.Parse(values[1]);
+            LocalFlagAction action = new LocalFlagAction(flag, type, map);
+            return action;
+        }
+
         public override void Trigger()
         {
             switch (type)

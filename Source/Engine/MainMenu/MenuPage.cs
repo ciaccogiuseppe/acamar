@@ -13,6 +13,7 @@ namespace acamar.Source.Engine.MainMenu
         private int entriesNumber;
         private int currentEntry;
         private int count;
+        
 
         public MenuPage()
         {

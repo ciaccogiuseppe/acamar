@@ -25,7 +25,11 @@ namespace acamar.Source.Engine.World.Script.Prompts
 
         public override void Update()
         {
-            if (promptPage.IsEnded()) active = false;
+            if (promptPage.IsEnded())
+            {
+                active = false;
+                ended = true;
+            }
             if (active && !promptMessage.IsEnded())
             {
                 promptMessage.Update();

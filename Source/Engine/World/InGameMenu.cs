@@ -194,6 +194,7 @@ namespace acamar.Source.Engine.World
             private Font curFont;
             private Font selFont;
             private int currentEntry = 0;
+            private int entriesPerPage = 10;
 
             public MenuPage(int number, int parentPage, InGameMenu selfMenu)
             {
@@ -222,6 +223,20 @@ namespace acamar.Source.Engine.World
                         break;
                     case 1:
                         entries.Add(new MenuEntry("Entry 3", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 4", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 5", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 6", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 7", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 8", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 9", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 10", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 11", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 12", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 13", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 14", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 15", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 16", MenuEntry.TYPE.NULL, selfMenu));
+                        entries.Add(new MenuEntry("Entry 17", MenuEntry.TYPE.NULL, selfMenu));
                         break;
                     case 2:
                         List<string> inventory = Globals.player.GetInventory();
@@ -319,14 +334,27 @@ namespace acamar.Source.Engine.World
             {
                 int posx = 10;
                 int posy = 50;
-                foreach(MenuEntry entry in entries)
+                int windowStart = currentEntry >= entriesPerPage ? currentEntry-entriesPerPage + 1 : 0;
+
+                int windowEnd = windowStart + entriesPerPage;
+                //foreach(MenuEntry entry in entries)
+                //{
+                //    if(entry.IsSelected())
+                //        curFont.Draw("@"+entry.ToString(), posx, posy, batch, 1);
+                //    else
+                //        curFont.Draw(" "+entry.ToString(), posx, posy, batch, 1);
+                //    posy += 20;
+                //}
+                for(int i = windowStart; i < Math.Min(windowEnd, entries.Count); i++)
                 {
-                    if(entry.IsSelected())
-                        selFont.Draw(entry.ToString(), posx, posy, batch, 1);
+                    MenuEntry entry = entries[i];
+                    if (entry.IsSelected())
+                        curFont.Draw("@" + entry.ToString(), posx, posy, batch, 1);
                     else
-                        curFont.Draw(entry.ToString(), posx, posy, batch, 1);
+                        curFont.Draw(" " + entry.ToString(), posx, posy, batch, 1);
                     posy += 20;
                 }
+
             }
         }
 
@@ -377,9 +405,9 @@ namespace acamar.Source.Engine.World
             }
             else
             {
-                menuPages[currentPage].Reset();
+                //menuPages[currentPage].Reset();
                 currentPage = page;
-                menuPages[currentPage].Reset();
+                //menuPages[currentPage].Reset();
             }
         }
     }

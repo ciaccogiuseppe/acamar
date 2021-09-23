@@ -367,12 +367,15 @@ namespace acamar.Source.Engine.World
             int entSPosy = 0;
             int entSWidth = 0;
             int entSHeight = 0;
+            int curOption = 0;
 
             bool preEvn = false;
+            bool promptAcn = false;
 
             int entLayer = 0;
 
             Event evn = null;
+            RunningPrompt currentPrompt = null;
             EntityConstants.ENTTYPE entType;
             Entity curEnt = null;
 
@@ -590,8 +593,22 @@ namespace acamar.Source.Engine.World
                                             break;
                                     }
                                     break;
+                                case "PRMT":
+                                    string lin3 = line.Split('\t')[3];
+                                    curOption = int.Parse(lin3.Split(' ')[0]);
+                                    break;
                                 case "ACTN":
+                                case "PRAC":
+                                    if(line.Split('\t')[2] == "ACTN")
+                                    {
+                                        promptAcn = false;
+                                    }
+                                    if(line.Split('\t')[2] == "PRAC")
+                                    {
+                                        promptAcn = true;
+                                    }
                                     string lin2 = line.Split('\t')[3];
+                                    EventAction curAction = null;
                                     switch (lin2.Split(' ')[0])
                                     {
                                         case "PROMPT":
@@ -601,113 +618,142 @@ namespace acamar.Source.Engine.World
                                             {
                                                 promptOptions.Add(lin2.Split('<')[i]);
                                             }
-                                            evn.AddAction(new PromptAction(new RunningPrompt(promptMessage, promptOptions)));
+                                            currentPrompt = new RunningPrompt(promptMessage, promptOptions);
+                                            //promptAcn = true;
+                                            curAction = new PromptAction(currentPrompt);
+                                            //evn.AddAction(new PromptAction(currentPrompt));
+                                            break;
+                                        case "NOACN":
+                                            curAction = new NoAction();
                                             break;
 
                                         case "SAVE":
-                                            evn.AddAction(new SaveAction(1));
+                                            curAction = new SaveAction(1);
+                                            //evn.AddAction(new SaveAction(1));
                                             break;
 
                                         case "LOCFLGSET":
-                                            evn.AddAction(new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this));
+                                            curAction = new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this);
+                                            //evn.AddAction(new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this));
                                             break;
                                         case "FLGSET":
-                                            evn.AddAction(new FlagAction(int.Parse(lin2.Split(' ')[1]), 1));
+                                            curAction = new FlagAction(int.Parse(lin2.Split(' ')[1]), 1);
+                                            //evn.AddAction(new FlagAction(int.Parse(lin2.Split(' ')[1]), 1));
                                             break;
                                         case "ACTIVATE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE));
+                                                curAction = new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE);
+                                                //evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.ACTIVATE));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE));
+                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE);
+                                                //evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.ACTIVATE));
                                             }
                                             break;
                                         case "DEACTIVATE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE));
+                                                curAction = new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE);
+                                                //evn.AddAction(new ActivateAction(curEnt, ActivateAction.ACTIVTYPE.DEACTIVATE));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE));
+                                                curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE);
+                                                //evn.AddAction(new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.ACTIVTYPE.DEACTIVATE));
                                             }
                                             break;
                                         case "SLEEP":
-                                            evn.AddAction(new SleepAction(int.Parse(lin2.Split(' ')[1])));
+                                            curAction = new SleepAction(int.Parse(lin2.Split(' ')[1]));
+                                            //evn.AddAction(new SleepAction(int.Parse(lin2.Split(' ')[1])));
                                             break;
                                         case "MESSAGE":
-                                            evn.AddAction(new MessageAction(lin2.Split('<')[1], curEnt));
+                                            curAction = new MessageAction(lin2.Split('<')[1], curEnt);
+                                            //evn.AddAction(new MessageAction(lin2.Split('<')[1], curEnt));
                                             break;
                                         case "FADEIN":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN));
+                                                curAction = new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN);
+                                                //evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEIN));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN));
+                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN);
+                                                //evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEIN));
                                             }
                                             break;
                                         case "FADEOUT":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT));
+                                                curAction = new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT);
+                                                //evn.AddAction(new FadeAction(curEnt, FadeAction.FADETYPE.FADEOUT));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT));
+                                                curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT);
+                                                //evn.AddAction(new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.FADETYPE.FADEOUT));
                                             }
                                             break;
                                         case "LOCK":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK));
+                                                curAction = new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK);
+                                                //evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.LOCK));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK));
+                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK);
+                                                //evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.LOCK));
                                             }
                                             break;
                                         case "UNLOCK":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK));
+                                                curAction = new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK);
+                                                //evn.AddAction(new BlockAction(curEnt, BlockAction.BLOCKTYPE.UNLOCK));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK));
+                                                curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK);
+                                                //evn.AddAction(new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.BLOCKTYPE.UNLOCK));
                                             }
                                             break;
                                         case "GIVEITEM":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new GiveItemAction(Globals.player, entName));
+                                                curAction = new GiveItemAction(Globals.player, entName);
+                                                //evn.AddAction(new GiveItemAction(Globals.player, entName));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new GiveItemAction(Globals.player, lin2.Split(' ')[1]));
+                                                curAction = new GiveItemAction(Globals.player, lin2.Split(' ')[1]);
+                                                //evn.AddAction(new GiveItemAction(Globals.player, lin2.Split(' ')[1]));
                                             }
                                             break;
                                         case "DISABLE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.DISABLE));
+                                                curAction = new DisableAction(curEnt, DisableAction.TYPE.DISABLE);
+                                                //evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.DISABLE));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.DISABLE));
+                                                curAction = new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.DISABLE);
+                                                //evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.DISABLE));
                                             }
                                             break;
                                         case "ENABLE":
                                             if (lin2.Split(' ')[1] == "SELF")
                                             {
-                                                evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.ENABLE));
+                                                curAction = new DisableAction(curEnt, DisableAction.TYPE.ENABLE);
+                                                //evn.AddAction(new DisableAction(curEnt, DisableAction.TYPE.ENABLE));
                                             }
                                             else
                                             {
-                                                evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.ENABLE));
+                                                curAction = new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.ENABLE);
+                                                //evn.AddAction(new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.ENABLE));
                                             }
                                             break;
                                         case "TELEPORT":
@@ -718,24 +764,42 @@ namespace acamar.Source.Engine.World
                                             string target = lin2.Split(' ')[5];
 
                                             if (level == selfLevel.GetId() && map == mapID)
-                                                evn.AddAction(new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target)));
+                                                curAction = new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target));
+                                            //evn.AddAction(new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target)));
                                             else if (level == selfLevel.GetId() && map != mapID)
-                                                evn.AddAction(new TeleportAction(
+                                                curAction = new TeleportAction(
                                                     selfLevel,
                                                     map,
                                                     posx,
                                                     posy,
-                                                    (Character)entDict.GetValueOrDefault(target)));
+                                                    (Character)entDict.GetValueOrDefault(target));
+                                            /*evn.AddAction(new TeleportAction(
+                                                selfLevel,
+                                                map,
+                                                posx,
+                                                posy,
+                                                (Character)entDict.GetValueOrDefault(target)));*/
                                             else
-                                                evn.AddAction(new TeleportAction(
+                                                curAction = new TeleportAction(
                                                     Globals.world,
                                                     level,
                                                     map,
                                                     posx,
                                                     posy,
-                                                    (Character)entDict.GetValueOrDefault(target)));
+                                                    (Character)entDict.GetValueOrDefault(target));
+                                                /*evn.AddAction(new TeleportAction(
+                                                    Globals.world,
+                                                    level,
+                                                    map,
+                                                    posx,
+                                                    posy,
+                                                    (Character)entDict.GetValueOrDefault(target)));*/
                                             break;
                                     }
+                                    if (promptAcn)
+                                        currentPrompt.AddAction(curAction, curOption);
+                                    else
+                                        evn.AddAction(curAction);
                                     break;
                             }
                         }
@@ -782,6 +846,11 @@ namespace acamar.Source.Engine.World
             //DEBUG
             timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
         }
+
+        //private EventAction ParseAction(string line)
+        //{
+
+        //}
 
     }
 }

@@ -15,6 +15,7 @@ namespace acamar.Source.Engine.World.Script
         protected List<string> promptOptions;
         protected bool active = false;
         protected PromptPage promptPage;
+        protected bool ended = false;
         
         internal class PromptPage
         {
@@ -99,7 +100,8 @@ namespace acamar.Source.Engine.World.Script
 
         public bool IsEnded()
         {
-            return promptPage.IsEnded();
+            //return promptPage.IsEnded();
+            return ended;
         }
 
         public virtual void Update()
@@ -109,22 +111,27 @@ namespace acamar.Source.Engine.World.Script
 
         public void Draw(SpriteBatch batch)
         {
-            if(!promptMessage.IsEnded())
+            if(!promptPage.IsEnded())
             {
-                promptMessage.Draw(batch);
+                if (!promptMessage.IsEnded())
+                {
+                    promptMessage.Draw(batch);
+                }
+                else
+                {
+                    promptMessage.Draw(batch);
+                    promptPage.Draw(batch);
+                }
             }
-            else
-            {
-                promptMessage.Draw(batch);
-                promptPage.Draw(batch);
-            }
+            
         }
 
-        public void Reset()
+        public virtual void Reset()
         {
             active = false;
             promptMessage.Reset();
             promptPage.Reset();
+            ended = false;
         }
     }
 }
