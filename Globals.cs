@@ -1,6 +1,7 @@
 ﻿using acamar.Source.Engine;
 using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -77,5 +78,7 @@ namespace acamar
         public static SaveSlot[] SAVESLOTS = new SaveSlot[4] { EMPTYSLOT, SLOT1, SLOT2, SLOT3 };
 
         public static int PROMPTRESULT = 0;
+
+        public static GraphicsDeviceManager _graphics;
     }
 }

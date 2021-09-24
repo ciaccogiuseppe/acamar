@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.World.Entities.LightSources;
 using acamar.Source.Engine.World.Inventory;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -14,10 +15,15 @@ namespace acamar.Source.Engine.World.Entities
         private List<InventoryItem> inventory = new List<InventoryItem>();
         private List<ItemConstants.ITEMS> itemsInInventory = new List<ItemConstants.ITEMS>();
 
+        private LightSource torch;
+
         public Player(int entid, int sprid, int posx, int posy, int dir) :
             base(entid, sprid, posx, posy, dir)
         {
             animActive = true;
+
+            //torch = new LightSource(posx, posy, 10000);
+            torch = new Sonar(posx, posy, 150);
         }
 
         public override void StateMachine()
@@ -146,6 +152,35 @@ namespace acamar.Source.Engine.World.Entities
 
             collRec.X = destRec.X + cPosx;
             collRec.Y = destRec.Y + cPosy;
+
+            torch.SetPosition(GetCenterX(), GetCenterY());
+            if (CURRENTSTATE == STATE.IDLEDOWN || CURRENTSTATE == STATE.WALKDOWN)
+            {
+                torch.SetDirection(LightSource.DIRECTION.DOWN);
+                //torch.SetPosition(GetCenterX(), collRec.Bottom);
+            }
+            if (CURRENTSTATE == STATE.IDLEUP || CURRENTSTATE == STATE.WALKUP)
+            {
+                torch.SetDirection(LightSource.DIRECTION.UP);
+                //torch.SetPosition(GetCenterX(), collRec.Top);
+            }
+                
+            if (CURRENTSTATE == STATE.IDLELEFT || CURRENTSTATE == STATE.WALKLEFT)
+            {
+                torch.SetDirection(LightSource.DIRECTION.LEFT);
+                //torch.SetPosition(collRec.Left, GetCenterY());
+            }
+
+            if (CURRENTSTATE == STATE.IDLERIGHT || CURRENTSTATE == STATE.WALKRIGHT)
+            {
+                torch.SetDirection(LightSource.DIRECTION.RIGHT);
+                //torch.SetPosition(collRec.Right, GetCenterY());
+            }
+        }
+
+        public LightSource GetLight()
+        {
+            return torch;
         }
 
         public override void SetPosition(int posx, int posy)

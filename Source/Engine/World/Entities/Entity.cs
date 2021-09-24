@@ -25,6 +25,7 @@ namespace acamar.Source.Engine.World
         protected bool moving = false;
         protected bool locked = false;
         protected bool enabled = true;
+        protected bool transparent = false;
         protected int layer = 0;
         protected Texture2D texture;
         protected Rectangle destRec;
@@ -347,6 +348,16 @@ namespace acamar.Source.Engine.World
         public bool IsEnabled()
         {
             return enabled;
+        }
+
+        public bool IsTransparent()
+        {
+            return transparent;
+        }
+
+        public void SetTransparent(bool transparent)
+        {
+            this.transparent = transparent;
         }
     }
 

@@ -15,7 +15,7 @@ namespace acamar
     public class Main : Game
     {
         
-        private GraphicsDeviceManager _graphics;
+        //private GraphicsDeviceManager Globals_graphics;
 
         private Texture2D leftRightBorder;
         private Texture2D upDownBorder;
@@ -25,7 +25,7 @@ namespace acamar
 
         public Main()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            Globals._graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             IsFixedTimeStep = true;
@@ -41,9 +41,9 @@ namespace acamar
 
             FontConstants.Initialize();
 
-            _graphics.PreferredBackBufferWidth = Globals.SIZEX;
-            _graphics.PreferredBackBufferHeight = Globals.SIZEY;
-            _graphics.ApplyChanges();
+            Globals._graphics.PreferredBackBufferWidth = Globals.SIZEX;
+            Globals._graphics.PreferredBackBufferHeight = Globals.SIZEY;
+            Globals._graphics.ApplyChanges();
 
             Globals.world = new World();
             Globals.mainMenu = new MainMenu();
@@ -54,12 +54,12 @@ namespace acamar
 
             Color borderColor = new Color(32, 32, 32);
 
-            leftRightBorder = new Texture2D(_graphics.GraphicsDevice, 400, 400);
+            leftRightBorder = new Texture2D(Globals._graphics.GraphicsDevice, 400, 400);
             Color[] data = new Color[400 * 400];
             for (int i = 0; i < data.Length; ++i) data[i] = borderColor;
             leftRightBorder.SetData(data);
 
-            upDownBorder = new Texture2D(_graphics.GraphicsDevice, 800, 400);
+            upDownBorder = new Texture2D(Globals._graphics.GraphicsDevice, 800, 400);
             Color[] data2 = new Color[800 * 400];
             for (int i = 0; i < data2.Length; ++i) data2[i] = borderColor;
             upDownBorder.SetData(data2);
@@ -143,13 +143,13 @@ namespace acamar
 
             if(GlobalSettings.CHANGEDRES)
             {
-                _graphics.PreferredBackBufferWidth = Globals.SIZEX;
-                _graphics.PreferredBackBufferHeight = Globals.SIZEY;
-                _graphics.ApplyChanges();
+                Globals._graphics.PreferredBackBufferWidth = Globals.SIZEX;
+                Globals._graphics.PreferredBackBufferHeight = Globals.SIZEY;
+                Globals._graphics.ApplyChanges();
                 GlobalSettings.CHANGEDRES = false;
                 Window.Position = new Point((
-                    GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (_graphics.PreferredBackBufferWidth / 2),
-                    (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (_graphics.PreferredBackBufferHeight / 2));
+                    GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Globals._graphics.PreferredBackBufferWidth / 2),
+                    (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Globals._graphics.PreferredBackBufferHeight / 2));
             }
 
 

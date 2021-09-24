@@ -30,6 +30,8 @@ namespace acamar.Source.Engine.World
         private Rectangle[] tileSource;
         private List<Entity> entities = new List<Entity>();
         private Dictionary<string, Entity> entDict = new Dictionary<string, Entity>();
+        
+        private List<LightSource> lightSources = new List<LightSource>();
 
         private OverlayText timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
 
@@ -38,6 +40,10 @@ namespace acamar.Source.Engine.World
         //private bool locked = false;
 
         private Message message;
+
+
+        private int[,] lightMap; //...............................................................
+        Texture2D pixel = new Texture2D(Globals._graphics.GraphicsDevice, 1, 1);
 
         public Map(int id, Level self)
         {
@@ -52,6 +58,17 @@ namespace acamar.Source.Engine.World
             entDict.Add("PLAYER", Globals.player);
 
             LoadMap(mapID);
+
+
+
+            Color[] colors = new Color[1];
+            colors[0] = Color.Black;
+            pixel.SetData(colors);
+            
+            
+            //lightSources.Add(new LightSource(30, 40, 10000));
+
+            lightSources.Add(Globals.player.GetLight());
         }
 
         public Map(int id, int tile, int w, int h, Level self)
@@ -188,6 +205,12 @@ namespace acamar.Source.Engine.World
             //...
 
             //message.Update();
+
+            foreach(LightSource light in lightSources)
+            {
+                light.Update();
+            }
+            UpdateLights();
         }
 
         public void Draw(SpriteBatch batch)
@@ -196,6 +219,14 @@ namespace acamar.Source.Engine.World
             foreach (Entity ent in entities)
             {
                 ent.Draw(batch);
+            }
+
+            for (int i = 0; i < height; i++)
+            {
+                for(int j = 0; j < width; j++)
+                {
+                    batch.Draw(pixel, new Vector2(j, i), Color.White * (1-((float)lightMap[i,j]/10.0f)));
+                }
             }
 
             timer.Draw(Globals._overBatch);
@@ -323,7 +354,7 @@ namespace acamar.Source.Engine.World
                 }
             }
 
-
+            lightMap = new int[height, width];
             //mapArray[i, j] = value;
             //tileDest[i, j] = new Rectangle(j*Constants.TILESIZE, i*Constants.TILESIZE, Constants.TILESIZE, Constants.TILESIZE);
 
@@ -454,6 +485,12 @@ namespace acamar.Source.Engine.World
                                 break;
                             case "INAC":
                                 curEnt.Deactivate();
+                                break;
+                            case "INVISIBLE":
+                                curEnt.SetTransparent(true);
+                                break;
+                            case "DISABLED":
+                                curEnt.Disable();
                                 break;
                             case "TYPE":
                                 switch (line.Split('\t')[2].Split(' ')[0])
@@ -847,10 +884,126 @@ namespace acamar.Source.Engine.World
             timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
         }
 
-        //private EventAction ParseAction(string line)
-        //{
+        public void UpdateLightsOLD()
+        {
+            int level = 0;
+            int iMin = Math.Max(Globals.player.GetPosY() - Globals.GSIZEY / 2, 0);
+            int iMax = Math.Min(Globals.player.GetPosY() + Globals.GSIZEY / 2, height);
 
-        //}
+            int jMin = Math.Max(Globals.player.GetPosX() - Globals.GSIZEX / 2, 0);
+            int jMax = Math.Min(Globals.player.GetPosX() + Globals.GSIZEX / 2, width);
+
+            //for (int i = 0; i < height; i++)
+            for (int i = iMin; i < iMax; i+=2)
+            {
+                //for(int j = 0; j < width; j++)
+                for (int j = jMin; j < jMax; j+=2)
+                {
+                    lightMap[i, j] = 0;
+                    foreach (LightSource light in lightSources)
+                    {
+                        level = light.GetLightLevel(j, i);
+                        lightMap[i, j] = Math.Max(lightMap[i, j], level);
+
+                        if (i + 1 < height)
+                            lightMap[i + 1, j] = Math.Max(lightMap[i, j], level);
+                        if (j + 1 < width)
+                            lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
+                        if (i + 1 < height && j + 1 < width)
+                            lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
+                    }
+                    //lightMap[i, j] = level;
+                }
+            }
+        }
+
+        public void UpdateLights()
+        {
+            int level;
+            int iMin = Math.Max(Globals.player.GetPosY() - Globals.GSIZEY / 2, 0);
+            int iMax = Math.Min(Globals.player.GetPosY() + Globals.GSIZEY / 2, height);
+
+            int jMin = Math.Max(Globals.player.GetPosX() - Globals.GSIZEX / 2, 0);
+            int jMax = Math.Min(Globals.player.GetPosX() + Globals.GSIZEX / 2, width);
+
+            //for (int i = 0; i < height; i++)
+            for (int i = iMin; i < iMax; i++)
+            {
+                //for(int j = 0; j < width; j++)
+                for (int j = jMin; j < jMax; j++)
+                {
+                    //lightMap[i, j] = 0;
+
+                    if(lightMap[i, j] >= 0)
+                    {
+                        lightMap[i, j]--;
+                        continue;
+                    }
+                    foreach (LightSource light in lightSources)
+                    {
+                        level = light.GetLightLevel(j, i);
+                        if(level <= 0)
+                        {
+                            lightMap[i, j] = Math.Max(lightMap[i, j], level);
+                            //if +=2
+                            //if (i + 1 < height)
+                            //    lightMap[i + 1, j] = level;
+                            //if (j + 1 < width)
+                            //    lightMap[i, j + 1] = level;
+                            //if (i + 1 < height && j + 1 < width)
+                            //    lightMap[i + 1, j + 1] = level;
+
+                            continue;
+                        }
+
+                        //lightMap[i, j] = Math.Max(lightMap[i, j], level);
+                        //lightMap[i + 1, j] = Math.Max(lightMap[i, j], level);
+                        //lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
+                        //lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
+
+                        foreach (Entity entity in entities)
+                        {
+                            if (!entity.IsTransparent() && !entity.Equals(Globals.player))
+                            {
+                                if (!light.IsCovered(j, i, entity.GetCollisionBox(), lightMap))
+                                {
+                                    level = Math.Max(lightMap[i, j], level);
+                                    //lightMap[i, j] = Math.Max(lightMap[i, j], level);
+                                    //if +=2
+                                    //if(i+1 < height)
+                                    //    lightMap[i + 1, j] = Math.Max(lightMap[i, j], level);
+                                    //if(j+1 < width)
+                                    //    lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
+                                    //if(i + 1 < height && j + 1 < width)
+                                    //    lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
+                                }
+                                else
+                                {
+                                    //if (level <= 4) level = 4;
+                                    level = Math.Max(lightMap[i, j], (int)Math.Sqrt(level));
+
+                                    level = 0;
+                                    //level = Math.Max(lightMap[i, j], level/2);
+
+
+                                    //lightMap[i, j] = level;
+                                    //if (i + 1 < height)
+                                    //    lightMap[i + 1, j] = level;
+                                    //if (j + 1 < width)
+                                    //    lightMap[i, j + 1] = level;
+                                    //if (i + 1 < height && j + 1 < width)
+                                    //    lightMap[i + 1, j + 1] = level;
+
+                                    break;
+                                }
+                            }
+                        }
+                        lightMap[i, j] = level;
+                    }
+                }
+            }
+        }
+
 
     }
 }

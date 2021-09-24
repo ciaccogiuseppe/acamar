@@ -398,7 +398,8 @@ namespace acamar.Source.Engine.World
                                     Globals.world.Reset();
                                     Globals.player.Reset();
                                     Globals.runningTime = System.TimeSpan.Zero;
-                                    ///MAKE CODE ^ ONCE AND NOT REPEATED FOR ONLY SLOT TODO
+                                    //TODO:
+                                    //MAKE CODE ^ ONCE AND NOT REPEATED FOR ONLY SLOT TODO
                                 }
                                 else
                                 {
