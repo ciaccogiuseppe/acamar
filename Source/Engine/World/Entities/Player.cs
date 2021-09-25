@@ -118,6 +118,11 @@ namespace acamar.Source.Engine.World.Entities
                     Globals.world.Reset();
                 }
 
+                if(MyKeyboard.IsPressedNotCont(Keys.X))
+                {
+                    torch.Reset();
+                }
+
                 //DEBUG
 
                 if (IsMoving())

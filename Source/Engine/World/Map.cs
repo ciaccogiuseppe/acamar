@@ -1,5 +1,6 @@
 ﻿using acamar.Source.Engine.Constants;
 using acamar.Source.Engine.World.Entities;
+using acamar.Source.Engine.World.Entities.LightSources;
 using acamar.Source.Engine.World.Script;
 using acamar.Source.Engine.World.Script.EventActions;
 using acamar.Source.Engine.World.Script.EventConditions;
@@ -64,10 +65,11 @@ namespace acamar.Source.Engine.World
             Color[] colors = new Color[1];
             colors[0] = Color.Black;
             pixel.SetData(colors);
-            
-            
+
+
             //lightSources.Add(new LightSource(30, 40, 10000));
 
+            //lightSources.Add(new Sonar(30, 30, 200));
             lightSources.Add(Globals.player.GetLight());
         }
 
@@ -934,17 +936,21 @@ namespace acamar.Source.Engine.World
                 {
                     //lightMap[i, j] = 0;
 
-                    if(lightMap[i, j] >= 0)
+                    if (lightMap[i, j] > 0)
                     {
                         lightMap[i, j]--;
-                        continue;
+                        //continue;
                     }
+
                     foreach (LightSource light in lightSources)
                     {
                         level = light.GetLightLevel(j, i);
                         if(level <= 0)
                         {
                             lightMap[i, j] = Math.Max(lightMap[i, j], level);
+                            //lightMap[i, j] = 0;
+                            
+                            
                             //if +=2
                             //if (i + 1 < height)
                             //    lightMap[i + 1, j] = level;
@@ -965,7 +971,7 @@ namespace acamar.Source.Engine.World
                         {
                             if (!entity.IsTransparent() && !entity.Equals(Globals.player))
                             {
-                                if (!light.IsCovered(j, i, entity.GetCollisionBox(), lightMap))
+                                if (!light.IsCovered(j, i, entity.GetCollisionBox(), lightMap, height, width))
                                 {
                                     level = Math.Max(lightMap[i, j], level);
                                     //lightMap[i, j] = Math.Max(lightMap[i, j], level);
@@ -997,6 +1003,8 @@ namespace acamar.Source.Engine.World
                                     break;
                                 }
                             }
+
+                            
                         }
                         lightMap[i, j] = level;
                     }

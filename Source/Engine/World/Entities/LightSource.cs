@@ -81,7 +81,7 @@ namespace acamar.Source.Engine.World.Entities
         // p3 ------ p4
         // |          |
         // p5 ------ p6
-        public virtual bool IsCovered(int x, int y, Rectangle rec, int[,] lightMap)
+        public virtual bool IsCovered(int x, int y, Rectangle rec, int[,] lightMap, int height, int width)
         {
             bool intersects = false;
             
@@ -199,6 +199,11 @@ namespace acamar.Source.Engine.World.Entities
 
             if (count != 10) count--;
             if (count == 0) count = 10;
+        }
+
+        public virtual void Reset()
+        {
+            
         }
     }
 }

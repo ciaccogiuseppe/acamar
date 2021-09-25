@@ -10,6 +10,10 @@ namespace acamar.Source.Engine.World.Entities.LightSources
 
         private int radius;
         private int curRadius;
+
+        private int step = 1;
+        private int ins = 10;
+        private bool disabled;
         public Sonar(int posx, int posy, int radius):
             base(posx, posy, 10000)
         {
@@ -22,20 +26,26 @@ namespace acamar.Source.Engine.World.Entities.LightSources
 
         public override void Update()
         {
-            curRadius++;
-            if (curRadius == radius) curRadius = 0;
+            if (curRadius <= radius)
+                curRadius += step*9;
+            if (curRadius >= radius)
+                disabled = true;
         }
 
         public override int GetLightLevel(int x, int y)
         {
+            if (disabled) return 0;
+            if ((posx - x) * (posx - x) + (posy - y) * (posy - y) > ((curRadius + step) * (curRadius + step))) return 0;
+            if ((posx - x) * (posx - x) + (posy - y) * (posy - y) < ((curRadius - step) * (curRadius - step))) return 0;
+
             if (
-                (posx - x) * (posx - x) + (posy - y) * (posy - y) < ((curRadius + 1) * (curRadius + 1))
+                (posx - x) * (posx - x) + (posy - y) * (posy - y) <= ((curRadius + step) * (curRadius + step))
                 &&
-                (posx - x) * (posx - x) + (posy - y) * (posy - y) > ((curRadius - 1) * (curRadius - 1))
+                (posx - x) * (posx - x) + (posy - y) * (posy - y) >= ((curRadius - step) * (curRadius - step))
                 ) /*return 5;*/
             {
-                if (((x - posx) * (x - posx) + (y - posy) * (y - posy)) == 0) return intensity >= 6? 6:intensity;
-                return Math.Min(intensity / ((x - posx) * (x - posx) + (y - posy) * (y - posy)), 6);
+                if (((x - posx) * (x - posx) + (y - posy) * (y - posy)) == 0) return intensity >= ins? ins:intensity;
+                return Math.Min(intensity / ((x - posx) * (x - posx) + (y - posy) * (y - posy)), ins);
             }
             else return 0;
         }
@@ -50,11 +60,22 @@ namespace acamar.Source.Engine.World.Entities.LightSources
                 
         }
 
-        public override bool IsCovered(int x, int y, Rectangle rec, int[,] lightMap)
+        public override void Reset()
         {
-            if((posx - x) * (posx - x) + (posy - y) * (posy - y) > ((curRadius + 1) * (curRadius + 1))
-                &&
-                (posx - x) * (posx - x) + (posy - y) * (posy - y) < ((curRadius - 1) * (curRadius - 1))
+            if(disabled)
+            {
+                curRadius = 0;
+                disabled = false;
+            }
+            
+        }
+
+        public override bool IsCovered(int x, int y, Rectangle rec, int[,] lightMap, int height, int width)
+        {
+            if (disabled) return true;
+            if((posx - x) * (posx - x) + (posy - y) * (posy - y) > ((curRadius + step) * (curRadius + step))
+                ||
+                (posx - x) * (posx - x) + (posy - y) * (posy - y) < ((curRadius - step) * (curRadius - step))
                 ) return false;
 
             if (rec.Contains(new Point(x, y))) return true;
@@ -106,17 +127,11 @@ namespace acamar.Source.Engine.World.Entities.LightSources
                 for(int j = rec.Left; j <= rec.Right; j++)
                 {
                     if (i == rec.Top || i == rec.Bottom || j == rec.Left || j == rec.Right)
-                        try
+                        if(i >= 0 && j >= 0 && i < height && j < width)
                         {
-                            //lightMap[i, j] = 6;
-                            if (((j - posx) * (j - posx) + (i - posy) * (i - posy)) == 0) lightMap[i, j] = intensity >= 6 ? 6 : intensity;
-                            else lightMap[i,j] = Math.Min(intensity / ((j - posx) * (j - posx) + (i - posy) * (i - posy)), 6);
+                            if (((j - posx) * (j - posx) + (i - posy) * (i - posy)) == 0) lightMap[i, j] = intensity >= ins ? ins : intensity;
+                            else lightMap[i, j] = Math.Min(intensity / ((j - posx) * (j - posx) + (i - posy) * (i - posy)), ins);
                         }
-                        catch (IndexOutOfRangeException e)
-                        {
-
-                        }
-
                 }
             }
             return true;
