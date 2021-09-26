@@ -68,7 +68,7 @@ namespace acamar.Source.Engine.World.Entities
                 return intensity / ((x - posx) * (x - posx) + (y - posy) * (y - posy));
             }
 
-            
+
             if (((x - posx) * (x - posx) + (y - posy) * (y - posy)) == 0) return intensity;
             return intensity / ((x - posx) * (x - posx) + (y - posy) * (y - posy));
         }
@@ -185,14 +185,14 @@ namespace acamar.Source.Engine.World.Entities
             Random  rnd = new Random();
             if(decrease && count == 10)
             {
-                step = rnd.Next(1, 10);
-                intensity -= step * 100;
+                step = rnd.Next(1, 4);
+                intensity -= step * 10;
                 decrease = false;
                 count--;
             }
             else if (!decrease && count == 10)
             {
-                intensity += step * 100;
+                intensity += step * 10;
                 decrease = true;
                 count--;
             }

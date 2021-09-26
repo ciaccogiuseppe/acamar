@@ -1,7 +1,9 @@
 ﻿using acamar.Source.Engine.Constants;
 using acamar.Source.Engine.World.Entities.LightSources;
 using acamar.Source.Engine.World.Inventory;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Penumbra;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,9 +24,18 @@ namespace acamar.Source.Engine.World.Entities
         {
             animActive = true;
 
-            //torch = new LightSource(posx, posy, 10000);
-            torch = new Sonar(posx, posy, 150);
+            torch = new LightSource(posx, posy, 5000);
+            //torch = new Sonar(posx, posy, 150);
+
+            
         }
+
+        public PointLight Light { get; } = new PointLight
+        {
+            Scale = new Vector2(400f), // Range of the light source (how far the light will travel)
+            Color = Color.Orange,
+            ShadowType = ShadowType.Occluded
+        };
 
         public override void StateMachine()
         {
@@ -81,6 +92,8 @@ namespace acamar.Source.Engine.World.Entities
 
         public override void Update()
         {
+            Main.penumbra.Lights.Remove(Light);
+            Main.penumbra.Lights.Add(Light);
             if (fading)
                 opacity += fadeStep;
             if (fading && (opacity < 0 || opacity > 1))
@@ -176,6 +189,11 @@ namespace acamar.Source.Engine.World.Entities
                 torch.SetDirection(LightSource.DIRECTION.RIGHT);
                 //torch.SetPosition(collRec.Right, GetCenterY());
             }
+
+            Random r = new Random();
+            Light.Scale = new Vector2(400f + r.Next(1,59));
+            Light.Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y) ;
+
         }
 
         public LightSource GetLight()
@@ -193,6 +211,11 @@ namespace acamar.Source.Engine.World.Entities
             else
             {
                 base.SetPosition(posx, posy);
+
+
+                torch.SetPosition(posx, posy);
+
+
                 Globals.CAMX = Globals.GSIZEX / 2 - posx;// * (int)Globals.SCALE;
                 Globals.CAMY = Globals.GSIZEY / 2 - posy;// * (int)Globals.SCALE;
             }
@@ -201,6 +224,11 @@ namespace acamar.Source.Engine.World.Entities
         public void UpdatePosition()
         {
             base.SetPosition(nextPosx, nextPosy);
+
+
+            torch.SetPosition(nextPosx, nextPosy);
+
+
             Globals.CAMX = Globals.GSIZEX / 2 - posx;// * (int)Globals.SCALE;
             Globals.CAMY = Globals.GSIZEY / 2 - posy;// * (int)Globals.SCALE;
         }

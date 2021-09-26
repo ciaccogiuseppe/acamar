@@ -68,7 +68,8 @@ namespace acamar.Source.Engine.World
             
             //lightSources.Add(new LightSource(30, 40, 10000));
 
-            lightSources.Add(Globals.player.GetLight());
+            //lightSources.Add(Globals.player.GetLight());
+
         }
 
         public Map(int id, int tile, int w, int h, Level self)
@@ -206,11 +207,11 @@ namespace acamar.Source.Engine.World
 
             //message.Update();
 
-            foreach(LightSource light in lightSources)
-            {
-                light.Update();
-            }
-            UpdateLights();
+            //foreach(LightSource light in lightSources)
+            //{
+            //    light.Update();
+            //}
+            //UpdateLights();
         }
 
         public void Draw(SpriteBatch batch)
@@ -221,13 +222,16 @@ namespace acamar.Source.Engine.World
                 ent.Draw(batch);
             }
 
-            for (int i = 0; i < height; i++)
-            {
-                for(int j = 0; j < width; j++)
-                {
-                    batch.Draw(pixel, new Vector2(j, i), Color.White * (1-((float)lightMap[i,j]/10.0f)));
-                }
-            }
+
+
+            //UpdateLights();
+            //for (int i = 0; i < height; i++)
+            //{
+            //    for(int j = 0; j < width; j++)
+            //    {
+            //        batch.Draw(pixel, new Vector2(j, i), Color.White * (1-((float)lightMap[i,j]/10.0f)));
+            //    }
+            //}
 
             timer.Draw(Globals._overBatch);
 
@@ -374,6 +378,8 @@ namespace acamar.Source.Engine.World
 
         private void LoadMap(int id)
         {
+            Main.penumbra.Hulls.Clear();
+            Main.penumbra.Lights.Clear();
             string filename = "Content\\map" + id + ".mp";
             string[] lines = File.ReadAllLines(filename);
 
@@ -399,6 +405,7 @@ namespace acamar.Source.Engine.World
             int entSWidth = 0;
             int entSHeight = 0;
             int curOption = 0;
+            int scale = 0;
 
             bool preEvn = false;
             bool promptAcn = false;
@@ -483,6 +490,9 @@ namespace acamar.Source.Engine.World
                             case "LAYER":
                                 entLayer = int.Parse(line.Split('\t')[2]);
                                 break;
+                            case "SCAL":
+                                scale = int.Parse(line.Split('\t')[2]);
+                                break;
                             case "INAC":
                                 curEnt.Deactivate();
                                 break;
@@ -506,6 +516,7 @@ namespace acamar.Source.Engine.World
                                         entities.Add(curEnt);
                                         entDict.Add(entName, curEnt);
                                         curEnt.Activate();
+                                        
                                         break;
                                     case "SIMPLEENT":
                                         entType = EntityConstants.ENTTYPE.CHARACTER;
@@ -515,6 +526,20 @@ namespace acamar.Source.Engine.World
                                         curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
                                         entities.Add(curEnt);
                                         entDict.Add(entName, curEnt);
+                                        break;
+                                    case "LIGHTBOX":
+                                        Main.penumbra.Hulls.Add(new Penumbra.Hull(new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0))
+                                        {
+                                            Position = new Vector2(entPosx + entCPosx, entPosy + entCPosy),
+                                            Scale = new Vector2(entCWidth, entCHeight)
+                                        });
+                                        break;
+                                    case "POINTLIGHT":
+                                        Main.penumbra.Lights.Add(new Penumbra.PointLight()
+                                        {
+                                            Position = new Vector2(entPosx, entPosy),
+                                            Scale = new Vector2(scale)
+                                        });
                                         break;
                                     case "OVERTEXT":
                                         entType = EntityConstants.ENTTYPE.OVERTEXT;
@@ -932,13 +957,13 @@ namespace acamar.Source.Engine.World
                 //for(int j = 0; j < width; j++)
                 for (int j = jMin; j < jMax; j++)
                 {
-                    //lightMap[i, j] = 0;
+                    lightMap[i, j] = 0;
 
-                    if(lightMap[i, j] >= 0)
-                    {
-                        lightMap[i, j]--;
-                        continue;
-                    }
+                    //if(lightMap[i, j] >= 0)
+                    //{
+                    //    lightMap[i, j]--;
+                    //    continue;
+                    //}
                     foreach (LightSource light in lightSources)
                     {
                         level = light.GetLightLevel(j, i);
@@ -961,43 +986,43 @@ namespace acamar.Source.Engine.World
                         //lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
                         //lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
 
-                        foreach (Entity entity in entities)
-                        {
-                            if (!entity.IsTransparent() && !entity.Equals(Globals.player))
-                            {
-                                if (!light.IsCovered(j, i, entity.GetCollisionBox(), lightMap))
-                                {
-                                    level = Math.Max(lightMap[i, j], level);
-                                    //lightMap[i, j] = Math.Max(lightMap[i, j], level);
-                                    //if +=2
-                                    //if(i+1 < height)
-                                    //    lightMap[i + 1, j] = Math.Max(lightMap[i, j], level);
-                                    //if(j+1 < width)
-                                    //    lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
-                                    //if(i + 1 < height && j + 1 < width)
-                                    //    lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
-                                }
-                                else
-                                {
-                                    //if (level <= 4) level = 4;
-                                    level = Math.Max(lightMap[i, j], (int)Math.Sqrt(level));
+                        //foreach (Entity entity in entities)
+                        //{
+                        //    if (!entity.IsTransparent() && !entity.Equals(Globals.player))
+                        //    {
+                        //        if (!light.IsCovered(j, i, entity.GetCollisionBox(), lightMap))
+                        //        {
+                        //            level = Math.Max(lightMap[i, j], level);
+                        //            //lightMap[i, j] = Math.Max(lightMap[i, j], level);
+                        //            //if +=2
+                        //            //if(i+1 < height)
+                        //            //    lightMap[i + 1, j] = Math.Max(lightMap[i, j], level);
+                        //            //if(j+1 < width)
+                        //            //    lightMap[i, j + 1] = Math.Max(lightMap[i, j], level);
+                        //            //if(i + 1 < height && j + 1 < width)
+                        //            //    lightMap[i + 1, j + 1] = Math.Max(lightMap[i, j], level);
+                        //        }
+                        //        else
+                        //        {
+                        //            //if (level <= 4) level = 4;
+                        //            level = Math.Max(lightMap[i, j], (int)Math.Sqrt(level));
 
-                                    level = 0;
-                                    //level = Math.Max(lightMap[i, j], level/2);
+                        //            level = 0;
+                        //            //level = Math.Max(lightMap[i, j], level/2);
 
 
-                                    //lightMap[i, j] = level;
-                                    //if (i + 1 < height)
-                                    //    lightMap[i + 1, j] = level;
-                                    //if (j + 1 < width)
-                                    //    lightMap[i, j + 1] = level;
-                                    //if (i + 1 < height && j + 1 < width)
-                                    //    lightMap[i + 1, j + 1] = level;
+                        //            //lightMap[i, j] = level;
+                        //            //if (i + 1 < height)
+                        //            //    lightMap[i + 1, j] = level;
+                        //            //if (j + 1 < width)
+                        //            //    lightMap[i, j + 1] = level;
+                        //            //if (i + 1 < height && j + 1 < width)
+                        //            //    lightMap[i + 1, j + 1] = level;
 
-                                    break;
-                                }
-                            }
-                        }
+                        //            break;
+                        //        }
+                        //    }
+                        //}
                         lightMap[i, j] = level;
                     }
                 }

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Penumbra;
 using System;
 
 namespace acamar
@@ -23,6 +24,9 @@ namespace acamar
 
         private InGameMenu inGameMenu;
 
+        public static PenumbraComponent penumbra;
+
+
         public Main()
         {
             Globals._graphics = new GraphicsDeviceManager(this);
@@ -30,6 +34,10 @@ namespace acamar
             IsMouseVisible = true;
             IsFixedTimeStep = true;
             //Window.IsBorderless = true;
+
+            penumbra = new PenumbraComponent(this);
+            
+            //Components.Add(penumbra);
         }
 
         protected override void Initialize()
@@ -63,6 +71,13 @@ namespace acamar
             Color[] data2 = new Color[800 * 400];
             for (int i = 0; i < data2.Length; ++i) data2[i] = borderColor;
             upDownBorder.SetData(data2);
+
+
+            Globals._graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Globals.GSIZEX, Globals.GSIZEY);
+            penumbra = new PenumbraComponent(this);
+
+            //Components.Add(penumbra);
+            penumbra.Initialize();
         }
 
         protected override void LoadContent()
@@ -74,10 +89,13 @@ namespace acamar
 
             // TODO: use this.Content to load your game content here
             Globals.player = new Player(1, 7, 200, 200, 0);
+
+            //penumbra.Lights.Add(Globals.player.Light);
         }
 
         protected override void Update(GameTime gameTime)
         {
+            
             /*if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();*/
 
@@ -146,6 +164,10 @@ namespace acamar
                 Globals._graphics.PreferredBackBufferWidth = Globals.SIZEX;
                 Globals._graphics.PreferredBackBufferHeight = Globals.SIZEY;
                 Globals._graphics.ApplyChanges();
+                Globals._graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Globals.SIZEX, Globals.SIZEY);
+                penumbra = new PenumbraComponent(this);
+                penumbra.Initialize();
+                Globals.world.Reset();
                 GlobalSettings.CHANGEDRES = false;
                 Window.Position = new Point((
                     GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Globals._graphics.PreferredBackBufferWidth / 2),
@@ -158,12 +180,22 @@ namespace acamar
 
         protected override void Draw(GameTime gameTime)
         {
+            
+
+            //penumbra.SpriteBatchTransformEnabled = true;
+            penumbra.Transform = Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0) * Matrix.CreateScale(Globals.SCALE) * Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0);
+
+
+            
+
+            penumbra.BeginDraw();
+
             //GraphicsDevice.Clear(Color.AntiqueWhite);
             GraphicsDevice.Clear(new Color(64,64,64));
 
             //spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null,  Matrix.CreateScale(0.5f));
 
-            //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend); SamplerState.PointClamp
+            //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
             Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE));
@@ -210,9 +242,12 @@ namespace acamar
             }
 
             Globals._spriteBatch.End();
+            penumbra.Draw(gameTime);
             Globals._overBatch.End();
-
+            //penumbra.Draw(gameTime);
             //Globals._spriteBatch.End();
+
+
 
             base.Draw(gameTime);
         }
