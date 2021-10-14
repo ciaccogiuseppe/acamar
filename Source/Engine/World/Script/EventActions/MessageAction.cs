@@ -31,7 +31,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
             if (!ended)
             {
                 started = true;
-                MessageHandler.currentMessage = message;
+                //MessageHandler.currentMessage = message;
+                MessageHandler.AddMessage(message);
                 MessageHandler.Activate();
             }
         }

@@ -12,6 +12,7 @@ namespace acamar.Source.Engine.World
     {
         //public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color)
         //public void Draw(Texture2D texture, Rectangle destinationRectangle, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth)
+        protected string name;
         protected int entid;
         protected int posx;
         protected int posy;
@@ -180,6 +181,16 @@ namespace acamar.Source.Engine.World
         public int GetPosY()
         {
             return this.posy;
+        }
+
+        public void SetName(string name)
+        {
+            this.name = name;
+        }
+
+        public string GetName()
+        {
+            return name;
         }
 
         public bool Collide(Entity target)

@@ -169,9 +169,9 @@ namespace acamar
                 penumbra.Initialize();
                 Globals.world.Reset();
                 GlobalSettings.CHANGEDRES = false;
-                Window.Position = new Point((
-                    GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Globals._graphics.PreferredBackBufferWidth / 2),
-                    (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Globals._graphics.PreferredBackBufferHeight / 2));
+                //Window.Position = new Point((
+                //    GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2) - (Globals._graphics.PreferredBackBufferWidth / 2),
+                //    (GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2) - (Globals._graphics.PreferredBackBufferHeight / 2));
             }
 
 

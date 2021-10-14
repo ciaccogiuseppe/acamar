@@ -20,7 +20,7 @@ namespace acamar.Source.Engine.World.Script.Prompts
             for(int i = 0; i < promptOptions.Count; i++)
             {
                 promptEvents[i] = new Event();
-                promptEvents[i].AddCondition(new NoCondition());
+                //promptEvents[i].AddCondition(new NoCondition());
             }
         }
 
@@ -40,7 +40,7 @@ namespace acamar.Source.Engine.World.Script.Prompts
             {
                 curEvent = promptEvents[Globals.PROMPTRESULT];
                 curEvent.Trigger();
-                ended = true;
+                ended = false;
                 triggered = true;
             }
             if(triggered && curEvent.IsActive())
@@ -51,6 +51,7 @@ namespace acamar.Source.Engine.World.Script.Prompts
             {
                 triggered = false;
                 active = false;
+                ended = true;
                 //ended = true;
             }
             if (active && !promptMessage.IsEnded())
@@ -61,15 +62,15 @@ namespace acamar.Source.Engine.World.Script.Prompts
             {
                 promptPage.Update();
             }
-            else
-            {
-                Globals.CURRENTSTATE = Globals.STATE.RUNNING;
-            }
+            //else
+            //{
+            //    Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+            //}
         }
 
-        public void AddAction(EventAction action, int option)
+        public void AddEvent(Event evn, int option)
         {
-            promptEvents[option].AddAction(action);
+            promptEvents[option] = evn;
         }
 
         public override void Reset()

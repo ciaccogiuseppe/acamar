@@ -7,9 +7,11 @@ using acamar.Source.Engine.World.Script.Prompts;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Penumbra;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -57,7 +59,9 @@ namespace acamar.Source.Engine.World
 
             entDict.Add("PLAYER", Globals.player);
 
-            LoadMap(mapID);
+            //LoadMap(mapID);
+
+            NewLoadMap(mapID);
 
 
 
@@ -376,6 +380,543 @@ namespace acamar.Source.Engine.World
             selfLevel.ChangeLevel(id);
         }
 
+        private void NewLoadMap(int id, int layer = 0)
+        {
+            string filename = "Content\\map" + id + ".mp";
+            string[] lines = File.ReadAllLines(filename);
+            string line;
+            tileID = int.Parse(lines[1].Split(' ')[layer + 1]);
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                line = lines[i];
+                if (line == "ENT")
+                {
+                    int j = i;
+                    while (lines[j++] != "TNE");
+                    int count = j - i - 2;
+                    NewLoadEntity(lines.Skip(i+1).Take(count).ToArray(), layer + 1);
+                    i = j - 1;
+                }
+                else if (line == "EVN")
+                {
+                    int j = i;
+                    while (lines[j++] != "NVE") ;
+                    int count = j - i - 2;
+                    NewLoadEvent(lines.Skip(i + 1).Take(count).ToArray(), layer + 1, null);
+                    i = j - 1;
+                }
+            }
+        }
+
+        private Entity NewLoadEntity(string[] lines, int layer)
+        {
+            string entName = "";
+
+            //Entity position
+            int entPosx = 0;
+            int entPosy = 0;
+            
+            
+            int entSprID = 0;
+            int entHeight = 0;
+            int entWidth = 0;
+
+            //Collision rectangle
+            int entCPosx = 0;
+            int entCPosy = 0;
+            int entCWidth = 0;
+            int entCHeight = 0;
+
+            //Source rectangle
+            int entSPosx = 0;
+            int entSPosy = 0;
+            int entSWidth = 0;
+            int entSHeight = 0;
+
+            int entLayer = 0;
+            int entScale = 0;
+
+            EntityConstants.ENTTYPE entType;
+            Entity curEnt = null;
+
+            string directive = "";
+            string line = "";
+
+            for(int i = 0; i < lines.Length; i++)
+            {
+                line = lines[i];
+                directive = line.Split('\t')[layer];
+
+                switch(directive)
+                {
+                    case "NAME":
+                        entName = line.Split('\t')[layer + 1];
+                        break;
+                    case "POSX":
+                        entPosx = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "POSY":
+                        entPosy = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "CPOSX":
+                        entCPosx = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "CPOSY":
+                        entCPosy = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SPOSX":
+                        entSPosx = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SPOSY":
+                        entSPosy = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SPRD":
+                        entSprID = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "HEIGHT":
+                        entHeight = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "WIDTH":
+                        entWidth = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "CHEIGHT":
+                        entCHeight = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "CWIDTH":
+                        entCWidth = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SHEIGHT":
+                        entSHeight = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SWIDTH":
+                        entSWidth = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "LAYER":
+                        entLayer = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "SCAL":
+                        entScale = int.Parse(line.Split('\t')[layer + 1]);
+                        break;
+                    case "INAC":
+                        curEnt.Deactivate();
+                        break;
+                    case "INVISIBLE":
+                        curEnt.SetTransparent(true);
+                        break;
+                    case "DISABLED":
+                        curEnt.Disable();
+                        break;
+
+
+                    case "TYPE":
+                        switch (line.Split('\t')[layer + 1].Split(' ')[0])
+                        {
+                            case "ITEM":
+                                entType = EntityConstants.ENTTYPE.ITEM;
+                                curEnt = new Item();
+                                curEnt.SetPosition(entPosx, entPosy);
+                                curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
+                                curEnt.SetLayer(entLayer);
+                                curEnt.SetSprite(entSprID);
+                                curEnt.SetName(entName);
+                                curEnt.SetSourceRectangle(new Rectangle(entSPosx, entSPosy, entSWidth, entSHeight));
+                                entities.Add(curEnt);
+                                entDict.Add(entName, curEnt);
+                                curEnt.Activate();
+
+                                break;
+                            case "SIMPLEENT":
+                                entType = EntityConstants.ENTTYPE.CHARACTER;
+                                curEnt = new Entity();
+                                //curEnt.Deactivate();
+                                curEnt.SetPosition(entPosx, entPosy);
+                                curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
+                                curEnt.SetName(entName);
+                                entities.Add(curEnt);
+                                entDict.Add(entName, curEnt);
+                                break;
+                            case "LIGHTBOX":
+                                Main.penumbra.Hulls.Add(new Penumbra.Hull(new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1), new Vector2(1, 0))
+                                {
+                                    Position = new Vector2(entPosx + entCPosx, entPosy + entCPosy),
+                                    Scale = new Vector2(entCWidth, entCHeight)
+                                });
+                                break;
+                            case "POINTLIGHT":
+                                Main.penumbra.Lights.Add(new Penumbra.PointLight()
+                                {
+                                    Position = new Vector2(entPosx, entPosy),
+                                    Scale = new Vector2(entScale),
+                                    ShadowType = ShadowType.Illuminated
+                                });
+                                break;
+                            case "TEXTURELIGHT":
+                                string SpritePATH = "2D\\" + entSprID + ".spr";
+                                Main.penumbra.Lights.Add(new Penumbra.TexturedLight(Globals.Content.Load<Texture2D>(SpritePATH))
+                                {
+                                    Position = new Vector2(entPosx, entPosy),
+                                    Scale = new Vector2(entScale),
+                                    ShadowType = ShadowType.Illuminated,
+                                });
+                                break;
+                            case "OVERTEXT":
+                                entType = EntityConstants.ENTTYPE.OVERTEXT;
+                                curEnt = new OverlayText(
+                                    line.Split('<')[1],
+                                    entPosx,
+                                    entPosy,
+                                    FontConstants.FontDictionary.GetValueOrDefault(line.Split(' ')[1]));
+                                entities.Add(curEnt);
+                                curEnt.SetName(entName);
+                                entDict.Add(entName, curEnt);
+                                curEnt.Activate();
+                                break;
+                            case "PLAYER":
+                                Globals.player.SetPosition(entPosx, entPosy);
+                                curEnt = Globals.player;
+                                curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
+                                entities.Add(curEnt);
+
+                                curEnt.Activate();
+                                break;
+                            case "EVENT":
+                                entType = EntityConstants.ENTTYPE.EVENT;
+                                curEnt = new Entity();
+                                entities.Add(curEnt);
+                                curEnt.Activate();
+                                break;
+                        }
+
+                        break;
+
+                    case "EVN":
+                        int j = i;
+                        while (lines[j++].Split('\t')[layer] != "NVE") ;
+                        int count = j - i - 2;
+                        curEnt.AddEvent(NewLoadEvent(lines.Skip(i + 1).Take(count).ToArray(), layer + 1, curEnt));
+                        i = j - 1;
+                        break;
+                }
+            }
+
+            return curEnt;
+        }
+
+        private Event NewLoadEvent(string[] lines, int layer, Entity curEnt = null)
+        {
+            string directive = "";
+            string line = "";
+            string operation = "";
+            Event evn = new Event();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                line = lines[i];
+                directive = line.Split('\t')[layer];
+                switch(directive)
+                {
+                    case "COND":
+                        operation = line.Split('\t')[layer + 1];
+                        switch (operation.Split(' ')[0])
+                        {
+                            case "NOCOND":
+                                evn.AddCondition(new NoCondition());
+                                break;
+                            case "LOCFLGISSET":
+                                evn.AddCondition(
+                                    new LocalFlagCondition(int.Parse(operation.Split(' ')[1]), true, this));
+                                break;
+                            case "LOCFLGNOTSET":
+                                evn.AddCondition(
+                                    new LocalFlagCondition(int.Parse(operation.Split(' ')[1]), false, this));
+                                break;
+                            case "FLGISSET":
+                                evn.AddCondition(
+                                    new FlagCondition(int.Parse(operation.Split(' ')[1]), true));
+                                break;
+                            case "FLGNOTSET":
+                                evn.AddCondition(
+                                    new FlagCondition(int.Parse(operation.Split(' ')[1]), false));
+                                break;
+                            case "BUTPRES":
+                                Keys k = Keys.Space;
+                                if (operation.Split(' ')[1] == "A") k = Keys.Z;
+                                evn.AddCondition(new ButtonCondition(
+                                    k,
+                                    int.Parse(operation.Split(' ')[2]) == 1 ? ButtonCondition.KEYSTATE.ISPRESSED : ButtonCondition.KEYSTATE.ISRELEASED));
+                                break;
+                            case "HASITEM":
+                                evn.AddCondition(
+                                    new ItemCondition(Globals.player, operation.Split(' ')[1], ItemCondition.TYPE.HASITEM));
+                                break;
+                            case "HASNOTITEM":
+                                evn.AddCondition(
+                                    new ItemCondition(Globals.player, operation.Split(' ')[1], ItemCondition.TYPE.HASNOTITEM));
+                                break;
+                            case "POSTOUCH":
+                                string targetT = operation.Split(' ')[1];
+                                string sourceT = operation.Split(' ')[2];
+                                if (sourceT == "SELF")
+                                    evn.AddCondition(new PositionCondition(
+                                        (Character)entDict.GetValueOrDefault(targetT),
+                                        curEnt,
+                                        PositionCondition.POSTYPE.POSTOUCH));
+                                else
+                                    evn.AddCondition(new PositionCondition(
+                                        (Character)entDict.GetValueOrDefault(targetT),
+                                        entDict.GetValueOrDefault(sourceT),
+                                        PositionCondition.POSTYPE.POSTOUCH));
+                                break;
+                            case "POSTOUCHFACING":
+                                string target = operation.Split(' ')[1];
+                                string source = operation.Split(' ')[2];
+                                if (source == "SELF")
+                                    evn.AddCondition(new PositionCondition(
+                                        (Character)entDict.GetValueOrDefault(target),
+                                        curEnt,
+                                        PositionCondition.POSTYPE.POSTOUCHFACING));
+                                else
+                                    evn.AddCondition(new PositionCondition(
+                                        (Character)entDict.GetValueOrDefault(target),
+                                        entDict.GetValueOrDefault(source),
+                                        PositionCondition.POSTYPE.POSTOUCHFACING));
+                                break;
+                        }
+
+                        break;
+                    case "ACTN":
+                        operation = line.Split('\t')[layer + 1];
+                        switch (operation.Split(' ')[0])
+                        {
+                            case "PROMPT":
+                                string promptMessage = operation.Split('<')[1];
+                                List<string> promptOptions = new List<string>();
+                                for (int k = 2; k < operation.Split('<').Length; k++)
+                                {
+                                    promptOptions.Add(operation.Split('<')[k]);
+                                }
+                                RunningPrompt currentPrompt = new RunningPrompt(promptMessage, promptOptions);
+                                evn.AddAction(
+                                    new PromptAction(currentPrompt));
+
+                                int promptEvent = 0;
+                                for (int k = 2; k < operation.Split('<').Length; k++)
+                                {
+                                    while (lines[i++].Split('\t')[layer + 1] != "EVN");
+                                    i--;
+                                    int j = i;
+                                    while (lines[j++].Split('\t')[layer + 1] != "NVE");
+                                    int count = j - i - 2;
+                                    Event prompEv = NewLoadEvent(lines.Skip(i + 1).Take(count).ToArray(), layer + 2, curEnt);
+                                    currentPrompt.AddEvent(prompEv, promptEvent++);
+                                    i = j - 1;
+                                }
+                                break;
+                            case "NOACN":
+                                evn.AddAction(
+                                    new NoAction());
+                                break;
+
+                            case "SAVE":
+                                //curAction = new SaveAction();
+                                evn.AddAction(
+                                    new SaveAction());
+                                break;
+
+                            case "LOCFLGSET":
+                                //curAction = new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this);
+                                evn.AddAction(
+                                    new LocalFlagAction(int.Parse(operation.Split(' ')[1]), 1, this));
+                                break;
+                            case "FLGSET":
+                                //curAction = new FlagAction(int.Parse(lin2.Split(' ')[1]), 1);
+                                evn.AddAction(
+                                    new FlagAction(int.Parse(operation.Split(' ')[1]), 1));
+                                break;
+                            case "ACTIVATE":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new ActivateAction(curEnt, ActivateAction.TYPE.ACTIVATE);
+                                    evn.AddAction(
+                                        new ActivateAction(curEnt, ActivateAction.TYPE.ACTIVATE));
+                                }
+                                else
+                                {
+                                    //curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.TYPE.ACTIVATE);
+                                    evn.AddAction(
+                                        new ActivateAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), ActivateAction.TYPE.ACTIVATE));
+                                }
+                                break;
+                            case "DEACTIVATE":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new ActivateAction(curEnt, ActivateAction.TYPE.DEACTIVATE);
+                                    evn.AddAction(
+                                        new ActivateAction(curEnt, ActivateAction.TYPE.DEACTIVATE));
+                                }
+                                else
+                                {
+                                    //curAction = new ActivateAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), ActivateAction.TYPE.DEACTIVATE);
+                                    evn.AddAction(
+                                        new ActivateAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), ActivateAction.TYPE.DEACTIVATE));
+                                }
+                                break;
+                            case "SLEEP":
+                                //curAction = new SleepAction(int.Parse(lin2.Split(' ')[1]));
+                                evn.AddAction(
+                                    new SleepAction(int.Parse(operation.Split(' ')[1])));
+                                break;
+                            case "MESSAGE":
+                                //curAction = new MessageAction(lin2.Split('<')[1], curEnt);
+                                evn.AddAction(
+                                    new MessageAction(operation.Split('<')[1], curEnt));
+                                break;
+                            case "FADEIN":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new FadeAction(curEnt, FadeAction.TYPE.FADEIN);
+                                    evn.AddAction(
+                                        new FadeAction(curEnt, FadeAction.TYPE.FADEIN));
+                                }
+                                else
+                                {
+                                    //curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.TYPE.FADEIN);
+                                    evn.AddAction(
+                                        new FadeAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), FadeAction.TYPE.FADEIN));
+                                }
+                                break;
+                            case "FADEOUT":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new FadeAction(curEnt, FadeAction.TYPE.FADEOUT);
+                                    evn.AddAction(
+                                        new FadeAction(curEnt, FadeAction.TYPE.FADEOUT));
+                                }
+                                else
+                                {
+                                    //curAction = new FadeAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), FadeAction.TYPE.FADEOUT);
+                                    evn.AddAction(
+                                        new FadeAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), FadeAction.TYPE.FADEOUT));
+                                }
+                                break;
+                            case "LOCK":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new BlockAction(curEnt, BlockAction.TYPE.LOCK);
+                                    evn.AddAction(
+                                        new BlockAction(curEnt, BlockAction.TYPE.LOCK));
+                                }
+                                else
+                                {
+                                    //curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.TYPE.LOCK);
+                                    evn.AddAction(
+                                        new BlockAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), BlockAction.TYPE.LOCK));
+                                }
+                                break;
+                            case "UNLOCK":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new BlockAction(curEnt, BlockAction.TYPE.UNLOCK);
+                                    evn.AddAction(
+                                        new BlockAction(curEnt, BlockAction.TYPE.UNLOCK));
+                                }
+                                else
+                                {
+                                    //curAction = new BlockAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), BlockAction.TYPE.UNLOCK);
+                                    evn.AddAction(
+                                        new BlockAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), BlockAction.TYPE.UNLOCK));
+                                }
+                                break;
+                            case "GIVEITEM":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new GiveItemAction(Globals.player, entName);
+                                    evn.AddAction(
+                                        new GiveItemAction(Globals.player, curEnt.GetName()));
+                                }
+                                else
+                                {
+                                    //curAction = new GiveItemAction(Globals.player, lin2.Split(' ')[1]);
+                                    evn.AddAction(
+                                        new GiveItemAction(Globals.player, operation.Split(' ')[1]));
+                                }
+                                break;
+                            case "DISABLE":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new DisableAction(curEnt, DisableAction.TYPE.DISABLE);
+                                    evn.AddAction(
+                                        new DisableAction(curEnt, DisableAction.TYPE.DISABLE));
+                                }
+                                else
+                                {
+                                    //curAction = new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.DISABLE);
+                                    evn.AddAction(
+                                        new DisableAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), DisableAction.TYPE.DISABLE));
+                                }
+                                break;
+                            case "ENABLE":
+                                if (operation.Split(' ')[1] == "SELF")
+                                {
+                                    //curAction = new DisableAction(curEnt, DisableAction.TYPE.ENABLE);
+                                    evn.AddAction(
+                                        new DisableAction(curEnt, DisableAction.TYPE.ENABLE));
+                                }
+                                else
+                                {
+                                    //curAction = new DisableAction(entDict.GetValueOrDefault(lin2.Split(' ')[1]), DisableAction.TYPE.ENABLE);
+                                    evn.AddAction(
+                                        new DisableAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), DisableAction.TYPE.ENABLE));
+                                }
+                                break;
+                            case "TELEPORT":
+                                int level = int.Parse(operation.Split(' ')[1]);
+                                int map = int.Parse(operation.Split(' ')[2]);
+                                int posx = int.Parse(operation.Split(' ')[3]);
+                                int posy = int.Parse(operation.Split(' ')[4]);
+                                string target = operation.Split(' ')[5];
+
+                                if (level == selfLevel.GetId() && map == mapID)
+                                    //curAction = new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target));
+                                    evn.AddAction(
+                                        new TeleportAction(posx, posy, (Character)entDict.GetValueOrDefault(target)));
+                                else if (level == selfLevel.GetId() && map != mapID)
+                                    /*curAction = new TeleportAction(
+                                        selfLevel,
+                                        map,
+                                        posx,
+                                        posy,
+                                        (Character)entDict.GetValueOrDefault(target));*/
+                                    evn.AddAction(new TeleportAction(
+                                        selfLevel,
+                                        map,
+                                        posx,
+                                        posy,
+                                        (Character)entDict.GetValueOrDefault(target)));
+                                else
+                                    /*curAction = new TeleportAction(
+                                        Globals.world,
+                                        level,
+                                        map,
+                                        posx,
+                                        posy,
+                                        (Character)entDict.GetValueOrDefault(target));*/
+                                    evn.AddAction(new TeleportAction(
+                                        Globals.world,
+                                        level,
+                                        map,
+                                        posx,
+                                        posy,
+                                        (Character)entDict.GetValueOrDefault(target)));
+                                break;
+                        }
+                        break;
+                }
+            }
+
+            return evn;
+        }
+        
         private void LoadMap(int id)
         {
             Main.penumbra.Hulls.Clear();
@@ -538,8 +1079,18 @@ namespace acamar.Source.Engine.World
                                         Main.penumbra.Lights.Add(new Penumbra.PointLight()
                                         {
                                             Position = new Vector2(entPosx, entPosy),
-                                            Scale = new Vector2(scale)
+                                            Scale = new Vector2(scale),
+                                            ShadowType = ShadowType.Illuminated
                                         });
+                                        break;
+                                    case "TEXTURELIGHT":
+                                        string SpritePATH = "2D\\" + entSprID + ".spr";
+                                        Main.penumbra.Lights.Add(new Penumbra.TexturedLight(Globals.Content.Load<Texture2D>(SpritePATH))
+                                        {
+                                            Position = new Vector2(entPosx, entPosy),
+                                            Scale = new Vector2(scale),
+                                            ShadowType = ShadowType.Illuminated,
+                                        }) ;
                                         break;
                                     case "OVERTEXT":
                                         entType = EntityConstants.ENTTYPE.OVERTEXT;
@@ -858,9 +1409,9 @@ namespace acamar.Source.Engine.World
                                                     (Character)entDict.GetValueOrDefault(target)));*/
                                             break;
                                     }
-                                    if (promptAcn)
-                                        currentPrompt.AddAction(curAction, curOption);
-                                    else
+                                    ////if (promptAcn)
+                                    ////    currentPrompt.AddAction(curAction, curOption);
+                                    ////else
                                         evn.AddAction(curAction);
                                     break;
                             }

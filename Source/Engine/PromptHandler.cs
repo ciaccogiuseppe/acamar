@@ -9,6 +9,7 @@ namespace acamar.Source.Engine
     class PromptHandler
     {
         public static Prompt currentPrompt;
+        public static List<Prompt> currentPrompts = new List<Prompt>();
         public static Globals.STATE PREVSTATE;
         public static Globals.STATE PROMPTSTATE;
         private static bool active = false;
@@ -21,6 +22,12 @@ namespace acamar.Source.Engine
             
         }
 
+        public static void AddPrompt(Prompt p)
+        {
+            currentPrompts.Add(p);
+            currentPrompt = currentPrompts[currentPrompts.Count - 1];
+        }
+
         public static bool IsActive()
         {
             return active;
@@ -28,21 +35,46 @@ namespace acamar.Source.Engine
 
         public static void Update()
         {
-            if (currentPrompt.IsEnded()) active = false;
+            //if (currentPrompt.IsEnded()) active = false;
+            //if (active)
+            //{
+            //    currentPrompt.Update();
+            //}
+
+            //if(!active)
+            //{
+            //    Globals.CURRENTSTATE = PREVSTATE;
+            //}
+
+            while (currentPrompts.Count > 0 && currentPrompt.IsEnded())
+            {
+                currentPrompts.RemoveAt(currentPrompts.Count - 1);
+                if(currentPrompts.Count == 0)
+                {
+                    currentPrompt = null;
+                    active = false;
+                }
+                else
+                {
+                    currentPrompt = currentPrompts[currentPrompts.Count - 1];
+                }
+            }
+
             if (active)
             {
                 currentPrompt.Update();
             }
 
-            if(!active)
+            if (!active)
             {
-                Globals.CURRENTSTATE = PREVSTATE;
+                Globals.CURRENTSTATE = Globals.STATE.RUNNING;
             }
         }
 
         public static void Draw(SpriteBatch batch)
         {
-            currentPrompt.Draw(batch);
+            if(active)
+                currentPrompt.Draw(batch);
         }
     }
 }

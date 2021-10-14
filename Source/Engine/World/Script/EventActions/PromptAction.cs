@@ -23,7 +23,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Activate action
         public override void Trigger()
         {
-            PromptHandler.currentPrompt = prompt;
+            //PromptHandler.currentPrompt = prompt;
+            PromptHandler.AddPrompt(prompt);
             PromptHandler.Activate();
             started = true;
             ended = false;
@@ -32,6 +33,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Check if action is ended
         public override bool IsEnded()
         {
+            if (started && prompt.IsEnded()) ended = true;
             if (started && !PromptHandler.IsActive()) ended = true;
             return ended;
         }
