@@ -57,6 +57,7 @@ namespace acamar
         public static DateTime lastTime;
 
         public static Keys MENUKEY = Keys.Z;
+        public static Keys INTERACTKEY = Keys.Z;
 
         public static Keys MOVEUP = Keys.Up;
         public static Keys MOVELEFT = Keys.Left;

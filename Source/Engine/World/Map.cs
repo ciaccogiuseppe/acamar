@@ -32,12 +32,14 @@ namespace acamar.Source.Engine.World
         private Rectangle[] tileSource;
         private List<Entity> entities = new List<Entity>();
         private Dictionary<string, Entity> entDict = new Dictionary<string, Entity>();
+
+        private Entity mapEventsHandler = new Entity();
         
         private List<LightSource> lightSources = new List<LightSource>();
 
         private OverlayText timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
 
-        private const int LOCFLAGNO = 32;
+        private const int LOCFLAGNO = 64;
         private int[] localFlags = new int[LOCFLAGNO];
         //private bool locked = false;
 
@@ -180,6 +182,8 @@ namespace acamar.Source.Engine.World
             //DEBUG
             timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
 
+
+            mapEventsHandler.Update();
 
             foreach (Entity ent in entities)
             {
@@ -403,7 +407,7 @@ namespace acamar.Source.Engine.World
                     int j = i;
                     while (lines[j++] != "NVE") ;
                     int count = j - i - 2;
-                    NewLoadEvent(lines.Skip(i + 1).Take(count).ToArray(), layer + 1, null);
+                    mapEventsHandler.AddEvent(NewLoadEvent(lines.Skip(i + 1).Take(count).ToArray(), layer + 1, null));
                     i = j - 1;
                 }
             }
@@ -630,6 +634,19 @@ namespace acamar.Source.Engine.World
                                 evn.AddCondition(
                                     new LocalFlagCondition(int.Parse(operation.Split(' ')[1]), false, this));
                                 break;
+                            case "INTERACT":
+                                string targetI = operation.Split(' ')[1];
+                                string sourceI = operation.Split(' ')[2];
+                                if (sourceI == "SELF")
+                                    evn.AddCondition(new InteractCondition(
+                                        (Character)entDict.GetValueOrDefault(targetI),
+                                        curEnt));
+                                else
+                                    evn.AddCondition(new InteractCondition(
+                                        (Character)entDict.GetValueOrDefault(targetI),
+                                        entDict.GetValueOrDefault(sourceI)));
+
+                                break;
                             case "FLGISSET":
                                 evn.AddCondition(
                                     new FlagCondition(int.Parse(operation.Split(' ')[1]), true));
@@ -688,6 +705,17 @@ namespace acamar.Source.Engine.World
                         operation = line.Split('\t')[layer + 1];
                         switch (operation.Split(' ')[0])
                         {
+                            case "SUBEVENT":
+                                while (lines[i++].Split('\t')[layer + 1] != "EVN") ;
+                                i--;
+                                int jj = i;
+                                while (lines[jj++].Split('\t')[layer + 1] != "NVE") ;
+                                int countS = jj - i - 2;
+                                Event subEvn = NewLoadEvent(lines.Skip(i + 1).Take(countS).ToArray(), layer + 2, curEnt);
+                                evn.AddAction(new SubEventAction(subEvn));
+                                i = jj - 1;
+
+                                break;
                             case "PROMPT":
                                 string promptMessage = operation.Split('<')[1];
                                 List<string> promptOptions = new List<string>();
@@ -728,10 +756,20 @@ namespace acamar.Source.Engine.World
                                 evn.AddAction(
                                     new LocalFlagAction(int.Parse(operation.Split(' ')[1]), 1, this));
                                 break;
+                            case "LOCFLGUNSET":
+                                //curAction = new LocalFlagAction(int.Parse(lin2.Split(' ')[1]), 1, this);
+                                evn.AddAction(
+                                    new LocalFlagAction(int.Parse(operation.Split(' ')[1]), 0, this));
+                                break;
                             case "FLGSET":
                                 //curAction = new FlagAction(int.Parse(lin2.Split(' ')[1]), 1);
                                 evn.AddAction(
                                     new FlagAction(int.Parse(operation.Split(' ')[1]), 1));
+                                break;
+                            case "FLGUNSET":
+                                //curAction = new FlagAction(int.Parse(lin2.Split(' ')[1]), 1);
+                                evn.AddAction(
+                                    new FlagAction(int.Parse(operation.Split(' ')[1]), 0));
                                 break;
                             case "ACTIVATE":
                                 if (operation.Split(' ')[1] == "SELF")
