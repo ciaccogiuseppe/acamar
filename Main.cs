@@ -24,7 +24,9 @@ namespace acamar
 
         private InGameMenu inGameMenu;
 
+#if PENUMBRA
         public static PenumbraComponent penumbra;
+#endif
 
 
         public Main()
@@ -34,10 +36,9 @@ namespace acamar
             IsMouseVisible = true;
             IsFixedTimeStep = true;
             //Window.IsBorderless = true;
-
+#if PENUMBRA
             penumbra = new PenumbraComponent(this);
-            
-            //Components.Add(penumbra);
+#endif     
         }
 
         protected override void Initialize()
@@ -72,12 +73,13 @@ namespace acamar
             for (int i = 0; i < data2.Length; ++i) data2[i] = borderColor;
             upDownBorder.SetData(data2);
 
-
+#if PENUMBRA
             Globals._graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Globals.GSIZEX, Globals.GSIZEY);
             penumbra = new PenumbraComponent(this);
 
             //Components.Add(penumbra);
             penumbra.Initialize();
+#endif
         }
 
         protected override void LoadContent()
@@ -127,10 +129,10 @@ namespace acamar
 
                 else if (Globals.CURRENTSTATE == Globals.STATE.MAINMENUPROMPT || Globals.CURRENTSTATE == Globals.STATE.RUNNINGPROMPT)
                 {
-                    if (PromptHandler.IsActive())
-                    {
+                    //if (PromptHandler.IsActive())
+                    //{
                         PromptHandler.Update();
-                    }
+                    //}
                 }
 
                 else if (Globals.CURRENTSTATE == Globals.STATE.TRANSITION)
@@ -164,9 +166,11 @@ namespace acamar
                 Globals._graphics.PreferredBackBufferWidth = Globals.SIZEX;
                 Globals._graphics.PreferredBackBufferHeight = Globals.SIZEY;
                 Globals._graphics.ApplyChanges();
+#if PENUMBRA
                 Globals._graphics.GraphicsDevice.Viewport = new Viewport(0, 0, Globals.SIZEX, Globals.SIZEY);
                 penumbra = new PenumbraComponent(this);
                 penumbra.Initialize();
+#endif
                 Globals.world.Reset();
                 GlobalSettings.CHANGEDRES = false;
                 //Window.Position = new Point((
@@ -180,15 +184,13 @@ namespace acamar
 
         protected override void Draw(GameTime gameTime)
         {
-            
+
 
             //penumbra.SpriteBatchTransformEnabled = true;
+#if PENUMBRA
             penumbra.Transform = Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0) * Matrix.CreateScale(Globals.SCALE) * Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0);
-
-
-            
-
             penumbra.BeginDraw();
+#endif
 
             //GraphicsDevice.Clear(Color.AntiqueWhite);
             GraphicsDevice.Clear(new Color(64,64,64));
@@ -241,12 +243,14 @@ namespace acamar
                 PromptHandler.Draw(Globals._overBatch);
             }
 
-            Globals._spriteBatch.End();
-            penumbra.Draw(gameTime);
-            Globals._overBatch.End();
-            //penumbra.Draw(gameTime);
-            //Globals._spriteBatch.End();
+            OverlayText STATETEXT = new OverlayText(Globals.CURRENTSTATE.ToString(), 300, 10, FontConstants.FONT1);
+            STATETEXT.Draw(Globals._overBatch);
 
+            Globals._spriteBatch.End();
+#if PENUMBRA
+            penumbra.Draw(gameTime);
+#endif
+            Globals._overBatch.End();
 
 
             base.Draw(gameTime);

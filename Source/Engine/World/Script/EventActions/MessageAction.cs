@@ -40,7 +40,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Check if action is ended
         public override bool IsEnded()
         {
-            if (started && !MessageHandler.IsActive())
+            if (started && /*!MessageHandler.IsActive()*/ message.IsEnded())
             {
                 ended = true;
             }
@@ -52,6 +52,16 @@ namespace acamar.Source.Engine.World.Script.EventActions
         {
             started = false;
             ended = false;
+        }
+
+        public override bool IsStarted()
+        {
+            return started;
+        }
+
+        public override bool GetEnded()
+        {
+            return ended;
         }
     }
 }

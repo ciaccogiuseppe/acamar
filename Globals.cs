@@ -1,4 +1,6 @@
-﻿using acamar.Source.Engine;
+﻿#define PENUMBRA
+
+using acamar.Source.Engine;
 using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
 using Microsoft.Xna.Framework;

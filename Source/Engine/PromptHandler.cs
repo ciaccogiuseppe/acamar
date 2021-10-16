@@ -10,6 +10,7 @@ namespace acamar.Source.Engine
     {
         public static Prompt currentPrompt;
         public static List<Prompt> currentPrompts = new List<Prompt>();
+        public static List<Globals.STATE> PREVSTATES = new List<Globals.STATE>();
         public static Globals.STATE PREVSTATE;
         public static Globals.STATE PROMPTSTATE;
         private static bool active = false;
@@ -18,6 +19,7 @@ namespace acamar.Source.Engine
         {
             active = true;
             currentPrompt.Activate();
+            PREVSTATES.Add(Globals.CURRENTSTATE);
             Globals.CURRENTSTATE = PROMPTSTATE;
             
         }
@@ -67,7 +69,9 @@ namespace acamar.Source.Engine
 
             if (!active)
             {
-                Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                //Globals.CURRENTSTATE = Globals.STATE.RUNNING;
+                Globals.CURRENTSTATE = PREVSTATES[currentPrompts.Count];
+                PREVSTATES.RemoveAt(currentPrompts.Count);
             }
         }
 

@@ -43,6 +43,12 @@ namespace acamar.Source.Engine.World.Script
 
         internal bool IsActive()
         {
+            int count = 0;
+            foreach (EventAction act in triggerAction)
+            {
+                if (act.GetEnded()) count++;
+            }
+            if (count == triggerAction.Count) active = false;
             return active;
         }
 

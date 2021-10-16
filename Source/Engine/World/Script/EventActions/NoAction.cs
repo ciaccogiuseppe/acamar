@@ -8,6 +8,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
     {
         //Flag for action ended running
         private bool ended = false;
+        private bool started = false;
         public NoAction()
         {
 
@@ -16,6 +17,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Activate action
         public override void Trigger()
         {
+            started = true;
             ended = true;
         }
 
@@ -29,6 +31,16 @@ namespace acamar.Source.Engine.World.Script.EventActions
         public override void Reset()
         {
             ended = false;
+        }
+
+        public override bool IsStarted()
+        {
+            return started;
+        }
+
+        public override bool GetEnded()
+        {
+            return ended;
         }
     }
 }

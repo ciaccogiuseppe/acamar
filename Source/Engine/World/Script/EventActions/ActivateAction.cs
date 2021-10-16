@@ -21,6 +21,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
 
         //Flag for action ended running
         private bool ended = false;
+        private bool started = false;
 
         public ActivateAction(Entity target, TYPE type)
         {
@@ -31,6 +32,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Activate action
         public override void Trigger()
         {
+            started = true;
             switch(type)
             {
                 case TYPE.ACTIVATE:
@@ -52,7 +54,18 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Reset action
         public override void Reset()
         {
+            started = false;
             ended = false;
+        }
+
+        public override bool IsStarted()
+        {
+            return started;
+        }
+
+        public override bool GetEnded()
+        {
+            return ended;
         }
     }
 }

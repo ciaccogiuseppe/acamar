@@ -10,6 +10,10 @@ namespace acamar.Source.Engine.World.Script
 
         public abstract bool IsEnded();
 
+        public abstract bool IsStarted();
+
+        public abstract bool GetEnded();
+
         public abstract void Reset();
 
         //internal abstract void Continue();

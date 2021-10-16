@@ -345,7 +345,8 @@ namespace acamar.Source.Engine.World
                 //        curFont.Draw(" "+entry.ToString(), posx, posy, batch, 1);
                 //    posy += 20;
                 //}
-                for(int i = windowStart; i < Math.Min(windowEnd, entries.Count); i++)
+                int i;
+                for(i = windowStart; i < Math.Min(windowEnd, entries.Count); i++)
                 {
                     MenuEntry entry = entries[i];
                     if (entry.IsSelected())
@@ -353,6 +354,10 @@ namespace acamar.Source.Engine.World
                     else
                         curFont.Draw(" " + entry.ToString(), posx, posy, batch, 1);
                     posy += 20;
+                }
+                if (i != entries.Count)
+                {
+                    curFont.Draw(" ...", posx, posy, batch, 1); //to change with downarrow + add uparrow at top if windowStart != 0
                 }
 
             }

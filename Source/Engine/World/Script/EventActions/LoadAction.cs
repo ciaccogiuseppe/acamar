@@ -13,6 +13,8 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //TODO: make flag member of EventAction and not repeated
         private bool ended = false;
 
+        private bool started = false;
+
         public LoadAction(int saveSlot)
         {
             this.saveSlot = saveSlot;
@@ -21,6 +23,7 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Activate action
         public override void Trigger()
         {
+            started = true;
             Globals.world.Load(saveSlot);
             ended = true;
         }
@@ -34,7 +37,19 @@ namespace acamar.Source.Engine.World.Script.EventActions
         //Reset action
         public override void Reset()
         {
+            started = false;
             ended = false;
         }
+
+        public override bool IsStarted()
+        {
+            return started;
+        }
+
+        public override bool GetEnded()
+        {
+            return ended;
+        }
     }
+
 }

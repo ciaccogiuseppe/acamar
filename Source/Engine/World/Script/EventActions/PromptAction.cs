@@ -45,5 +45,15 @@ namespace acamar.Source.Engine.World.Script.EventActions
             ended = false;
             started = false;
         }
+
+        public override bool IsStarted()
+        {
+            return started;
+        }
+
+        public override bool GetEnded()
+        {
+            return ended;
+        }
     }
 }

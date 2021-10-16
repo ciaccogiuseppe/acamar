@@ -10,6 +10,7 @@ namespace acamar.Source.Engine
     {
         public static Message currentMessage;
         public static List<Message> currentMessages = new List<Message>();
+        public static List<Globals.STATE> PREVSTATES = new List<Globals.STATE>();
         private static bool active = false;
 
         public static Globals.STATE PREVSTATE;
@@ -17,8 +18,11 @@ namespace acamar.Source.Engine
         public static void Activate()
         {
             active = true;
-            if (Globals.CURRENTSTATE != Globals.STATE.PAUSE) PREVSTATE = Globals.CURRENTSTATE;
+            //if (Globals.CURRENTSTATE != Globals.STATE.PAUSE) PREVSTATE = Globals.CURRENTSTATE;
+            //Globals.CURRENTSTATE = Globals.STATE.PAUSE;
+            PREVSTATES.Add(Globals.CURRENTSTATE);
             Globals.CURRENTSTATE = Globals.STATE.PAUSE;
+
             currentMessage.Reset();
         }
 
@@ -63,12 +67,19 @@ namespace acamar.Source.Engine
                 {
                     active = false;
                     currentMessage = null;
-                    Globals.CURRENTSTATE = PREVSTATE;
+                    //Globals.CURRENTSTATE = PREVSTATE;
                 }
                 else
                 {
                     currentMessage = currentMessages[currentMessages.Count - 1];
                 }
+
+                Globals.CURRENTSTATE = PREVSTATES[currentMessages.Count];
+                PREVSTATES.RemoveAt(currentMessages.Count);
+            }
+            else if(!active)
+            {
+                Globals.CURRENTSTATE = PREVSTATES[currentMessages.Count];
             }
         }
 
