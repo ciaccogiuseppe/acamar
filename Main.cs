@@ -1,6 +1,7 @@
 ﻿using acamar.Source.Engine;
 using acamar.Source.Engine.Constants;
 using acamar.Source.Engine.Settings;
+using acamar.Source.Engine.Text;
 using acamar.Source.Engine.World;
 using acamar.Source.Engine.World.Entities;
 using Microsoft.Xna.Framework;
@@ -49,6 +50,8 @@ namespace acamar
             base.Initialize();
 
             FontConstants.Initialize();
+
+            TextBank.LoadStringBank(0);
 
             Globals._graphics.PreferredBackBufferWidth = Globals.SIZEX;
             Globals._graphics.PreferredBackBufferHeight = Globals.SIZEY;

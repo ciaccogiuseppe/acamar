@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.Text;
 using acamar.Source.Engine.World.Entities;
 using acamar.Source.Engine.World.Script;
 using acamar.Source.Engine.World.Script.EventActions;
@@ -380,6 +381,8 @@ namespace acamar.Source.Engine.World
             string directive = "";
             string line = "";
 
+            int textID = 0;
+
             for(int i = 0; i < lines.Length; i++)
             {
                 line = lines[i];
@@ -501,8 +504,9 @@ namespace acamar.Source.Engine.World
 #endif
                             case "OVERTEXT":
                                 //entType = EntityConstants.ENTTYPE.OVERTEXT;
+                                textID = int.Parse(line.Split("::")[1]);
                                 curEnt = new OverlayText(
-                                    line.Split('<')[1],
+                                    TextBank.GetStringFromBank(textID),
                                     entPosx,
                                     entPosy,
                                     FontConstants.FontDictionary.GetValueOrDefault(line.Split(' ')[1]));
@@ -547,6 +551,7 @@ namespace acamar.Source.Engine.World
             string directive = "";
             string line = "";
             string operation = "";
+            int textID;
             Event evn = new Event();
             for (int i = 0; i < lines.Length; i++)
             {
@@ -652,18 +657,24 @@ namespace acamar.Source.Engine.World
 
                                 break;
                             case "PROMPT":
-                                string promptMessage = operation.Split('<')[1];
+                                textID = int.Parse(operation.Split("::")[1]);
+                                //string promptMessage = operation.Split('<')[1];
+                                string promptMessage = TextBank.GetStringFromBank(textID);
                                 List<string> promptOptions = new List<string>();
-                                for (int k = 2; k < operation.Split('<').Length; k++)
+                                //for (int k = 2; k < operation.Split('<').Length; k++)
+                                for (int k = 2; k < operation.Split("::").Length - 1; k++)
                                 {
-                                    promptOptions.Add(operation.Split('<')[k]);
+                                    textID = int.Parse(operation.Split("::")[k]);
+                                    //promptOptions.Add(operation.Split('<')[k]);
+                                    promptOptions.Add(TextBank.GetStringFromBank(textID));
                                 }
                                 RunningPrompt currentPrompt = new RunningPrompt(promptMessage, promptOptions);
                                 evn.AddAction(
                                     new PromptAction(currentPrompt));
 
                                 int promptEvent = 0;
-                                for (int k = 2; k < operation.Split('<').Length; k++)
+                                //for (int k = 2; k < operation.Split('<').Length; k++)
+                                for (int k = 2; k < operation.Split("::").Length - 1; k++)
                                 {
                                     while (lines[i++].Split('\t')[layer + 1] != "EVN");
                                     i--;
@@ -741,8 +752,9 @@ namespace acamar.Source.Engine.World
                                 break;
                             case "MESSAGE":
                                 //curAction = new MessageAction(lin2.Split('<')[1], curEnt);
+                                textID = int.Parse(operation.Split("::")[1]);
                                 evn.AddAction(
-                                    new MessageAction(operation.Split('<')[1], curEnt));
+                                    new MessageAction(TextBank.GetStringFromBank(textID), curEnt));
                                 break;
                             case "FADEIN":
                                 if (operation.Split(' ')[1] == "SELF")

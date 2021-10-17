@@ -2,6 +2,7 @@
 using acamar.Source.Engine.Graphics;
 using acamar.Source.Engine.MainMenu;
 using acamar.Source.Engine.Settings;
+using acamar.Source.Engine.Text;
 using acamar.Source.Engine.World.Script;
 using acamar.Source.Engine.World.Script.Prompts;
 using Microsoft.Xna.Framework;
@@ -404,7 +405,7 @@ namespace acamar.Source.Engine.World
                                 else
                                 {
                                     //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
-                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.currentPrompt = new MenuPrompt(TextBank.GetStringFromBank(15), new List<string> { TextBank.GetStringFromBank(13), TextBank.GetStringFromBank(14) });
                                     PromptHandler.Activate();
                                     waiting = true;
                                 }
@@ -425,7 +426,7 @@ namespace acamar.Source.Engine.World
                                 else
                                 {
                                     //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
-                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.currentPrompt = new MenuPrompt(TextBank.GetStringFromBank(15), new List<string> { TextBank.GetStringFromBank(13), TextBank.GetStringFromBank(14) });
                                     PromptHandler.Activate();
                                     waiting = true;
                                 }
@@ -446,7 +447,7 @@ namespace acamar.Source.Engine.World
                                 else
                                 {
                                     //PromptHandler.PREVSTATE = Globals.STATE.MAINMENU;
-                                    PromptHandler.currentPrompt = new MenuPrompt("Existing savefile, overwrite?", new List<string> { "YES", "NO" });
+                                    PromptHandler.currentPrompt = new MenuPrompt(TextBank.GetStringFromBank(15), new List<string> { TextBank.GetStringFromBank(13), TextBank.GetStringFromBank(14) });
                                     PromptHandler.Activate();
                                     waiting = true;
                                 }
@@ -510,14 +511,14 @@ namespace acamar.Source.Engine.World
                 switch (number)
                 {
                     case 0:
-                        entries.Add(new MenuEntry("New Game", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
-                        entries.Add(new MenuEntry("Load Game", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(0), MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(1), MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         //entries.Add(new MenuEntry("  Level", MenuEntry.TYPE.CHANGELEVEL, selfMenu));
                         //entries.Add(new MenuEntry("   Map", MenuEntry.TYPE.CHANGEMAP, selfMenu));
                         //entries.Add(new MenuEntry("Inventory", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
-                        entries.Add(new MenuEntry("Settings", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(2), MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         //entries.Add(new MenuEntry("  Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
-                        entries.Add(new MenuEntry("Exit", MenuEntry.TYPE.EXIT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(3), MenuEntry.TYPE.EXIT, selfMenu));
 
                         entries[0].SetNextPage(2);
                         entries[1].SetNextPage(1);
@@ -528,9 +529,9 @@ namespace acamar.Source.Engine.World
                         entries[3].SetNextPage(-1);
                         break;
                     case 1:
-                        entries.Add(new MenuEntry("Slot 1", MenuEntry.TYPE.SAVESLOT, selfMenu));
-                        entries.Add(new MenuEntry("Slot 2", MenuEntry.TYPE.SAVESLOT, selfMenu));
-                        entries.Add(new MenuEntry("Slot 3", MenuEntry.TYPE.SAVESLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(4), MenuEntry.TYPE.SAVESLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(5), MenuEntry.TYPE.SAVESLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(6), MenuEntry.TYPE.SAVESLOT, selfMenu));
 
                         entries[0].SetValue("1");
                         entries[1].SetValue("2");
@@ -544,24 +545,24 @@ namespace acamar.Source.Engine.World
                         //}
                         //entries.Add(new MenuEntry("Back", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         //entries[entries.Count - 1].SetNextPage(parentPage);
-                        entries.Add(new MenuEntry("Slot 1", MenuEntry.TYPE.NEWSLOT, selfMenu));
-                        entries.Add(new MenuEntry("Slot 2", MenuEntry.TYPE.NEWSLOT, selfMenu));
-                        entries.Add(new MenuEntry("Slot 3", MenuEntry.TYPE.NEWSLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(4), MenuEntry.TYPE.NEWSLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(5), MenuEntry.TYPE.NEWSLOT, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(6), MenuEntry.TYPE.NEWSLOT, selfMenu));
 
                         entries[0].SetValue("1");
                         entries[1].SetValue("2");
                         entries[2].SetValue("3");
                         break;
                     case 3:
-                        entries.Add(new MenuEntry("Resolution", MenuEntry.TYPE.CHANGERESOLUTION, selfMenu));
-                        entries.Add(new MenuEntry("Controls", MenuEntry.TYPE.CHANGEPAGE, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(7), MenuEntry.TYPE.CHANGERESOLUTION, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(8), MenuEntry.TYPE.CHANGEPAGE, selfMenu));
                         entries[1].SetNextPage(4);
                         break;
                     case 4:
-                        entries.Add(new MenuEntry("Move Up    ", MenuEntry.TYPE.KEYSET, selfMenu));
-                        entries.Add(new MenuEntry("Move Left  ", MenuEntry.TYPE.KEYSET, selfMenu));
-                        entries.Add(new MenuEntry("Move Right ", MenuEntry.TYPE.KEYSET, selfMenu));
-                        entries.Add(new MenuEntry("Move Down  ", MenuEntry.TYPE.KEYSET, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(9), MenuEntry.TYPE.KEYSET, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(10), MenuEntry.TYPE.KEYSET, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(11), MenuEntry.TYPE.KEYSET, selfMenu));
+                        entries.Add(new MenuEntry(TextBank.GetStringFromBank(12), MenuEntry.TYPE.KEYSET, selfMenu));
 
                         entries[0].SetValue(Globals.MOVEUP.ToString());
                         entries[1].SetValue(Globals.MOVELEFT.ToString());
