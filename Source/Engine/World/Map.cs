@@ -1,4 +1,5 @@
 ﻿using acamar.Source.Engine.Constants;
+using acamar.Source.Engine.Graphics;
 using acamar.Source.Engine.Text;
 using acamar.Source.Engine.World.Entities;
 using acamar.Source.Engine.World.Script;
@@ -40,7 +41,7 @@ namespace acamar.Source.Engine.World
 
         private OverlayText timer = new OverlayText(Globals.runningTime.ToString(), 10, 10, FontConstants.FONT1);
 
-        private const int LOCFLAGNO = 64;
+        private const int LOCFLAGNO = 256;
         private int[] localFlags = new int[LOCFLAGNO];
         //private bool locked = false;
 
@@ -175,10 +176,13 @@ namespace acamar.Source.Engine.World
             //    }
             //}
 
+
             timer.Draw(Globals._overBatch);
 
             OverlayText position = new OverlayText(Globals.player.GetPosX() + " " + Globals.player.GetPosY(),10,20, FontConstants.FONT1);
             position.Draw(Globals._overBatch);
+
+
             //message.Draw();
             //DEBUG
         }
@@ -217,7 +221,7 @@ namespace acamar.Source.Engine.World
             {
                 for(int j = 0; j < width/ Globals.TILESIZE; j++)
                 {
-                    Globals._spriteBatch.Draw(tileTexture,  tileDest[i, j], tileSource[mapArray[i, j]], Color.White);
+                    Globals._spriteBatch.Draw(tileTexture,  tileDest[i, j], tileSource[mapArray[i, j]], Color.White, 0.0f, new Vector2(0, 0), SpriteEffects.None, 1.0f);
                 }
             }
         }
@@ -473,6 +477,7 @@ namespace acamar.Source.Engine.World
                                 curEnt.SetPosition(entPosx, entPosy);
                                 curEnt.SetCollisionRectangle(entCPosx, entCPosy, entCWidth, entCHeight);
                                 curEnt.SetName(entName);
+                                curEnt.SetLayer(entLayer);
                                 entities.Add(curEnt);
                                 entDict.Add(entName, curEnt);
                                 break;
@@ -853,6 +858,13 @@ namespace acamar.Source.Engine.World
                                     evn.AddAction(
                                         new DisableAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), DisableAction.TYPE.ENABLE));
                                 }
+                                break;
+                            case "OVERMESSAGE":
+                                int mid = int.Parse(operation.Split("::")[1]);
+                                int px = int.Parse(operation.Split(' ')[2]);
+                                int py = int.Parse(operation.Split(' ')[3]);
+                                Font font = FontConstants.FontDictionary.GetValueOrDefault(operation.Split(' ')[4]);
+                                evn.AddAction(new OverMessageAction(TextBank.GetStringFromBank(mid), px, py, font));
                                 break;
                             case "TELEPORT":
                                 int level = int.Parse(operation.Split(' ')[1]);

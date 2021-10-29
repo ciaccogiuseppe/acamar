@@ -27,7 +27,7 @@ namespace acamar.Source.Engine.World
         protected bool locked = false;
         protected bool enabled = true;
         protected bool transparent = false;
-        protected int layer = 0;
+        protected int layer = 1;
         protected Texture2D texture;
         protected Rectangle destRec;
         protected Rectangle sourceRec;
@@ -119,7 +119,7 @@ namespace acamar.Source.Engine.World
         public virtual void Draw(SpriteBatch batch)
         {
             if(active)
-                batch.Draw(texture, destRec, sourceRec, Color.White*opacity, 0.0f, new Vector2(0,0), SpriteEffects.None,  layer);
+                batch.Draw(texture, destRec, sourceRec, Color.White*opacity, 0.0f, new Vector2(0,0), SpriteEffects.None,  1-(float)layer/(float)Globals.LAYERS);
         }
 
         public void SetSprite(int sprid)

@@ -21,7 +21,7 @@ namespace acamar.Source.Engine.World.Entities
         }
 
         private const int WALKDURATION = 140;
-        private const int ANIMDURATION = 20;
+        private const int ANIMDURATION = 10;
         private int animlen = 5;
         protected STATE CURRENTSTATE;
         private int walkingCount = WALKDURATION;
@@ -303,7 +303,7 @@ namespace acamar.Source.Engine.World.Entities
             {
                 if (animCount == ANIMDURATION)
                 { 
-                    int animationLength = 4; //= ANIMLEN[sprid][currentAnimation]
+                    int animationLength = 5; //= ANIMLEN[sprid][currentAnimation]
                     sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
                     if (sourceRec.X == 0) sourceRec.X += sourceRec.Width;
                 }

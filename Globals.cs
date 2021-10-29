@@ -70,6 +70,7 @@ namespace acamar
 
 
         public const int TILESIZE = 32;
+        public const int LAYERS = 5;
 
         public static int CURRENTSAVESLOT = 1;
 

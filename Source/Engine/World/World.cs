@@ -1,4 +1,5 @@
-﻿using acamar.Source.Engine.World.Entities;
+﻿using acamar.Source.Engine.Text;
+using acamar.Source.Engine.World.Entities;
 using acamar.Source.Engine.World.Script;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -82,6 +83,10 @@ namespace acamar.Source.Engine.World
         internal void Reset()
         {
             currentLevel.Reset();
+
+            //
+            OverlayEntitiesHandler.Reset();
+            TextBank.LoadStringBank(0);
         }
 
         public int GetCurrentLevel()

@@ -14,6 +14,7 @@ namespace acamar.Source.Engine.Constants
         public static Font FONT3;
         public static Font FONT4;
         public static Font FONT5;
+        public static Font FONT6;
         public static void Initialize()
         {
             //Font initialization: new Font(fontID, fontWidth, fontHeight)
@@ -23,6 +24,7 @@ namespace acamar.Source.Engine.Constants
             FONT3 = new Font(3, 11, 18);
             FONT4 = new Font(4, 11, 18);
             FONT5 = new Font(5, 11, 18);
+            FONT6 = new Font(6, 11, 12);
 
             //FontDictionary: to get font from scripts
             FontDictionary.Add("FONT0", FONT0);
@@ -31,6 +33,7 @@ namespace acamar.Source.Engine.Constants
             FontDictionary.Add("FONT3", FONT3);
             FontDictionary.Add("FONT4", FONT4);
             FontDictionary.Add("FONT5", FONT5);
+            FontDictionary.Add("FONT6", FONT6);
         }
     }
 }

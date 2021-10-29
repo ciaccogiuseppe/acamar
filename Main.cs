@@ -94,6 +94,8 @@ namespace acamar
 
             // TODO: use this.Content to load your game content here
             Globals.player = new Player(1, 7, 200, 200, 0);
+            //Globals.player = new Player(1, 15, 200, 200, 0);
+            //Globals.player.SetSourceRectangle(new Rectangle(0, 0, 13, 16));
 
             //penumbra.Lights.Add(Globals.player.Light);
         }
@@ -202,8 +204,10 @@ namespace acamar
 
             //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
-            Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE));
+            //Globals._spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
+            Globals._spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.CAMX, Globals.CAMY, 0)*Matrix.CreateScale(Globals.SCALE,Globals.SCALE,0)* Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0));
+            //Globals._overBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE));
+            Globals._overBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(Globals.OFFX, Globals.OFFY, 0) * Matrix.CreateScale(Globals.SCALE, Globals.SCALE, 0));
 
             if (Globals.CURRENTSTATE == Globals.STATE.MAINMENU || Globals.CURRENTSTATE == Globals.STATE.MAINMENUPROMPT)
             {
@@ -246,7 +250,10 @@ namespace acamar
                 PromptHandler.Draw(Globals._overBatch);
             }
 
+            OverlayEntitiesHandler.Draw(Globals._overBatch);
+
             OverlayText STATETEXT = new OverlayText(Globals.CURRENTSTATE.ToString(), 300, 10, FontConstants.FONT1);
+            
             STATETEXT.Draw(Globals._overBatch);
 
             Globals._spriteBatch.End();

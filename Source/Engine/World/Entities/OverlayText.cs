@@ -21,6 +21,11 @@ namespace acamar.Source.Engine.World.Entities
             collidable = false;
         }
 
+        public void SetText(string text)
+        {
+            this.text = text;
+        }
+
         public override void Draw(SpriteBatch batch)
         {
             if(active)

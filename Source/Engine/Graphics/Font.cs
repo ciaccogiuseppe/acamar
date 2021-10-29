@@ -34,10 +34,13 @@ namespace acamar.Source.Engine.Graphics
             foreach (char c in text.ToCharArray())
             {
                 //Newline Character
-                if (c == '_')
+                if (c == '_') //NEWLINE
                 {
                     lin += charHeight;
                     pos = posx;
+                }
+                else if(c == '&') //invisiblechar
+                {
                 }
                 else
                 {
@@ -83,6 +86,9 @@ namespace acamar.Source.Engine.Graphics
 
             //Selection character arrow for menus
             charToRect.Add('@', new Rectangle(0 * charWidth, 3 * charHeight, charWidth, charHeight));
+            charToRect.Add('[', new Rectangle(1 * charWidth, 3 * charHeight, charWidth, charHeight));
+            charToRect.Add(']', new Rectangle(2 * charWidth, 3 * charHeight, charWidth, charHeight));
+            charToRect.Add('|', new Rectangle(3 * charWidth, 3 * charHeight, charWidth, charHeight));
         }
     }
 }
