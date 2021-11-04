@@ -303,8 +303,9 @@ namespace acamar.Source.Engine.World.Entities
             {
                 if (animCount == ANIMDURATION)
                 { 
-                    int animationLength = 5; //= ANIMLEN[sprid][currentAnimation]
-                    sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
+                    //animationLength = 5; //= ANIMLEN[sprid][currentAnimation]
+                    base.Animate();
+                    //sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
                     if (sourceRec.X == 0) sourceRec.X += sourceRec.Width;
                 }
                 animCount--;

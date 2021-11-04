@@ -71,6 +71,7 @@ namespace acamar
 
         public const int TILESIZE = 32;
         public const int LAYERS = 5;
+        public const int MAXANIMNUMBER = 20;
 
         public static int CURRENTSAVESLOT = 1;
 
@@ -84,5 +85,6 @@ namespace acamar
         public static int PROMPTRESULT = 0;
 
         public static GraphicsDeviceManager _graphics;
+        
     }
 }

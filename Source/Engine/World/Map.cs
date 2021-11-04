@@ -452,6 +452,13 @@ namespace acamar.Source.Engine.World
                         curEnt.Disable();
                         break;
 
+                    case "ANIM":
+                        int animID = int.Parse(line.Split('\t')[layer + 1].Split(' ')[0]);
+                        int animLength = int.Parse(line.Split('\t')[layer + 1].Split(' ')[1]);
+                        int animStep = int.Parse(line.Split('\t')[layer + 1].Split(' ')[2]);
+                        bool animLoop = line.Split('\t')[layer + 1].Split(' ')[3]=="LOOP"?true:false;
+                        curEnt.SetNewAnimation(animID, animLength, animStep, animLoop);
+                        break;
 
                     case "TYPE":
                         switch (line.Split('\t')[layer + 1].Split(' ')[0])
@@ -802,6 +809,14 @@ namespace acamar.Source.Engine.World
                                     evn.AddAction(
                                         new BlockAction(entDict.GetValueOrDefault(operation.Split(' ')[1]), BlockAction.TYPE.LOCK));
                                 }
+                                break;
+                            case "SETANIM":
+                                evn.AddAction(
+                                       new SetAnimationAction(curEnt, int.Parse(operation.Split(' ')[1])));
+                                break;
+                            case "ACTIVANIM":
+                                evn.AddAction(
+                                       new ActivateAnimationAction(curEnt, ActivateAnimationAction.TYPE.ACTIVATEANIM));
                                 break;
                             case "UNLOCK":
                                 if (operation.Split(' ')[1] == "SELF")

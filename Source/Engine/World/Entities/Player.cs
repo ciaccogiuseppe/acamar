@@ -21,6 +21,24 @@ namespace acamar.Source.Engine.World.Entities
             base(entid, sprid, posx, posy, dir)
         {
             animActive = true;
+
+            animationLength[0] = 5;
+            animationLength[1] = 5;
+            animationLength[2] = 5;
+            animationLength[3] = 5;
+            animationLength[4] = 5;
+
+            animationStep[0] = 1;
+            animationStep[1] = 1;
+            animationStep[2] = 1;
+            animationStep[3] = 1;
+            animationStep[4] = 1;
+
+            animationLoop[0] = true;
+            animationLoop[1] = true;
+            animationLoop[2] = true;
+            animationLoop[3] = true;
+            animationLoop[4] = true;
         }
 
 #if PENUMBRA

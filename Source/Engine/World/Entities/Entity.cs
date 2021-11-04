@@ -21,8 +21,12 @@ namespace acamar.Source.Engine.World
         protected int width = 400;
         protected int height = 10;
         protected int currentAnimation = 0;
-        protected int animationLength = 2;
-        protected bool animationLoop = false;
+        protected int[] animationLength = new int[Globals.MAXANIMNUMBER];
+        protected bool[] animationLoop = new bool[Globals.MAXANIMNUMBER];
+        protected int[] animationStep = new int[Globals.MAXANIMNUMBER];
+        protected int animationCount = 0;
+        //protected int animationLength = 2;
+        //protected bool animationLoop = true;
         protected bool moving = false;
         protected bool locked = false;
         protected bool enabled = true;
@@ -130,6 +134,13 @@ namespace acamar.Source.Engine.World
             texture = Globals.Content.Load<Texture2D>(SpritePATH);
         }
 
+        public void SetNewAnimation(int id, int length, int step, bool loop)
+        {
+            animationLength[id] = length;
+            animationStep[id] = step;
+            animationLoop[id] = loop;
+        }
+
         protected virtual void Animate()
         {
             //= ANIMLEN[sprid][currentAnimation]
@@ -141,17 +152,36 @@ namespace acamar.Source.Engine.World
                 opacity = (opacity < 0) ? 0 : 1;
             }
 
-            if(animActive)
-                sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
+            animationCount++;
+            if (animationCount == animationStep[currentAnimation])
+            {
+                if (animActive)
+                {
+                    if (animationLoop[currentAnimation])
+                    {
+                        sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength[currentAnimation] * sourceRec.Width);
+                    }
+                    else
+                    {
+                        if (sourceRec.X != (animationLength[currentAnimation] - 1) * sourceRec.Width)
+                        {
+                            sourceRec.X = (sourceRec.X + sourceRec.Width);
+                        }
+                    }
+                }
+                animationCount = 0;
+            }
+            
         }
 
         public virtual void Animation()
         {
-            sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength * sourceRec.Width);
+            sourceRec.X = (sourceRec.X + sourceRec.Width) % (animationLength[currentAnimation] * sourceRec.Width);
         }
 
-        protected void SetAnimation(int id)
+        public void SetAnimation(int id)
         {
+            currentAnimation = id;
             sourceRec.Y = id * sourceRec.Height;
         }
 
@@ -249,12 +279,17 @@ namespace acamar.Source.Engine.World
         public void ResetAnimation()
         {
             sourceRec.X = 0;
-            sourceRec.Y = 0;
+            //sourceRec.Y = 0;
+        }
+
+        public void SetLoop(bool loop)
+        {
+            animationLoop[currentAnimation] = loop;
         }
 
         public void SetAnimationLength(int len)
         {
-            animationLength = len;
+            animationLength[currentAnimation] = len;
         }
 
         public void AddEvent(Event evn)
@@ -330,6 +365,11 @@ namespace acamar.Source.Engine.World
         public void ActivateAnimation()
         {
             animActive = true;
+        }
+
+        public void DectivateAnimation()
+        {
+            animActive = false;
         }
 
         public bool IsCollidable()
